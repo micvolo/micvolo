@@ -1,23 +1,15 @@
 {
-  "name": "foo-app",
+  "name": "micvolo-frontend",
   "env": {
     "BACKEND_URL": {
-      "description": "specify the backend url",
-      "value": "https://admin.micvolo.me",
-      "required": true
+      "value": "https://admin.micvolo.me"
     }
   },
   "options": {
-    "allow-unauthenticated": false,
+    "allow-unauthenticated": true,
     "memory": "512Mi",
     "cpu": "1",
     "port": 3000,
     "http2": false
-  },
-  "build": {
-    "skip": false,
-    "buildpacks": {
-      "builder": "some/builderimage"
-    }
   }
 }
