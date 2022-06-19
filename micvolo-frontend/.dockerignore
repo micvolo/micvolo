@@ -1,0 +1,16 @@
+.git/
+.tmp/
+.cache/
+.next/
+build/
+node_modules/
+data/
+.editorconfig
+.gitignore
+.env.example
+.eslint*
+Dockerfile
+README.md
+.dockerignore
+npm-debug.log
+.git

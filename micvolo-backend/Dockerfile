@@ -2,10 +2,15 @@ FROM node:16-alpine
 
 WORKDIR /app
 
-COPY package*.json .
+ENV NODE_ENV=production
+ENV PORT=1337
 
-RUN npm install
+COPY package*.json ./
+
+RUN npm install --omit=dev
 
 COPY . .
 
-CMD npm run dev
+RUN npm run build
+
+CMD npm run start

@@ -1,0 +1,16 @@
+{
+  "name": "micvolo-frontend",
+  "env": {
+    "BACKEND_URL": {
+      "description": "specify the url of the backend",
+      "value": "https://admin.micvolo.me"
+    },
+    "options": {
+      "allow-unauthenticated": true,
+      "memory": "256Mi",
+      "cpu": "1",
+      "port": 3000,
+      "http2": false
+    }
+  },
+}
