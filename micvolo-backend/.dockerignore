@@ -1,0 +1,11 @@
+.git/
+.tmp/
+.cache/
+build/
+node_modules/
+data/
+.editorconfig
+.env.example
+.eslint*
+Dockerfile
+README.md
