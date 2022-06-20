@@ -3,7 +3,7 @@ const prodUpload = (env) => ({
     provider: '@strapi-community/strapi-provider-upload-google-cloud-storage',
     providerOptions: {
       bucketName: 'micvolo-uploads',
-      publicFiles: false,
+      publicFiles: true,
       uniform: false,
       basePath: '',
     },
