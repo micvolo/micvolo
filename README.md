@@ -1,3 +1,1 @@
 # micvolo-ecommerce
-
-ciao
