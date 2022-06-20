@@ -5,7 +5,6 @@ const prodUpload = (env) => ({
       bucketName: 'micvolo-uploads',
       publicFiles: true,
       uniform: false,
-      basePath: '',
     },
   },
 })
@@ -29,8 +28,6 @@ const devUpload = (env) => ({
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/local-cloud-storage%40micvolo-5b784.iam.gserviceaccount.com"
       },
-      baseUrl: 'https://storage.googleapis.com/{bucket-name}',
-      basePath: '',
     },
   },
 })
