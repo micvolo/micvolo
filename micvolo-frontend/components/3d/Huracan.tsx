@@ -138,7 +138,7 @@ type GLTFResult = GLTF & {
 
 export default function Model({ ...props }: JSX.IntrinsicElements['group']) {
   const group = useRef<THREE.Group>()
-  const { nodes, materials } = useGLTF('/huracan.glb') as GLTFResult
+  const { nodes, materials } = useGLTF('/3d/huracan.glb') as GLTFResult
   return (
     <group ref={group as Ref<THREE.Group>} {...props} dispose={null}>
       <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]}>
@@ -298,4 +298,4 @@ export default function Model({ ...props }: JSX.IntrinsicElements['group']) {
   )
 }
 
-useGLTF.preload('/huracan.glb')
+useGLTF.preload('/3d/huracan.glb')

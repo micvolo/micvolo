@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import {Canvas} from "@react-three/fiber";
 import {Suspense} from "react";
-import Poly from "../components/Poly";
+import Poly from "../components/3d/Poly";
 
 const Home: NextPage = () => {
   return (

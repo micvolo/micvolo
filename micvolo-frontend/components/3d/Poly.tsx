@@ -23,7 +23,7 @@ export default function Model({ ...props }: JSX.IntrinsicElements['group']) {
   //   group.current.rotation.y += 0.02;
   // })
 
-  const { nodes, materials } = useGLTF('/3ds/poly.glb') as GLTFResult
+  const { nodes, materials } = useGLTF('/3d/poly.glb') as GLTFResult
   return (
       // @ts-ignore
       <group ref={group} {...props} dispose={null}>
@@ -44,4 +44,4 @@ export default function Model({ ...props }: JSX.IntrinsicElements['group']) {
   )
 }
 
-useGLTF.preload('/3ds/poly.glb')
+useGLTF.preload('/3d/poly.glb')

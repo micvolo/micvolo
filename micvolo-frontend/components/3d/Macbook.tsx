@@ -102,7 +102,7 @@ type GLTFResult = GLTF & {
 
 export default function Model({ ...props }: JSX.IntrinsicElements['group']) {
   const group = useRef<THREE.Group>()
-  const { nodes, materials } = useGLTF('/3ds/macbook.glb') as GLTFResult
+  const { nodes, materials } = useGLTF('/3d/macbook.glb') as GLTFResult
   return (
       // @ts-ignore
       <group ref={group} {...props} dispose={null}>
@@ -164,4 +164,4 @@ export default function Model({ ...props }: JSX.IntrinsicElements['group']) {
   )
 }
 
-useGLTF.preload('/3ds/macbook.glb')
+useGLTF.preload('/3d/macbook.glb')

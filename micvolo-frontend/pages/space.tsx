@@ -5,8 +5,8 @@ import profile from '../public/images/profile.jpg';
 import moonImage from '../public/images/moon.jpg';
 import {Suspense, useMemo, useRef} from "react";
 import {Canvas, useFrame, useLoader} from "@react-three/fiber";
-import Macbook from "../components/Macbook";
-import {Html, Scroll, ScrollControls, TransformControls, useScroll} from '@react-three/drei';
+import Macbook from "../components/3d/Macbook";
+import {Scroll, ScrollControls, useScroll} from '@react-three/drei';
 
 function Torus() {
 
@@ -96,11 +96,7 @@ function Stars({starsArray}: { starsArray: { position: Vector3 }[] }) {
     }</>
 }
 
-export default function Space() {
-
-    // document.body.onscroll = moveCamera;
-    // function animate() {
-    //     moon.rotation.x += 0.0008
+const Space = () => {
 
     const starsArray = useMemo(() => Array.from({length: 1000}, () => ({
         position: new Vector3(
@@ -111,7 +107,6 @@ export default function Space() {
     })), [])
 
     const scroll = useScroll()
-
 
     return (
         <div style={{position: "absolute", top: 0, bottom: 0, right: 0, left: 0}}>
@@ -140,4 +135,4 @@ export default function Space() {
         </div>
     )
 }
-
+export default Space
