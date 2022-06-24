@@ -5,7 +5,7 @@ import Poly from "../components/3d/Poly";
 
 const Home: NextPage = () => {
   return (
-      <div className="h-screen">
+      <div className="absolute inset-0">
         <Canvas>
           <ambientLight/>
           <Suspense fallback={null}>

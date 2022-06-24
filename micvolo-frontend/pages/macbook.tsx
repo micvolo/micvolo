@@ -65,11 +65,11 @@ export default function App() {
     // We turn this into a spring animation that interpolates between 0 and 1
     const props = useSpring({ open: Number(open) })
     return (
-        <web.main className="h-screen overflow-hidden" style={{ background: props.open.to([0, 1], ['black', '#1900ff'])}}>
+        <web.main className="absolute inset-0" style={{ background: props.open.to([0, 1], ['black', '#1900ff'])}}>
             <web.h1 className="absolute top-[50%] left-[50%] font-semibold -tracking-[.075em] inline-block text-8xl text-white" style={{ opacity: props.open.to([0, 1], [1, 0]), transform: props.open.to((o) => `translate3d(-50%,${o * 50 - 100}px,0)`) }}>
                 Stra Studio
             </web.h1>
-            <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 0], fov: 35 }}>
+            <Canvas camera={{ position: [0, 0, 0], fov: 35 }}>
                 <Suspense fallback={null}>
                     <group rotation={[0, Math.PI, 0]} onClick={(e) => (e.stopPropagation(), setOpen(!open))}>
                         <Model open={open} hinge={props.open.to([0, 1], [1.575, -0.425])} />

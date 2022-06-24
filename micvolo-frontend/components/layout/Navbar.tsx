@@ -10,7 +10,7 @@ export default function Navbar() {
         <nav
             className="flex items-center justify-between flex-wrap bg-black p-1 border-2 border-white rounded-[24px] absolute inset-x-6 top-6 z-[99999]">
             <div className="flex items-center text-white">
-                <Link href="/Users/miche/Desktop/develop/micvolo-ecommerce/micvolo-frontend/pages" passHref>
+                <Link href="/" passHref>
                     <a className="h-9">
                         <Image className="rounded-full" width="36" height="36" src={logo} alt="logo"/>
                     </a>
@@ -25,13 +25,13 @@ export default function Navbar() {
 
             <div className={`items-center w-auto flex justify-end flex-[0_0_100%] sm:flex-none sm:flex ${!menu && 'hidden'}`}>
                 <div className="text-sm">
-                    <Link href="/Users/miche/Desktop/develop/micvolo-ecommerce/micvolo-frontend/pages/space" passHref>
+                    <Link href="/space" passHref>
                         <a
                             className="inline-block text-white mx-4">
                             Space
                         </a>
                     </Link>
-                    <Link href="/Users/miche/Desktop/develop/micvolo-ecommerce/micvolo-frontend/pages/macbook" passHref>
+                    <Link href="/macbook" passHref>
                         <a
                             className="inline-block text-white mx-4">
                             Macbook
