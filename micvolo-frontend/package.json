@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress": "cypress open"
   },
   "dependencies": {
+    "@react-spring/web": "^9.4.5",
     "@react-three/drei": "^9.13.2",
     "@react-three/fiber": "^8.0.27",
     "next": "12.1.6",

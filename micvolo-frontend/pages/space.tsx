@@ -6,7 +6,8 @@ import moonImage from '../public/images/moon.jpg';
 import {Suspense, useMemo, useRef} from "react";
 import {Canvas, useFrame, useLoader} from "@react-three/fiber";
 import Model from "../components/Macbook";
-import {Scroll, ScrollControls, TransformControls, useScroll} from '@react-three/drei';
+import {Html, Scroll, ScrollControls, TransformControls, useScroll} from '@react-three/drei';
+import Navbar from "../components/navbar";
 
 function Torus() {
 
@@ -42,7 +43,6 @@ function Volo() {
 
 
         const t = scroll.offset * 50
-        console.log(t);
 
         state.camera.position.set(
             (t) + 20,
@@ -116,10 +116,12 @@ export default function Space() {
 
     return (
         <div style={{position: "absolute", top: 0, bottom: 0, right: 0, left: 0}}>
+
             <Canvas onCreated={({camera}) => {
                 camera.position.set(20, 20, 20);
                 camera.lookAt(0, 0, 0)
             }}>
+
                 <pointLight color="green"/>
                 {/*<pointLight position={[-50, 90, 50]} color="green"/>*/}
                 {/*<ambientLight color={0xffffff}/>*/}
@@ -131,9 +133,7 @@ export default function Space() {
                         <Moon/>
                         <Stars starsArray={starsArray}/>
                         <Suspense fallback={null}>
-                            <TransformControls mode="translate">
-                                <Model scale={200} position={new Vector3(-30, 90, 50)}/>
-                            </TransformControls>
+                            <Model scale={200} position={new Vector3(-30, 90, 50)}/>
                         </Suspense>
                     </Scroll>
                 </ScrollControls>

@@ -3,7 +3,7 @@ import Space from "./space";
 
 const Home: NextPage = () => {
   return (
-      <Space/>
+      <div></div>
   )
 }
 
