@@ -52,13 +52,17 @@ function Model({ open, hinge, ...props }) {
 }
 
 export default function App() {
+
+
+    const d;
+
     // This flag controls open state, alternates between true & false
     const [open, setOpen] = useState(false)
     // We turn this into a spring animation that interpolates between 0 and 1
     const props = useSpring({ open: Number(open) })
     return (
         <div style={{height: '100vh'}}>
-        <web.main style={{ background: props.open.to([0, 1], ['black', '#ca00d1'])}} >
+        <web.main style={{ background: props.open.to([0, 1], ['black', '#ca00d1'])}}>
             <web.h1 style={{ opacity: props.open.to([0, 1], [1, 0]), transform: props.open.to((o) => `translate3d(-50%,${o * 50 - 100}px,0)`) }}>
                 Sorga gay
             </web.h1>
