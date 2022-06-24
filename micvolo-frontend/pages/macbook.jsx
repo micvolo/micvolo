@@ -61,7 +61,7 @@ export default function App() {
         <div style={{height: '100vh'}}>
         <web.main style={{ background: props.open.to([0, 1], ['black', '#ca00d1'])}}>
             <web.h1 style={{ opacity: props.open.to([0, 1], [1, 0]), transform: props.open.to((o) => `translate3d(-50%,${o * 50 - 100}px,0)`) }}>
-                Sorga gay
+                BELLI GAY
             </web.h1>
             <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 0], fov: 35 }}>
                 <three.pointLight position={[10, 10, 10]} intensity={1.5} color={props.open.to([0, 1], ['#f0f0f0', '#d25578'])} />
