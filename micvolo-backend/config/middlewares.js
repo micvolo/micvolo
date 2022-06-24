@@ -1,5 +1,6 @@
 module.exports = [
   'strapi::errors',
+  'strapi::security',
   {
     name: 'strapi::security',
     config: {
@@ -7,7 +8,7 @@ module.exports = [
         useDefaults: true,
         directives: {
           'connect-src': ["'self'", 'https:'],
-          'img-src': ["'self'", 'data:', 'blob:', 'storage.googleapis.com'],
+          'img-src': ["'self'", 'data:', 'blob:', 'storage.googleapis.com', 'dl.airtable.com'],
           'media-src': ["'self'", 'data:', 'blob:', 'storage.googleapis.com'],
           upgradeInsecureRequests: null,
         },
