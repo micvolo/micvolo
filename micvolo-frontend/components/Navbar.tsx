@@ -8,14 +8,14 @@ export default function Navbar() {
     const [menu, setMenu] = useState(false);
     const toggleMobileMenu = () => {
         setMenu(menu => !menu);
+        console.log(menu);
     }
     return (
         <nav
             className="flex items-center justify-between flex-wrap bg-black p-4 border-2 border-white rounded-full absolute inset-x-6 top-6 z-[99999]">
             <div className="flex items-center text-white">
                 <Link href="/" className="cursor-pointer">
-                    <Image className="rounded-full" width="36" height="36" src={logo} alt="logo">
-                    </Image>
+                    <Image className="rounded-full" width="36" height="36" src={logo} alt="logo"/>
                 </Link>
                 <span className="mx-4 text-xl">Michele Volonghi</span>
             </div>
@@ -36,7 +36,7 @@ export default function Navbar() {
                 </div>
                 <div>
                     <a href="https://stra.studio" target="_blank"
-                       className="inline-block text-sm px-4 py-2 leading-none border-2 rounded-full text-white border-white">Stra
+                       className="inline-block text-sm px-4 py-2 leading-none border-2 rounded-full text-white border-white" rel="noreferrer">Stra
                         Studio</a>
                 </div>
             </div>
