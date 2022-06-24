@@ -5,9 +5,8 @@ import profile from '../public/images/profile.jpg';
 import moonImage from '../public/images/moon.jpg';
 import {Suspense, useMemo, useRef} from "react";
 import {Canvas, useFrame, useLoader} from "@react-three/fiber";
-import Model from "../components/Macbook";
+import Macbook from "../components/Macbook";
 import {Html, Scroll, ScrollControls, TransformControls, useScroll} from '@react-three/drei';
-import Navbar from "../components/navbar";
 
 function Torus() {
 
@@ -133,7 +132,7 @@ export default function Space() {
                         <Moon/>
                         <Stars starsArray={starsArray}/>
                         <Suspense fallback={null}>
-                            <Model scale={200} position={new Vector3(-30, 90, 50)}/>
+                            <Macbook scale={200} position={new Vector3(-30, 90, 50)}/>
                         </Suspense>
                     </Scroll>
                 </ScrollControls>

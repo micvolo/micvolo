@@ -1,9 +1,18 @@
 import type { NextPage } from 'next'
-import Space from "./space";
+import {Canvas} from "@react-three/fiber";
+import {Suspense} from "react";
+import Poly from "../components/Poly";
 
 const Home: NextPage = () => {
   return (
-      <div></div>
+      <div className="h-screen">
+        <Canvas>
+          <ambientLight/>
+          <Suspense fallback={null}>
+            <Poly scale={3}/>
+          </Suspense>
+        </Canvas>
+      </div>
   )
 }
 
