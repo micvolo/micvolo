@@ -1,19 +1,15 @@
-import type { NextPage } from 'next'
+import type {NextPage} from 'next'
 import {Canvas} from "@react-three/fiber";
-import {Suspense} from "react";
+import {Suspense, useState} from "react";
 import Poly from "../components/3d/Poly";
+import {Html, OrbitControls} from "@react-three/drei";
+import MarqueeWallpaper from "../components/MarqueeWallpaper";
+import MicVolo from "./micvolo";
 
 const Home: NextPage = () => {
-  return (
-      <div className="absolute inset-0">
-        <Canvas>
-          <ambientLight/>
-          <Suspense fallback={null}>
-            <Poly scale={3}/>
-          </Suspense>
-        </Canvas>
-      </div>
-  )
+    return (
+        <MicVolo/>
+    )
 }
 
 export default Home

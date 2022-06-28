@@ -19,27 +19,28 @@ export default function Model({ ...props }: JSX.IntrinsicElements['group']) {
   const group = useRef<THREE.Group>()
 
 
-  // useFrame((state, delta) => {
-  //   group.current.rotation.y += 0.02;
-  // })
+  useFrame((state, delta) => {
+    // @ts-ignore
+    group.current.rotation.y += 0.02;
+  })
 
   const { nodes, materials } = useGLTF('/3d/poly.glb') as GLTFResult
   return (
       // @ts-ignore
       <group ref={group} {...props} dispose={null}>
-        <PresentationControls
-            global={true} // Spin globally or by dragging the model
-            cursor={true} // Whether to toggle cursor style on drag
-            snap={true} // Snap-back to center (can also be a spring config)
-            speed={1} // Speed factor
-            zoom={1} // Zoom factor when half the polar-max is reached
-            rotation={[0, 0, 0]} // Default rotation
-            polar={[0, Math.PI / 2]} // Vertical limits
-            azimuth={[-Infinity, Infinity]} // Horizontal limits
-            config={{ mass: 1, tension: 170, friction: 26 }} // Spring config
-        >
+        {/*<PresentationControls*/}
+        {/*    global={true} // Spin globally or by dragging the model*/}
+        {/*    cursor={true} // Whether to toggle cursor style on drag*/}
+        {/*    snap={true} // Snap-back to center (can also be a spring config)*/}
+        {/*    speed={1} // Speed factor*/}
+        {/*    zoom={1} // Zoom factor when half the polar-max is reached*/}
+        {/*    rotation={[0, 0, 0]} // Default rotation*/}
+        {/*    polar={[0, Math.PI / 2]} // Vertical limits*/}
+        {/*    azimuth={[-Infinity, Infinity]} // Horizontal limits*/}
+        {/*    config={{ mass: 1, tension: 170, friction: 26 }} // Spring config*/}
+        {/*>*/}
       <mesh geometry={nodes.mesh_0.geometry} material={nodes.mesh_0.material} />
-        </PresentationControls>
+        {/*</PresentationControls>*/}
     </group>
   )
 }
