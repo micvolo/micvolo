@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {MenuIcon, XIcon} from "@heroicons/react/outline";
 import {useState} from "react";
+import MenuLanguageComponent from "../MenuLanguageComponent";
 
 export default function Navbar() {
     const [menu, setMenu] = useState(false)
@@ -23,8 +24,16 @@ export default function Navbar() {
                 {!menu && <MenuIcon className="h-9"/>}
             </button>
 
-            <div className={`items-center w-auto flex justify-end flex-[0_0_100%] sm:flex-none sm:flex ${!menu && 'hidden'}`}>
+            <div
+                className={`items-center w-auto flex justify-end flex-[0_0_100%] sm:flex-none sm:flex ${!menu && 'hidden'}`}>
                 <div className="text-sm">
+                    <MenuLanguageComponent/>
+                    {/*<Link href="/products" passHref>*/}
+                    {/*    <a*/}
+                    {/*        className="inline-block text-white mx-4">*/}
+                    {/*        Ecommerce*/}
+                    {/*    </a>*/}
+                    {/*</Link>*/}
                     <Link href="/space" passHref>
                         <a
                             className="inline-block text-white mx-4">

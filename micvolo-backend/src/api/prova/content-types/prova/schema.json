@@ -1,0 +1,18 @@
+{
+  "kind": "singleType",
+  "collectionName": "provas",
+  "info": {
+    "singularName": "prova",
+    "pluralName": "provas",
+    "displayName": "Prova"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "prova": {
+      "type": "string"
+    }
+  }
+}
