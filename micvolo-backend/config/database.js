@@ -22,5 +22,5 @@ const prodConnection = (env) => ({
 });
 
 module.exports = ({ env }) => ({
-  connection: env('NODE_ENV') === 'development' ? devConnection(env) : prodConnection(env)
+  connection: prodConnection(env)
 });
