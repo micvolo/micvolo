@@ -7,6 +7,7 @@ module.exports = [
       contentSecurityPolicy: {
         useDefaults: true,
         directives: {
+          'style-src': ["'self'", "'unsafe-inline'", 'cdn.jsdelivr.net', 'fonts.googleapis.com'],
           'connect-src': ["'self'", 'https:'],
           'img-src': ["'self'", 'data:', 'blob:', 'storage.googleapis.com', 'dl.airtable.com'],
           'media-src': ["'self'", 'data:', 'blob:', 'storage.googleapis.com'],
