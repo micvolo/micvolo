@@ -1,4 +1,3 @@
-import logo from '../../public/images/profile.jpg';
 import Image from "next/image";
 import Link from "next/link";
 import {MenuIcon, XIcon} from "@heroicons/react/outline";
@@ -13,7 +12,7 @@ export default function Navbar() {
             <div className="flex items-center text-white">
                 <Link href="/" passHref>
                     <a className="h-9">
-                        <Image className="rounded-full" width="36" height="36" src={logo} alt="logo"/>
+                        <Image className="rounded-full" width="36" height="36" src={"/images/profile.jpg"} alt="logo"/>
                     </a>
                 </Link>
                 <span className="ml-4 text-xl">Michele Volonghi</span>

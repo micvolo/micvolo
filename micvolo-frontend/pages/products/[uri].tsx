@@ -12,6 +12,14 @@ import Image from "next/image";
 
 const ProductPage = ({product}: InferGetStaticPropsType<typeof getStaticProps>) => {
 
+    if (!product) {
+        return (
+            <div>
+                prodotto non trovato.
+            </div>
+        )
+    }
+
     let files = product.attributes.files?.data?.map(f => f.attributes.url);
 
     return(

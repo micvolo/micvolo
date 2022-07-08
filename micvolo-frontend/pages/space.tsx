@@ -1,8 +1,5 @@
 import * as THREE from 'three'
 import {Vector3} from 'three'
-import normal from '../public/images/normal.jpg';
-import profile from '../public/images/profile.jpg';
-import moonImage from '../public/images/moon.jpg';
 import {Suspense, useMemo, useRef} from "react";
 import {Canvas, useFrame, useLoader} from "@react-three/fiber";
 import Macbook from "../components/3d/Macbook";
@@ -30,7 +27,7 @@ function Torus() {
 
 function Volo() {
 
-    const voloTexture = useLoader(THREE.TextureLoader, profile.src)
+    const voloTexture = useLoader(THREE.TextureLoader, '/images/profile.jpg')
     const ref = useRef<THREE.Mesh>(null!)
 
     const scroll = useScroll();
@@ -64,8 +61,8 @@ function Volo() {
 
 function Moon() {
 
-    const moonTexture = useLoader(THREE.TextureLoader, moonImage.src)
-    const normalTexture = useLoader(THREE.TextureLoader, normal.src)
+    const moonTexture = useLoader(THREE.TextureLoader, '/images/moon.jpg')
+    const normalTexture = useLoader(THREE.TextureLoader, '/images/normal.jpg')
     const ref = useRef<THREE.Mesh>(null!)
 
     useFrame((state, delta) => {
@@ -83,8 +80,8 @@ function Moon() {
 
 function Stars({starsArray}: { starsArray: { position: Vector3 }[] }) {
 
-    const moonTexture = useLoader(THREE.TextureLoader, moonImage.src)
-    const normalTexture = useLoader(THREE.TextureLoader, normal.src)
+    const moonTexture = useLoader(THREE.TextureLoader, '/images/moon.jpg')
+    const normalTexture = useLoader(THREE.TextureLoader, '/images/normal.jpg')
 
     return <>{
         starsArray.map(({position}: { position: Vector3 }, i: number) => (
