@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {getProducts, Product} from "../../lib/products";
 import {Container} from "../../components/layout/Container";
-import {GetStaticPropsContext} from "next";
+import {GetServerSidePropsContext} from "next";
 
 const Products = ({products}: { products: Product[] }) => {
     return (
@@ -26,7 +26,7 @@ const Products = ({products}: { products: Product[] }) => {
 
 export default Products;
 
-export async function getStaticProps(context: GetStaticPropsContext) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const {locale} = context;
 
