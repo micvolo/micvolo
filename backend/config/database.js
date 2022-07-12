@@ -1,3 +1,6 @@
+const parse = require('pg-connection-string').parse;
+const config = parse(process.env.DATABASE_URL);
+
 const devConnection = (env) => ({
   client: 'sqlite',
   connection: {
@@ -8,17 +11,18 @@ const devConnection = (env) => ({
 });
 
 const prodConnection = (env) => ({
-  client: env('DATABASE_CLIENT', 'postgres'),
+  client: 'postgres',
   connection: {
-    host: env('DATABASE_HOST', 'localhost'),
-    port: env('DATABASE_PORT', 5432),
-    database: env('DATABASE_NAME', 'develop'),
-    user: env('DATABASE_USERNAME', 'develop'),
-    password: env('DATABASE_PASSWORD', 'develop'),
+    host: config.host,
+    port: config.port,
+    database: config.database,
+    user: config.user,
+    password: config.password,
+    ssl: {
+      rejectUnauthorized: false
+    },
   },
-  ssl: {
-    rejectUnauthorized: false
-  },
+  debug: false,
 });
 
 module.exports = ({ env }) => ({
