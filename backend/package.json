@@ -10,10 +10,10 @@
     "strapi": "strapi"
   },
   "dependencies": {
-    "@strapi-community/strapi-provider-upload-google-cloud-storage": "^4.1.7",
     "@strapi/plugin-graphql": "^4.2.2",
     "@strapi/plugin-i18n": "4.2.2",
     "@strapi/plugin-users-permissions": "4.2.2",
+    "@strapi/provider-upload-aws-s3": "^4.2.2",
     "@strapi/strapi": "4.2.2",
     "@strapi/utils": "^4.2.2",
     "better-sqlite3": "7.5.3",
