@@ -15,7 +15,7 @@ function Box() {
 
 const MicVolo = () => (
     <div className="absolute inset-0">
-        <MarqueeWallpaper/>
+        {/* <MarqueeWallpaper/> */}
         <Canvas>
             {/*<Html center>*/}
             {/*    <p className={'text-8xl text-black bg-white h-200'}>CIAOOO</p>*/}

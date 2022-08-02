@@ -26,7 +26,7 @@ export default function Navbar() {
             <div
                 className={`items-center w-auto flex justify-end flex-[0_0_100%] sm:flex-none sm:flex ${!menu && 'hidden'}`}>
                 <div className="text-sm">
-                    <MenuLanguageComponent/>
+                    {/* <MenuLanguageComponent/> */}
                     {/*<Link href="/products" passHref>*/}
                     {/*    <a*/}
                     {/*        className="inline-block text-white mx-4">*/}
