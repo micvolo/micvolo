@@ -1,5 +1,5 @@
 {
-  "name": "micvolo-frontend",
+  "name": "micvolo",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -20,6 +20,7 @@
     "gsap": "^3.10.4",
     "next": "12.2.0",
     "next-mdx-remote": "^4.0.3",
+    "noisejs": "^2.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "three": "^0.142.0",
