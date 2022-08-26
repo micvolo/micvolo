@@ -1,8 +1,8 @@
-import MarqueeWallpaper from "../components/MarqueeWallpaper";
+import MarqueeWallpaper from "./MarqueeWallpaper";
 import {Canvas} from "@react-three/fiber";
 import {Html, OrbitControls} from "@react-three/drei";
 import {Suspense} from "react";
-import Poly from "../components/3d/Poly";
+import Poly from "./3d/Poly";
 
 function Box() {
     return (

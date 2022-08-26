@@ -20,6 +20,14 @@ export default function Navbar() {
             name: 'GetBellied',
             uri: '/getbellied'
         },
+        {
+            name: 'CanvasNoise',
+            uri: '/canvasnoise'
+        },
+        {
+            name: 'OldStraStudio',
+            uri: '/oldstrastudio'
+        },
     ]
     return (
         <nav
@@ -42,7 +50,7 @@ export default function Navbar() {
                 className={`items-center w-auto flex justify-end flex-[0_0_100%] sm:flex-none sm:flex ${!menu && 'hidden'}`}>
                 <div className="text-sm">
                     {works.map(work =>
-                        <Link href={work.uri} passHref key={work.name}>
+                        <Link href={'/works' + work.uri} passHref key={work.name}>
                             <a
                                 className="inline-block text-white mx-4">
                                 {work.name}
