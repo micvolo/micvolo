@@ -9,6 +9,24 @@ import Header from "../components/Header.astro";
 		<link rel="manifest" href="manifest.webmanifest" />
 		<meta name="generator" content={Astro.generator} />
 		<title>micvolo</title>
+		<!-- Google tag (gtag.js) -->
+		<script
+			async
+			src="https://www.googletagmanager.com/gtag/js?id=G-8WH60EJXQ0"
+		></script>
+		<script>
+			// @ts-ignore
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				// @ts-ignore
+				dataLayer.push(arguments);
+			}
+			// @ts-ignore
+			gtag("js", new Date());
+
+			// @ts-ignore
+			gtag("config", "G-8WH60EJXQ0");
+		</script>
 	</head>
 	<body>
 		<Header />
@@ -19,8 +37,7 @@ import Header from "../components/Header.astro";
 </html>
 
 <style is:global>
-
-	@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+	@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
 
 	:root {
 		font-family: Helvetica, Inter, sans-serif;
@@ -38,7 +55,7 @@ import Header from "../components/Header.astro";
 		-moz-osx-font-smoothing: grayscale;
 		-webkit-text-size-adjust: 100%;
 	}
-	
+
 	* {
 		box-sizing: border-box;
 		margin: 0;
@@ -66,11 +83,15 @@ import Header from "../components/Header.astro";
 	}
 
 	main {
-		animation: ingresso .5s cubic-bezier(0.165, 0.84, 0.44, 1);
+		animation: ingresso 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 	}
 
 	@keyframes ingresso {
-		0% {transform: translateY(100vh) scale(0);}
-		100% {transform: translateY(0) scale(1);}
+		0% {
+			transform: translateY(100vh) scale(0);
+		}
+		100% {
+			transform: translateY(0) scale(1);
+		}
 	}
 </style>
