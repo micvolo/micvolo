@@ -1,0 +1,118 @@
+---
+import Layout from "../layouts/Layout.astro";
+const works = [
+    {
+        name: 'Attico Soap',
+        desc: 'E-Commerce — Wordpress',
+        img: 'atticosoap.png',
+        url: 'https://atticosoap.com',
+    },
+    {
+        name: 'Pj Ceramiche',
+        desc: 'E-Commerce — Wordpress',
+        img: 'pjceramiche.png',
+        url: 'https://pjceramiche.com',
+    },
+    {
+        name: 'Stra Studio',
+        desc: 'Astro',
+        img: 'strastudio.png',
+        url: 'https://stra.studio',
+    },
+    {
+        name: 'Bloem',
+        desc: 'Astro',
+        img: 'bloem.png',
+        url: 'https://bloem.vercel.app',
+    },
+];
+
+---
+
+<Layout>
+	<div class="section">
+        <h1>Selected Works</h1>
+        <h1>↓</h1>
+        <div class="works">
+            {works.map(w => 
+                <a href={w.url} target="_blank">
+                    <div>
+                        <h1>{w.name}</h1>
+                        <p>{w.desc}</p>
+                    </div>
+                    <img src={w.img} alt="w.name">
+                </a>
+            )}
+        </div>
+	</div>
+</Layout>
+
+<style>
+	.section {
+		font-size: 8.5vw;
+		letter-spacing: -0.05em;
+		line-height: 80%;
+		white-space: pre-line;
+		background: white;
+		color: black;
+		margin: 2rem;
+		border-radius: 2rem;
+		padding: 2rem;
+		display: flex;
+		align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        overflow: hidden;
+	}
+
+    .works {
+        flex: 100%;
+        margin: -2rem;
+        margin-top: 2rem;
+        border-radius: 2rem;
+        outline: 1px solid black;
+        background: darkcyan;
+    }
+
+    .works > a {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin: 16rem 2rem;
+    }
+
+    .works > a > div {
+        order: 1;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+    .works h1 {
+    }
+
+    .works p {
+        font-size: 1rem;
+        letter-spacing: 0;
+        font-weight: 400;
+    }
+    .works img {
+        order: 2;
+        max-width: 40%;
+        outline: 1px solid black;
+    }
+
+    .works > a:nth-child(even) > div {
+        align-items: end;
+    }
+
+    .works > a:nth-child(even) img {
+        order: 0;
+    }
+
+    @media only screen and (max-width: 1024px) {
+        .works > a {
+            flex-direction: column;
+        }
+
+        .works img {max-width: 100%;}
+</style>

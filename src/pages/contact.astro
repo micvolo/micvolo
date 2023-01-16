@@ -1,0 +1,43 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+	<div class="text">
+		<h1>you can contact me here
+		<a href="mailto:hello@micvolo.me">hello@micvolo.me</a>
+
+		</h1>
+	</div>
+	<div class="my-name">(my name is Michele Volonghi)</div>
+</Layout>
+
+<style>
+	.text {
+		font-size: 8.5vw;
+		letter-spacing: -0.05em;
+		line-height: 80%;
+		white-space: pre-line;
+		background: black;
+		color: white;
+		margin: 2rem;
+		border-radius: 2rem;
+		padding: 2rem;
+		display: flex;
+		align-items: flex-start;
+	}
+
+	a {
+		text-decoration: underline;
+		text-align: center;
+	}
+
+	.my-name {
+		color: white;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		padding: 1rem;
+	}
+	
+</style>

@@ -1,0 +1,41 @@
+---
+import Layout from "../layouts/Layout.astro";
+import profile from "../assets/profile.jpg";
+---
+
+<Layout>
+	<div class="text">
+		<h1>i' m a freelance
+			web developer
+			& web designer.</h1>
+	</div>
+	<div class="text minimalist">& minimalist.</div>
+</Layout>
+
+<style>
+	.text {
+		font-size: 8.5vw;
+		letter-spacing: -0.05em;
+		line-height: 80%;
+		white-space: pre-line;
+		background: white;
+		/* color: white; */
+		margin: 2rem;
+		border-radius: 2rem;
+		padding: 2rem;
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		overflow: hidden;
+	}
+
+	.text img {
+		border-radius: 2rem;
+		width: 16rem;
+	}
+
+	.minimalist {
+		color: white;
+		background: black;
+	}
+</style>

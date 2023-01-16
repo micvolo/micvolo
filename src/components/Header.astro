@@ -1,0 +1,42 @@
+<nav>
+    <a href="/">PORTFOLIO</a>
+    <a href="/works">WORKS <sup>(4)</sup></a>
+    <a href="/contact">CONTACT</a>
+</nav>
+<style>
+    nav {
+        width: 100%;
+        height: auto;
+        position: fixed;
+        bottom: 0;
+        display: flex;
+        z-index: 10;
+        flex-wrap: wrap;
+    }
+
+    a {
+        color: white;
+        mix-blend-mode: difference;
+        font-size: 2rem;
+        margin: 2rem;
+        transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border-radius: 2rem;
+    }
+
+    a sup {
+        font-size: 20%;
+        position: absolute;
+        transform: translateY(-1rem);
+    }
+
+    a:hover {
+        font-size: 300%;
+    }
+
+    @media only screen and (max-width: 1024px) {
+        nav {
+            flex-direction: column;
+        }
+    }
+
+</style>
