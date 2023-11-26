@@ -13,9 +13,6 @@ const { isHome } = Astro.props;
 <style lang="scss" define:vars={{ bg: `url('${bg.src}')` }}>
     .panel {
         overflow-y: auto;
-        background-image: var(--bg);
-        background-size: 100px;
-        // background-color: white;
         // color: black;
         @media (max-width: 64rem) {
             overflow-y: visible;
@@ -24,9 +21,12 @@ const { isHome } = Astro.props;
             flex: 0;
         }
         .container {
-            width: 75vw;
+            width: calc(75vw - (var(--padding)));
             max-width: none;
             flex-basis: 100%;
+            background-color: var(--bg3);
+            background-image: var(--bg);
+            background-size: 100px;
             @media (max-width: 64rem) {
                 width: 100%;
             }

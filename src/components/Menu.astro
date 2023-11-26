@@ -16,7 +16,7 @@ const menu = [
         contact.classList.toggle("open");
     };
 </script>
-<nav>
+<nav data-swup-preload-all>
     {
         menu.map((m) => (
             <a href={m.href} id={m.id}>

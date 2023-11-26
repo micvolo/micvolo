@@ -1,4 +1,3 @@
-import gsap from "gsap";
 function main() {
     if (!!document.querySelector('.panel.right.is-home')) {
         document.querySelector('.panel.left').classList.add('is-home')
@@ -17,5 +16,3 @@ if (window.swup) {
 } else {
     document.addEventListener('swup:enable', setup)
 }
-
-onload = () => { console.log('loaded!') };
