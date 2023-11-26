@@ -153,28 +153,26 @@ if ("ontouchmove" in window) {
 let lastTime;
 const lastMouse = new Vec2();
 function updateMouse(e) {
-    if (e.changedTouches && e.changedTouches.length) {
-        e.x = e.changedTouches[0].clientX;
-        e.y = e.changedTouches[0].clientY;
+    let mouseX = e.x;
+    let mouseY = e.y;
+    if (e.changedTouches?.length) {
+        mouseX = e.changedTouches[0].clientX;
+        mouseY = e.changedTouches[0].clientY;
     }
-    if (e.type === 'scroll') {
-        e.y = (1 - e.target.scrollTop / e.target.offsetHeight) * e.target.clientHeight;
-        e.x = (e.target.clientWidth / 2);
-        lastScroll = e.target.scrollTop;
+    if (mouseX === undefined) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
     }
-    if (e.x === undefined) {
-        e.x = e.clientX;
-        e.y = e.clientY;
-    }
-    mouse.set(e.x / gl.renderer.width, 1.0 - e.y / gl.renderer.height);
+    mouseY += window.scrollY;
+    mouse.set(mouseX / gl.renderer.width, 1.0 - mouseY / gl.renderer.height);
     if (!lastTime) {
         lastTime = performance.now();
-        lastMouse.set(e.x, e.y);
+        lastMouse.set(mouseX, mouseY);
     }
 
-    const deltaX = e.x - lastMouse.x;
-    const deltaY = e.y - lastMouse.y;
-    lastMouse.set(e.x, e.y);
+    const deltaX = mouseX - lastMouse.x;
+    const deltaY = mouseY - lastMouse.y;
+    lastMouse.set(mouseX, mouseY);
     let time = performance.now();
     let delta = Math.max(10.4, time - lastTime);
     lastTime = time;
