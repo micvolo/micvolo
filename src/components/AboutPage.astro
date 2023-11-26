@@ -3,6 +3,13 @@ import { Image } from "astro:assets";
 import img from "@assets/papa.webp";
 ---
 
-<div class="card">
+<div class="content">
     <Image src={img} alt="dad" />
 </div>
+<style lang="scss">
+    .content {
+        display: flex;
+        flex-direction: column;
+        padding: var(--padding);
+    }
+</style>

@@ -5,15 +5,19 @@ import Menu from "./Menu.astro";
 <div class="panel left">
     <div>
         <a href="/">
-    <h1>Michele Volonghi</h1>
-</a>
+            <h1>Michele Volonghi</h1>
+        </a>
         <h2 class="subhero">
-            INDEPENDENT CREATIVE DEVELOPER<br /> & DESIGNER FOCUSING ON:<br /><br /> 3D<br /> SHADERS<br/>INTERACTION<br />SMOOTH ANIMATIONS<br /><br />CURRENTLY BASED IN BRESCIA (IT)<br />WORKING REMOTELY WORLDWIDE.
+            INDEPENDENT CREATIVE DEVELOPER<br /> & DESIGNER FOCUSING ON:<br
+            /><br /> 3D<br /> SHADERS<br />INTERACTION<br />SMOOTH ANIMATIONS<br
+            /><br />CURRENTLY BASED IN BRESCIA (IT)<br />WORKING REMOTELY
+            WORLDWIDE.
         </h2>
     </div>
     <div class="subhero right">
-        SPECIALIZED IN<br/><i>BLAZINGLY</i> FAST WEBSITES<br /> WITH <i>CRAZY</i> DESIGNS<br /><br/> THAT
-        CLIENTS CAN EASILY<br /> MANAGE THEMSELVES.
+        SPECIALIZED IN<br /><i>BLAZINGLY</i> FAST WEBSITES<br /> WITH <i
+            >CRAZY</i
+        > DESIGNS<br /><br /> THAT CLIENTS CAN EASILY<br /> MANAGE THEMSELVES.
     </div>
     <div class="menu-wrapper">
         <Menu />
@@ -21,27 +25,26 @@ import Menu from "./Menu.astro";
 </div>
 <style lang="scss">
     .panel {
-        display: flex;
         justify-content: space-between;
         align-items: flex-start;
         padding: var(--padding);
+        min-height: 100vh;
+        min-height: 100svh;
 
-        @media (max-width: 64rem) {
-            min-height: 100vh;
-            min-height: 100svh;
-        } 
         h1 {
             font-size: clamp(1rem, 8vw, 2rem);
         }
         .subhero {
             padding: 1rem 0;
-        font-size: 1rem;
-    font-weight: bold;
+            font-size: 1rem;
+            font-weight: bold;
             text-transform: uppercase;
-            // column-count: 2;
             i {
                 font-style: normal;
-                font-variation-settings: "wdth" 92, "wght" 600, "slnt" -12;
+                font-variation-settings:
+                    "wdth" 92,
+                    "wght" 600,
+                    "slnt" -12;
             }
             &.right {
                 align-self: flex-end;

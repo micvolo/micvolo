@@ -1,19 +1,13 @@
-<div class="panel right transition-fade">
+<div class="panel right transition-right">
     <div class="container">
         <slot />
     </div>
 </div>
 <style lang="scss">
-    .panel.right {
+    .panel {
         overflow-y: auto;
-        background: var(--color);
-        border-top-left-radius: var(--radius);
-        border-bottom-left-radius: var(--radius);
-        backdrop-filter: blur(var(--blur));
         @media (max-width: 64rem) {
             overflow-y: visible;
-            border-top-right-radius: var(--radius);
-            border-bottom-left-radius: 0;
         }
         &:not(:has(.container *)) {
             flex: 0 !important;
@@ -24,6 +18,8 @@
             max-width: none;
             display: flex;
             flex-direction: column;
+            background: var(--bg3);
+            flex-basis: 100%;
             @media (max-width: 64rem) {
                 width: 100%;
             }

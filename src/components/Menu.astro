@@ -3,16 +3,18 @@ import Contacts from "./Contacts.astro";
 const menu = [
     { name: "Projects", href: "/projects" },
     { name: "About", href: "/about" },
-    { name: "Contacts", href: "", id: 'contact-button' },
+    { name: "Contacts", href: "", id: "contact-button" },
 ];
 ---
+
 <script>
-    const contactButton = document.querySelector<HTMLElement>('#contact-button')
-    const contact = document.querySelector('#contact')
+    const contactButton =
+        document.querySelector<HTMLElement>("#contact-button");
+    const contact = document.querySelector("#contact");
     contactButton.onclick = (e) => {
         e.preventDefault();
-        contact.classList.toggle('open')
-    }
+        contact.classList.toggle("open");
+    };
 </script>
 <nav>
     {
@@ -22,7 +24,7 @@ const menu = [
             </a>
         ))
     }
-    <Contacts/>
+    <Contacts />
 </nav>
 <style lang="scss">
     nav {
@@ -34,15 +36,7 @@ const menu = [
             font-size: clamp(2rem, 10vw, 4rem);
         }
         @media (max-width: 64rem) {
-            // position: fixed;
-            bottom: 0;
-            left: 0;
-            z-index: 1;
-            padding: var(--padding);
-            border-top-right-radius: var(--radius);
-            // background: var(--color);
-            // backdrop-filter: blur(var(--blur));
-            // mix-blend-mode: difference;
+            padding: var(--padding) 0;
         }
     }
 </style>
