@@ -1,0 +1,90 @@
+@import "./init.scss";
+
+html {
+    --bg1: rgb(255, 255, 229);
+    --bg2: rgb(255, 113, 66);
+    --bg3: rgb(61, 66, 148);
+    background: var(--bg3);
+
+    --radius: 1.6rem;
+    --padding: .5rem;
+
+    --background: rgba(255, 255, 255, 0.9);
+    --color: rgba(0, 0, 0, .0);
+    --blur: 4rem;
+    color: var(--background);
+    font-family: monasans, sans-serif;
+    font-feature-settings: "ss01" on;
+    font-variation-settings: "wdth" 92, "wght" 600, "opsz" 20;
+    line-height: 1;
+}
+
+// SWUP
+main>.panel.transition-fade {
+    flex-basis: 300%;
+}
+
+html.is-changing .transition-fade {
+    transition: flex-basis .8s, transform .8s;
+    flex-basis: 300%;
+    transform: translateX(0);
+}
+
+html.is-animating .transition-fade {
+    flex-basis: 0%;
+    transform: translateX(100%);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    display: flex;
+    position: relative;
+    max-height: 100%;
+    flex: 1;
+    overflow: hidden;
+
+    @media (max-width: 64rem) {
+        flex-direction: column;
+        overflow: visible;
+        max-height: none;
+    }
+
+    >.panel {
+        flex-basis: 100%;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+
+        @media (max-width: 64rem) {
+            overflow: visible;
+        }
+    }
+
+    .card {
+        padding: var(--radius);
+        // color: var(--color);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1rem;
+
+        img {
+            border-radius: var(--radius);
+            height: auto;
+        }
+
+        >.heading {
+            font-size: clamp(2rem, 6vw, 3rem);
+            border-bottom: 1px solid var(--background);
+        }
+
+        .text {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+        }
+
+    }
+}

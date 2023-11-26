@@ -1,0 +1,46 @@
+<div class="contact-wrapper" id="contact">
+    <div class="inner">
+        <div class="contact-content">
+            <p>
+                YOU CAN CONTACT ME HERE: <br /><br />
+                <a href="mailto:michele@stra.studio" target="_blank">
+                    michele@stra.studio
+                </a><br />
+                <a href="tel:+39 3317043898" target="_blank"> +39 3317043898</a>
+            </p>
+            <br />
+            <a href="https://github.com/micvolo" target="_blank">Github</a> ~ <a
+                href="https://twitter.com/micvolo"
+                target="_blank">Twitter</a
+            > ~ <a href="https://instagram.com/mic.volo" target="_blank"
+                >Insta</a
+            >
+        </div>
+    </div>
+</div>
+<style lang="scss">
+    .contact-wrapper {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition:
+            grid-template-rows 0.4s,
+            opacity 0.8s;
+        opacity: 0;
+        &.open {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .inner {
+            overflow: hidden;
+
+            .contact-content {
+                padding: 1rem 0;
+                a {
+                    cursor: pointer;
+                    font-size: 1.5rem;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+</style>

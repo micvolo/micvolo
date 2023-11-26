@@ -1,0 +1,48 @@
+---
+import Contacts from "./Contacts.astro";
+const menu = [
+    { name: "Projects", href: "/projects" },
+    { name: "About", href: "/about" },
+    { name: "Contacts", href: "", id: 'contact-button' },
+];
+---
+<script>
+    const contactButton = document.querySelector<HTMLElement>('#contact-button')
+    const contact = document.querySelector('#contact')
+    contactButton.onclick = (e) => {
+        e.preventDefault();
+        contact.classList.toggle('open')
+    }
+</script>
+<nav>
+    {
+        menu.map((m) => (
+            <a href={m.href} id={m.id}>
+                {m.name}
+            </a>
+        ))
+    }
+    <Contacts/>
+</nav>
+<style lang="scss">
+    nav {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        font-weight: bold;
+        a {
+            font-size: clamp(2rem, 10vw, 4rem);
+        }
+        @media (max-width: 64rem) {
+            // position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 1;
+            padding: var(--padding);
+            border-top-right-radius: var(--radius);
+            // background: var(--color);
+            // backdrop-filter: blur(var(--blur));
+            // mix-blend-mode: difference;
+        }
+    }
+</style>

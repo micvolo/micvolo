@@ -1,0 +1,13 @@
+---
+import { getCollection } from "astro:content";
+const projects = await getCollection('projects');
+---
+
+{
+    projects.map((p) => (
+        <div class="card">
+                <div class="heading">{p.data.title}</div>
+                <div>{p.data.url}</div>
+        </div>
+    ))
+}
