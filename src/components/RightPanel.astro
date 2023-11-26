@@ -1,8 +1,15 @@
 ---
+import { getImage } from "astro:assets";
+import bgImage from "@assets/bg.png";
+const bg = await getImage({ src: bgImage });
 const { isHome } = Astro.props;
 ---
 
-<div class="panel right transition-right" class:list={{ "is-home": isHome }}>
+<div
+    class="panel right transition-right"
+    class:list={{ "is-home": isHome }}
+    style={`background: var(--bg3) url('${bg.src}')`}
+>
     <div class="container">
         <slot />
     </div>
@@ -10,6 +17,7 @@ const { isHome } = Astro.props;
 <style lang="scss">
     .panel {
         overflow-y: auto;
+
         @media (max-width: 64rem) {
             overflow-y: visible;
         }
@@ -17,12 +25,8 @@ const { isHome } = Astro.props;
             flex: 0;
         }
         .container {
-            // NEEDED FOR ANIM
             width: 75vw;
             max-width: none;
-            display: flex;
-            flex-direction: column;
-            background: var(--bg3);
             flex-basis: 100%;
             @media (max-width: 64rem) {
                 width: 100%;

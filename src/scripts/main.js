@@ -1,6 +1,10 @@
 import gsap from "gsap";
 function main() {
-    // gsap.fromTo(".right .card", { x: '100%' }, { x: 0, stagger: .2, delay: .4 })
+    if (!!document.querySelector('.panel.right.is-home')) {
+        document.querySelector('.panel.left').classList.add('is-home')
+    } else {
+        document.querySelector('.panel.left').classList.remove('is-home')
+    }
 }
 main();
 const setup = () => {

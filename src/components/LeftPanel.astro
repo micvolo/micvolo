@@ -2,9 +2,9 @@
 import Menu from "./Menu.astro";
 ---
 
-<div class="panel left">
+<div class="panel left is-home">
     <div>
-        <a href="/">
+        <a href="/" data-swup-animation="home">
             <h1>Michele Volonghi</h1>
         </a>
         <h2 class="subhero">
@@ -28,8 +28,12 @@ import Menu from "./Menu.astro";
         justify-content: space-between;
         align-items: flex-start;
         padding: var(--padding);
-        min-height: 100vh;
-        min-height: 100svh;
+        min-height: 0;
+        transition: min-height 0.8s;
+        &.is-home {
+            min-height: 100vh;
+            min-height: 100svh;
+        }
 
         h1 {
             font-size: clamp(1rem, 8vw, 2rem);
