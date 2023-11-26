@@ -9,5 +9,8 @@ export default defineConfig({
             accessibility: false,
             containers: ['.panel.right'],
         })
-    ]
+    ],
+    build: {
+        inlineStylesheets: 'never'
+    }
 });
