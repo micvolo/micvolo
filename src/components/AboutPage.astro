@@ -53,7 +53,7 @@ import v from "@assets/pc/pc-1.mp4";
             align-content: flex-end;
             padding: var(--padding);
             > * {
-                &:nth-child(2) {
+                &:nth-child(1) {
                     flex: 2;
                 }
                 flex: 1;
@@ -74,7 +74,9 @@ import v from "@assets/pc/pc-1.mp4";
         }
         .content {
             padding: var(--padding2);
-
+            > *:last-child {
+                margin-bottom: 0;
+            }
             p {
                 font-size: clamp(1rem, 3vw, 1.1rem);
                 font-variation-settings:

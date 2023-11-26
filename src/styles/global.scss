@@ -27,6 +27,7 @@ html {
     text-rendering: optimizeLegibility;
 
     overscroll-behavior: none;
+    user-select: none;
 }
 
 body {
@@ -34,8 +35,7 @@ body {
 }
 
 * {
-    max-width: 100%;
-    height: auto;
+
     box-sizing: border-box;
 
     outline: 0;
@@ -48,6 +48,23 @@ body {
 
     color: inherit;
     text-decoration: inherit;
+}
+
+img,
+video {
+    max-width: 100%;
+    height: auto;
+    user-select: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    user-select: text;
 }
 
 ::-webkit-scrollbar {
