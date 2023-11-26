@@ -64,11 +64,11 @@ body {
 // SWUP
 main>.panel.transition-right {
     flex-basis: 300%;
-    opacity: 1;
+    // opacity: 1;
 
-    .container {
-        opacity: 1;
-    }
+    // .container {
+    //     opacity: 1;
+    // }
 }
 
 html.is-changing .transition-right {
@@ -76,29 +76,29 @@ html.is-changing .transition-right {
     flex-basis: 300%;
     transform: translateX(0);
 
-    .container {
-        transition: opacity .8s;
-        opacity: 1;
-    }
+    // .container {
+    //     transition: opacity .8s;
+    //     opacity: 1;
+    // }
 }
 
 html.is-animating .transition-right {
     flex-basis: 0%;
     transform: translateX(100%);
 
-    @media (max-width: 64rem) {
-        transform: translateX(0);
+    // @media (max-width: 64rem) {
+    //     transform: translateX(0);
 
-        .container {
-            opacity: 0;
-        }
-    }
+    //     .container {
+    //         opacity: 0;
+    //     }
+    // }
 }
 
-html.is-animating.to-home .panel.left {
-    min-height: 100vh;
-    min-height: 100svh;
-}
+// html.is-animating.to-home .panel.left {
+//     min-height: 100vh;
+//     min-height: 100svh;
+// }
 
 // ENDSWUP
 
