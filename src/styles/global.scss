@@ -1,6 +1,63 @@
-@import "./init.scss";
+@font-face {
+    font-family: monasans;
+    src: url("/fonts/monasans.woff2") format("woff2");
+    font-weight: 100 1000;
+    font-display: block;
+}
 
-// SWUP
+html {
+    --bg1: rgb(255, 255, 229);
+    --bg2: rgb(255, 113, 66);
+    --bg3: rgb(61, 66, 148);
+
+    --color: rgba(255, 255, 255, 0.9);
+
+    --padding: .5rem;
+
+    background: var(--bg3);
+    color: var(--color);
+
+    font-family: monasans, sans-serif;
+    font-feature-settings: "ss01" on;
+    font-variation-settings: "wdth" 92, "wght" 600, "opsz" 20;
+    line-height: 1;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+
+    overscroll-behavior: none;
+}
+
+body {
+    overscroll-behavior: none;
+}
+
+* {
+    max-width: 100%;
+    height: auto;
+    box-sizing: border-box;
+
+    outline: 0;
+    border: 0;
+    margin: 0;
+    padding: 0;
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    color: inherit;
+    text-decoration: inherit;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+::selection {
+    background: var(--bg2);
+}
+
 main>.panel.transition-right {
     flex-basis: 300%;
     opacity: 1;
@@ -38,8 +95,6 @@ html.is-animating.to-home .panel.left {
     min-height: 100vh;
     min-height: 100svh;
 }
-
-// ENDSWUP
 
 main {
     overflow: hidden;
