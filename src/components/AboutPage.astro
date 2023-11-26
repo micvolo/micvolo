@@ -1,109 +1,15 @@
 ---
-import { Image } from "astro:assets";
-import img13 from "@assets/pc/pc-13.png";
-import v from "@assets/pc/pc-1.mp4";
+import { frontmatter, Content } from "@content/about/about.md";
 ---
 
-<div class="about">
+<div class="page">
     <div class="pageHeading">
         <div>(M)</div>
         <div>(V)</div>
         <div>2023</div>
     </div>
-    <div class="pageTitle">Nurturing passion for Code from a Young Age</div>
+    <div class="pageTitle">{frontmatter.title}</div>
     <div class="content">
-        <p>
-            In the captivating story of Michele Volonghi, an independent
-            creative developer, the journey begins with an innate passion for
-            computer science that ignited during his early years. Born into a
-            family where the love for technology ran deep, Michele found himself
-            immersed in a world of coding from a tender age. Fueling his
-            curiosity were parents who shared his enthusiasm, creating an
-            environment where the seeds of innovation were sown. Growing up
-            amidst lines of code, Michele's trajectory evolved into that of a
-            dedicated and independent creative developer, a journey marked by
-            relentless curiosity, self-discovery, and a profound love for the
-            ever-evolving realm of computer science.
-        </p>
-        <Image src={img13} alt="" class="bar" />
-        <p>
-            I was born on a crisp autumn day, a day that would unknowingly shape
-            the rest of my life. Growing up in a household where the hum of
-            technology was as familiar as the air we breathed, it was no
-            surprise that my parents were enthusiasts of the digital world.
-            Little did I know, this environment would kindle the flames of my
-            lifelong love affair with computer science.
-        </p>
-
-        <video autoplay muted loop playsinline class="square">
-            <source src={v} type="video/mp4" />
-        </video>
+        <Content />
     </div>
 </div>
-<style lang="scss">
-    .about {
-        --padding2: calc(var(--padding) * 8);
-        @media (max-width: 64rem) {
-            --padding2: calc(var(--padding) * 4);
-        }
-        .pageHeading {
-            display: flex;
-            border-bottom: 1px solid var(--color);
-            justify-content: space-between;
-            align-content: flex-end;
-            padding: var(--padding);
-            > * {
-                &:nth-child(1) {
-                    flex: 2;
-                }
-                flex: 1;
-                display: flex;
-                justify-content: flex-end;
-            }
-        }
-        .pageTitle {
-            text-align: center;
-            font-size: clamp(2rem, 5vw, 3rem);
-            padding: clamp(2rem, 5vw, 3rem) 10%;
-            border-bottom: 1px solid var(--color);
-            text-transform: uppercase;
-            font-variation-settings:
-                "wdth" 50,
-                "wght" 600,
-                "opsz" 20;
-        }
-        .content {
-            padding: var(--padding2);
-            > *:last-child {
-                margin-bottom: 0;
-            }
-            p {
-                font-size: clamp(1rem, 3vw, 1.1rem);
-                font-variation-settings:
-                    "wdth" 92,
-                    "wght" 400,
-                    "opsz" 20;
-                line-height: 1.2;
-                column-count: 2;
-                margin-bottom: var(--padding2);
-            }
-            img,
-            video {
-                width: 100%;
-                background: rgba(0, 0, 0, 0.2);
-                object-fit: cover;
-                overflow: hidden;
-                margin-bottom: var(--padding2);
-                &.square {
-                    aspect-ratio: 1;
-                }
-                &.half {
-                    width: 50%;
-                }
-                &.bar {
-                    height: clamp(15rem, 20vw, 40rem);
-                }
-            }
-        }
-    }
-</style>

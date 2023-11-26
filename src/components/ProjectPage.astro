@@ -1,39 +1,52 @@
 ---
+import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
+
 const projects = await getCollection("projects");
+projects.sort((a, b) => b.data.year.getTime() - a.data.year.getTime());
 ---
 
-<div class="content">
-    {
-        projects.map((p) => (
-            <div class="card">
-                <div class="heading">{p.data.title}</div>
-                <div class="text">{p.data.url}</div>
-            </div>
-        ))
-    }
+<div class="page">
+    <div class="pageHeading">
+        <div>(M)</div>
+        <div>(V)</div>
+        <div>2023</div>
+    </div>
+    <div class="pageTitle">SELECTED WORKS</div>
+    <div class="content">
+        {
+            projects.map((p) => (
+                <a href={p.data.url} target="_blank" class="card">
+                    <div class="heading">
+                        <>
+                            <span>{p.data.title}</span>
+                            <span>{p.data.year.getFullYear()}</span>
+                        </>
+                    </div>
+                    <Image src={p.data.img} alt={p.data.title} />
+                </a>
+            ))
+        }
+    </div>
 </div>
 <style lang="scss">
     .content {
         display: flex;
         flex-direction: column;
-        padding: var(--padding);
+        gap: var(--padding2);
+        padding: var(--padding2);
 
         .card {
-            padding: var(--padding);
             display: flex;
             flex-direction: column;
             justify-content: center;
             gap: 1rem;
-
-            img {
-                border-radius: var(--radius);
-                height: auto;
-            }
-
             > .heading {
+                display: flex;
+                justify-content: space-between;
                 font-size: clamp(2rem, 6vw, 2.5rem);
                 border-bottom: 1px solid var(--color);
+                padding: 0.5rem 0;
             }
 
             .text {
