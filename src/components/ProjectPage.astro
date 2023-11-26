@@ -23,7 +23,10 @@ projects.sort((a, b) => b.data.year.getTime() - a.data.year.getTime());
                             <span>{p.data.year.getFullYear()}</span>
                         </>
                     </div>
-                    <Image src={p.data.img} alt={p.data.title} />
+                    <Image
+                        src={p.data.img as ImageMetadata}
+                        alt={p.data.title}
+                    />
                 </a>
             ))
         }
@@ -45,8 +48,7 @@ projects.sort((a, b) => b.data.year.getTime() - a.data.year.getTime());
                 display: flex;
                 justify-content: space-between;
                 font-size: clamp(2rem, 6vw, 2.5rem);
-                border-bottom: 1px solid var(--color);
-                padding: 0.5rem 0;
+                padding-top: 2rem;
             }
 
             .text {

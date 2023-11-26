@@ -79,7 +79,7 @@ main>.panel.transition-right {
     flex-basis: 300%;
     opacity: 1;
 
-    .container {
+    .container>* {
         opacity: 1;
     }
 }
@@ -89,7 +89,7 @@ html.is-changing .transition-right {
     flex-basis: 300%;
     transform: translateX(0);
 
-    .container {
+    .container>* {
         transition: opacity .8s;
         opacity: 1;
     }
@@ -102,7 +102,7 @@ html.is-animating .transition-right {
     @media (max-width: 64rem) {
         transform: translateX(0);
 
-        .container {
+        .container>* {
             opacity: 0;
         }
     }
