@@ -17,3 +17,5 @@ if (window.swup) {
 } else {
     document.addEventListener('swup:enable', setup)
 }
+
+onload = () => { console.log('loaded!') };
