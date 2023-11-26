@@ -10,6 +10,7 @@ export default defineConfig({
             theme: false,
             accessibility: false,
             containers: ['.panel.right'],
+            globalInstance: true
         })
     ],
     build: {
