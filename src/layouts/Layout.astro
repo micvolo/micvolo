@@ -4,7 +4,7 @@ import Bg from "@components/Bg.astro";
 import RightPanel from "@components/RightPanel.astro";
 import LeftPanel from "@components/LeftPanel.astro";
 import Head from "@components/Head.astro";
-const { isHome } = Astro.props;
+const { isHome, title } = Astro.props;
 ---
 
 <script src="@scripts/main.js"></script>
@@ -15,7 +15,7 @@ const { isHome } = Astro.props;
 			name="viewport"
 			content="width=device-width, initial-scale=1, user-scalable=no"
 		/>
-		<title>Michele Volonghi</title>
+		<title>{`Michele Volonghi ${title ? " — " + title : ""}`}</title>
 		<Head />
 	</head>
 	<body>
