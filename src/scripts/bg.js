@@ -118,12 +118,6 @@ const mesh = new Mesh(gl, { geometry, program });
 function resize() {
     const width = document.documentElement.clientWidth;
     const height = document.documentElement.clientHeight;
-    if (window.innerHeight !== height) {
-        console.log(window.innerHeight, height)
-    }
-    if (window.innerWidth !== width) {
-        console.log(window.innerWidth, width)
-    }
     let a1, a2;
     if (height / width < imageAspect) {
         a1 = 1;
