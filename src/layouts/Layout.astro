@@ -4,21 +4,25 @@ import Bg from "@components/Bg.astro";
 import RightPanel from "@components/RightPanel.astro";
 import LeftPanel from "@components/LeftPanel.astro";
 import Head from "@components/Head.astro";
+const { isHome } = Astro.props;
 ---
 
 <script src="@scripts/main.js"></script>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, user-scalable=no"
+		/>
 		<title>Michele Volonghi</title>
-		<Head/>
+		<Head />
 	</head>
 	<body>
 		<Bg />
 		<main>
 			<LeftPanel />
-			<RightPanel>
+			<RightPanel {isHome}>
 				<slot />
 			</RightPanel>
 		</main>

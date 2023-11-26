@@ -116,23 +116,31 @@ const program = new Program(gl, {
 });
 const mesh = new Mesh(gl, { geometry, program });
 function resize() {
+    const width = document.documentElement.clientWidth;
+    const height = document.documentElement.clientHeight;
+    if (window.innerHeight !== height) {
+        console.log(window.innerHeight, height)
+    }
+    if (window.innerWidth !== width) {
+        console.log(window.innerWidth, width)
+    }
     let a1, a2;
-    if (window.innerHeight / window.innerWidth < imageAspect) {
+    if (height / width < imageAspect) {
         a1 = 1;
-        a2 = window.innerHeight / window.innerWidth / imageAspect;
+        a2 = height / width / imageAspect;
     } else {
-        a1 = (window.innerWidth / window.innerHeight) * imageAspect;
+        a1 = (width / height) * imageAspect;
         a2 = 1;
     }
     mesh.program.uniforms.res.value = new Vec4(
-        window.innerWidth,
-        window.innerHeight,
+        width,
+        height,
         a1,
         a2
     );
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    aspect = window.innerWidth / window.innerHeight;
+    renderer.setSize(width, height);
+    aspect = width / height;
 }
 window.addEventListener("resize", resize, false);
 resize();

@@ -1,4 +1,8 @@
-<div class="panel right transition-right">
+---
+const { isHome } = Astro.props;
+---
+
+<div class="panel right transition-right" class:list={{ "is-home": isHome }}>
     <div class="container">
         <slot />
     </div>
@@ -9,8 +13,8 @@
         @media (max-width: 64rem) {
             overflow-y: visible;
         }
-        &:not(:has(.container *)) {
-            flex: 0 !important;
+        &.is-home {
+            flex: 0;
         }
         .container {
             // NEEDED FOR ANIM
