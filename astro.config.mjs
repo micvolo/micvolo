@@ -3,7 +3,7 @@ import swup from '@swup/astro';
 import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
-    site: 'https://micovlo.com',
+    site: 'https://micvolo.com',
     integrations: [
         sitemap(),
         swup({
