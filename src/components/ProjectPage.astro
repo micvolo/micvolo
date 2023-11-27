@@ -37,8 +37,10 @@ projects.sort((a, b) => b.data.year.getTime() - a.data.year.getTime());
         display: flex;
         flex-direction: column;
         gap: var(--padding2);
-        padding: var(--padding2) var(--padding);
-
+        padding: var(--padding2);
+        @media (max-width: 64rem) {
+            padding: var(--padding2) var(--padding);
+        }
         .card {
             display: flex;
             flex-direction: column;

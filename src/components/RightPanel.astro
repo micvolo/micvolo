@@ -13,7 +13,7 @@ const { isHome } = Astro.props;
 <style lang="scss" define:vars={{ bg: `url('${bg.src}')` }}>
     .panel {
         overflow-y: auto;
-        // color: black;
+        box-shadow: -1em 0 3rem var(--bg3);
         @media (max-width: 64rem) {
             overflow-y: visible;
         }
