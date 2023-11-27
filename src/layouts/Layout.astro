@@ -4,6 +4,9 @@ import Bg from "@components/Bg.astro";
 import RightPanel from "@components/RightPanel.astro";
 import LeftPanel from "@components/LeftPanel.astro";
 import Head from "@components/Head.astro";
+import { getImage } from "astro:assets";
+import bgImage from "@assets/bg.png";
+const bg = await getImage({ src: bgImage });
 const { isHome, title } = Astro.props;
 ---
 
@@ -26,5 +29,21 @@ const { isHome, title } = Astro.props;
 				<slot />
 			</RightPanel>
 		</main>
+		<style lang="scss" define:vars={{ bg: `url('${bg.src}')` }} is:global>
+			html {
+				background-color: var(--bg3);
+				background-image: var(--bg);
+				background-size: 100px;
+				canvas {
+					opacity: 0;
+					transition: opacity 1s;
+				}
+				&.load {
+					canvas {
+						opacity: 1;
+					}
+				}
+			}
+		</style>
 	</body>
 </html>

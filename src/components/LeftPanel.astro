@@ -1,24 +1,33 @@
 ---
 import Menu from "./Menu.astro";
+import { frontmatter, Content } from "@content/settings/home.md";
+const p1 = `Independent creative developer
+& designer focusing on:
+
+3D
+Shaders
+Interaction
+Smooth animations
+
+Currently based in Brescia (IT)
+Working remotely worldwide.`;
+
+const p2 = `Specialized in
+<i>blazingly</i> fast websites
+with <i>crazy</i> designs
+
+that clients can easly
+manage themselves.`;
 ---
 
 <div class="panel left is-home">
     <div>
         <a href="/" data-swup-animation="home">
-            <h1>Michele Volonghi</h1>
+            <h1 data-line>{frontmatter.title}</h1>
         </a>
-        <h2 class="subhero">
-            Independent creative developer<br /> & designer focusing on:<br
-            /><br /> 3D<br /> Shaders<br />Interaction<br />Smooth animations<br
-            /><br />Currently based in Brescia (IT)<br />Working remotely
-            worldwide.
-        </h2>
+        <h2 class="subhero" set:html={p1} />
     </div>
-    <h3 class="subhero right">
-        Specialized in<br /><i>blazingly</i> fast websites<br /> with <i
-            >crazy</i
-        > designs<br /><br /> that clients can easily<br /> manage themselves.
-    </h3>
+    <h3 class="subhero right" set:html={p2} />
     <div class="menu-wrapper">
         <Menu />
     </div>
@@ -48,7 +57,8 @@ import Menu from "./Menu.astro";
             font-weight: bold;
             text-transform: uppercase;
             pointer-events: none;
-            i {
+            white-space: pre-line;
+            :global(i) {
                 font-style: normal;
                 font-variation-settings:
                     "wdth" 92,
