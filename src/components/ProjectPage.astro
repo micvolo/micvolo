@@ -18,10 +18,9 @@ projects.sort((a, b) => b.data.year.getTime() - a.data.year.getTime());
             projects.map((p) => (
                 <a href={p.data.url} target="_blank" class="card">
                     <div class="heading">
-                        <>
-                            <span>{p.data.title}</span>
-                            <span>{p.data.year.getFullYear()}</span>
-                        </>
+                        <div class="tags">{p.data.tags}</div>
+                        <span>{p.data.title}</span>
+                        <span>{p.data.year.getFullYear()}</span>
                     </div>
                     <Image
                         src={p.data.img as ImageMetadata}
@@ -48,6 +47,7 @@ projects.sort((a, b) => b.data.year.getTime() - a.data.year.getTime());
             gap: 1rem;
             > .heading {
                 display: flex;
+                flex-wrap: wrap;
                 justify-content: space-between;
                 font-size: clamp(1.8rem, 6vw, 2.5rem);
                 padding-top: 2rem;
@@ -55,6 +55,13 @@ projects.sort((a, b) => b.data.year.getTime() - a.data.year.getTime());
                     "wdth" 92,
                     "wght" 600,
                     "opsz" 20;
+                .tags {
+                    flex-basis: 100%;
+                    font-size: clamp(0.6rem, 6vw, 0.8rem);
+                    text-transform: uppercase;
+                    opacity: 0.8;
+                    padding-left: 0.1rem;
+                }
             }
 
             .text {

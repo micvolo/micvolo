@@ -5,6 +5,7 @@ const projects = defineCollection({
         title: z.string(),
         year: z.date(),
         url: z.string(),
+        tags: z.string(),
         img: image().refine((img) => img.width >= 720, {
             message: "Cover image must be at least 720 pixels wide!",
         }),

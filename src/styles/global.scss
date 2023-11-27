@@ -49,6 +49,8 @@ body {
 
     color: inherit;
     text-decoration: inherit;
+    -webkit-user-drag: none;
+    user-drag: none;
 }
 
 img,
