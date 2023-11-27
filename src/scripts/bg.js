@@ -115,6 +115,7 @@ const program = new Program(gl, {
     }
 });
 const mesh = new Mesh(gl, { geometry, program });
+const panel = document.querySelector('.panel.left')
 function resize() {
     const width = document.documentElement.clientWidth;
     const height = document.documentElement.clientHeight;
@@ -135,6 +136,12 @@ function resize() {
 
     renderer.setSize(width, height);
     aspect = width / height;
+
+    if (panel.clientHeight > height) {
+        canvas.classList.add('fixed');
+    } else {
+        canvas.classList.remove('fixed');
+    }
 }
 window.addEventListener("resize", resize, false);
 resize();
