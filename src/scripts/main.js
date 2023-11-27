@@ -6,10 +6,18 @@ function main() {
     }
 
     const left = document.querySelector(".panel.left");
+    const contacts = document.querySelector(".contact-wrapper");
     left.onclick = (e) => {
         const t = (e.target)?.classList;
-        if (t?.contains("panel") && t?.contains("left") && location.pathname !== '/') {
-            swup.navigate("/", { animation: "home", animate: true });
+        if (location.pathname !== '/') {
+            if (t?.contains("panel") && t?.contains("left")) {
+                swup.navigate("/", { animation: "home", animate: true });
+            }
+        }
+        if (contacts.classList.contains('open')) {
+            if (t?.contains("panel") && t?.contains("left")) {
+                contacts.classList.remove('open')
+            }
         }
     };
 
