@@ -137,7 +137,7 @@ function resize() {
     renderer.setSize(width, height);
     aspect = width / height;
 
-    if (panel.clientHeight > height) {
+    if (panel?.clientHeight > height) {
         canvas.classList.add('fixed');
     } else {
         canvas.classList.remove('fixed');
