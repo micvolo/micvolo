@@ -4,6 +4,7 @@ let toHome = false;
 document.addEventListener('astro:before-preparation', (e) => {
     const original = e.loader;
     document.documentElement.classList.add('transition');
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     e.loader = async () => {
         await original();
         const hasContent = !!document.querySelector('.panel.right.open');
