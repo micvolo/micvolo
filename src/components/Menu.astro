@@ -17,12 +17,17 @@ const menu = [
         contact.classList.toggle("open");
     };
 </script>
-<nav data-swup-preload-all>
+<nav>
     {
         menu.map((m) => (
-            <a href={m.href} id={m.id}>
-                <span data-line>{m.name}</span>
-            </a>
+            <>
+                {!m.href && <span id={m.id}>{m.name}</span>}
+                {m.href && (
+                    <a href={m.href} id={m.id}>
+                        <span>{m.name}</span>
+                    </a>
+                )}
+            </>
         ))
     }
     <Contacts />
@@ -33,7 +38,8 @@ const menu = [
         flex-direction: column;
         align-items: flex-start;
         font-weight: bold;
-        a {
+        cursor: pointer;
+        > * {
             font-size: clamp(2rem, 10vw, 4rem);
             transition: text-shadow 0.4s;
             &:hover {

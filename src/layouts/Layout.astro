@@ -6,6 +6,8 @@ import LeftPanel from "@components/LeftPanel.astro";
 import Head from "@components/Head.astro";
 import { getImage } from "astro:assets";
 import bgImage from "@assets/bg.png";
+import { ViewTransitions } from "astro:transitions";
+
 const bg = await getImage({ src: bgImage });
 const { isHome, title } = Astro.props;
 ---
@@ -20,11 +22,12 @@ const { isHome, title } = Astro.props;
 		/>
 		<title>{`Michele Volonghi ${title ? " — " + title : ""}`}</title>
 		<Head />
+		<ViewTransitions />
 	</head>
-	<body>
+	<body transition:animate="none">
 		<Bg />
 		<main>
-			<LeftPanel />
+			<LeftPanel {isHome} />
 			<RightPanel {isHome}>
 				<slot />
 			</RightPanel>
@@ -34,15 +37,6 @@ const { isHome, title } = Astro.props;
 				background-color: var(--bg3);
 				background-image: var(--bg);
 				background-size: 100px;
-				canvas {
-					opacity: 0;
-					transition: opacity 1s;
-				}
-				&.load {
-					canvas {
-						opacity: 1;
-					}
-				}
 			}
 		</style>
 	</body>

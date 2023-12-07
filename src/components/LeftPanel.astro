@@ -1,6 +1,8 @@
 ---
 import Menu from "./Menu.astro";
 import { frontmatter, Content } from "@content/settings/home.md";
+const { isHome } = Astro.props;
+
 const p1 = `Independent creative developer
 & designer focusing on:
 
@@ -20,10 +22,24 @@ that clients can easly
 manage themselves.`;
 ---
 
-<div class="panel left is-home">
+<script>
+    import { navigate } from "astro:transitions/client";
+    document.querySelector<HTMLElement>(".panel.left").onclick = (e: any) => {
+        const t = e.target?.classList;
+        if (t?.contains("panel") && t?.contains("left")) {
+            if (
+                location.pathname !== "/" &&
+                !document.documentElement.classList.contains("transition")
+            ) {
+                navigate("/");
+            }
+        }
+    };
+</script>
+<div class="panel left" class:list={{ open: isHome }} transition:persist>
     <div>
-        <a href="/" data-swup-animation="home">
-            <h1 data-line>{frontmatter.title}</h1>
+        <a href="/">
+            <h1>{frontmatter.title}</h1>
         </a>
         <h2 class="subhero" set:html={p1} />
     </div>
@@ -39,11 +55,7 @@ manage themselves.`;
         padding: var(--padding);
         min-height: 0;
         transition: min-height 0.8s;
-        cursor: none;
-        a {
-            cursor: pointer;
-        }
-        &.is-home {
+        &.open {
             min-height: 100vh;
             min-height: 100svh;
         }

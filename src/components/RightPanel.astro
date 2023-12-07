@@ -1,24 +1,32 @@
 ---
-import { getImage } from "astro:assets";
-import bgImage from "@assets/bg.png";
-const bg = await getImage({ src: bgImage });
 const { isHome } = Astro.props;
 ---
 
-<div class="panel right transition-right" class:list={{ "is-home": isHome }}>
+<div class="panel right" class:list={{ open: !isHome }}>
     <div class="container">
         <slot />
     </div>
 </div>
-<style lang="scss" define:vars={{ bg: `url('${bg.src}')` }}>
+<style lang="scss">
     .panel {
         overflow-y: auto;
         box-shadow: -1em 0 3rem var(--bg3);
+        transition:
+            flex-basis 0.8s,
+            transform 0.8s;
+
+        flex-basis: 0%;
+        transform: translateX(100%);
         @media (max-width: 64rem) {
             overflow-y: visible;
+            transform: none;
         }
-        &.is-home {
-            flex: 0;
+        &.open {
+            flex-basis: 300%;
+            transform: translateX(0%);
+            @media (max-width: 64rem) {
+                transform: none;
+            }
         }
         .container {
             width: calc(75vw - (var(--padding)));

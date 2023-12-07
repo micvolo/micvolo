@@ -24,8 +24,3 @@ it was no surprise that my parents were enthusiasts of the digital world.
 Little did I know, this environment would kindle the flames of my lifelong love affair with computer science.
 
 </div>
-
-<p>
-<video autoplay muted loop playsinline class="square" src="/pc/pc-1.mp4">
-</video>
-</p>

@@ -1,4 +1,4 @@
-import { Renderer, Program, Mesh, Vec2, Vec3, Vec4, Flowmap, Texture, Geometry } from 'ogl';
+import { Renderer, Program, Mesh, Vec2, Vec3, Vec4, Flowmap, Geometry } from 'ogl';
 
 const imgSize = [1920, 1080];
 
@@ -181,6 +181,7 @@ function updateMouse(e) {
     velocity.y = deltaY / delta;
     velocity.needsUpdate = true;
 }
+
 requestAnimationFrame(update);
 function update(t) {
     requestAnimationFrame(update);

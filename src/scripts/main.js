@@ -1,39 +1,42 @@
-function main() {
-    if (!!document.querySelector('.panel.right.is-home')) {
-        document.querySelector('.panel.left')?.classList.add('is-home')
-    } else {
-        document.querySelector('.panel.left')?.classList.remove('is-home')
+let toggleOpen = false;
+let toHome = false;
+
+document.addEventListener('astro:before-preparation', (e) => {
+    const original = e.loader;
+    document.documentElement.classList.add('transition');
+    e.loader = async () => {
+        await original();
+        const hasContent = !!document.querySelector('.panel.right.open');
+        const hasContentNew = !!e.newDocument.querySelector('.panel.right.open');
+        toggleOpen = hasContent !== hasContentNew;
+        if (toggleOpen) {
+            e.newDocument.querySelector('.panel.right').classList.toggle('open');
+            toHome = !hasContentNew;
+            if (toHome && window.matchMedia("(max-width: 64rem)").matches) {
+                document.querySelector('.panel.left').classList.toggle('open');
+                await new Promise((r) => setTimeout(r, 800));
+            }
+        }
+    }
+});
+document.addEventListener('astro:page-load', () => {
+    const right = document.querySelector(".panel.right");
+    const left = document.querySelector(".panel.left");
+    if (toggleOpen) {
+        right.classList.toggle('open')
+        if (!toHome && window.matchMedia("(max-width: 64rem)").matches) {
+            left.classList.toggle('open')
+        }
     }
 
-    const left = document.querySelector(".panel.left");
-    const contacts = document.querySelector(".contact-wrapper");
-    if (left) {
-        left.onclick = (e) => {
-            const t = (e.target)?.classList;
-            if (location.pathname !== '/') {
-                if (t?.contains("panel") && t?.contains("left")) {
-                    swup.navigate("/", { animation: "home", animate: true });
-                }
+    // interrupt navigation if same page
+    document.querySelectorAll('a').forEach(el => {
+        el.onclick = (e) => {
+            const href = el.href.replace(/\/+$/, '');
+            const current = window.location.href.replace(/\/+$/, '');
+            if (href === current || document.documentElement.classList.contains('transition')) {
+                e.preventDefault();
             }
-            if (contacts.classList.contains('open')) {
-                if (t?.contains("panel") && t?.contains("left")) {
-                    contacts.classList.remove('open')
-                }
-            }
-        };
-    }
-}
-main();
-const setup = () => {
-    document.addEventListener('swup:page:view', () => {
-        main();
+        }
     })
-}
-if (window.swup) {
-    setup()
-} else {
-    document.addEventListener('swup:enable', setup)
-}
-onload = () => {
-    document.documentElement.classList.add('load')
-}
+});
