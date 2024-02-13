@@ -8,13 +8,12 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.0.3",
-    "astro": "^4.0.2",
-    "gsap": "^3.12.2",
-    "ogl": "^1.0.3"
+    "astro": "^4.3.6",
+    "gsap": "^3.12.5",
+    "ogl": "^1.0.4"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.16",
-    "sass": "^1.69.5"
+    "autoprefixer": "^10.4.17",
+    "sass": "^1.70.0"
   }
 }

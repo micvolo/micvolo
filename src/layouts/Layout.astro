@@ -9,7 +9,7 @@ import bgImage from "@assets/bg.png";
 import { ViewTransitions } from "astro:transitions";
 
 const bg = await getImage({ src: bgImage });
-const { isHome, title } = Astro.props;
+const { isHome, title, disabled } = Astro.props;
 ---
 
 <script src="@scripts/main.js"></script>
@@ -23,6 +23,7 @@ const { isHome, title } = Astro.props;
 		<title>{`Michele Volonghi ${title ? " — " + title : ""}`}</title>
 		<Head />
 		<ViewTransitions />
+		{disabled && <meta name="robots" content="noindex" />}
 	</head>
 	<body transition:animate="none">
 		<Bg />
