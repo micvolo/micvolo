@@ -177,20 +177,19 @@ main {
 
     .content {
 
+        padding-top: var(--padding2);
+
         p {
             font-size: clamp(1rem, 3vw, 1.1rem);
             font-variation-settings:
                 "wdth" 92,
                 "wght" 400,
                 "opsz" 20;
-            line-height: 1.2;
+            line-height: 1.3;
 
             padding: var(--padding2);
             padding-top: 0;
 
-            &:first-child {
-                padding-top: var(--padding2);
-            }
         }
 
         img,
@@ -199,6 +198,11 @@ main {
             background: rgba(0, 0, 0, 0.2);
             object-fit: cover;
             overflow: hidden;
+
+            // max-height: 50vh;
+            // @media (max-width: 64rem) {
+            //     max-height: none;
+            // }
 
             &.square {
                 aspect-ratio: 1;
@@ -210,6 +214,12 @@ main {
 
             &.bar {
                 height: clamp(15rem, 20vw, 40rem);
+            }
+        }
+
+        .double {
+            p {
+                column-count: 2;
             }
         }
     }
