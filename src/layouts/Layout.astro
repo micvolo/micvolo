@@ -44,9 +44,13 @@ const settings = await getEntry("settings", "settings");
 			property="og:description"
 			content={settings.data.shortDescription}
 		/>
-		<meta property="og:image" content="https://micvolo.com/assets/og.png" />
+		<meta
+			property="og:image"
+			content={`${Astro.site}${settings.data.image}`}
+		/>
 		<meta property="og:url" content={Astro.site} />
 		<meta property="og:type" content="website" />
+		<meta name="twitter:card" content="summary_large_image" />
 
 		<script
 			src="https://cdn.counter.dev/script.js"
