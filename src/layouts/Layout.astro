@@ -39,23 +39,8 @@ const settings = await getEntry("settings", "settings");
 		<link rel="manifest" href="/site.webmanifest" />
 
 		<!-- Open Graph Meta Tags -->
-		<meta property="og:title" content="Your Website Title" />
-		<meta
-			property="og:description"
-			content="A brief description of your website."
-		/>
 		<meta property="og:image" content={settings.data.image} />
-		<meta property="og:url" content="https://example.com" />
-		<meta property="og:type" content="website" />
-
-		<!-- Optional: Twitter Card Meta Tags -->
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:title" content="Your Website Title" />
-		<meta
-			name="twitter:description"
-			content="A brief description of your website."
-		/>
-		<meta name="twitter:image" content={settings.data.image} />
+		<!-- <meta property="og:type" content="website" /> -->
 
 		<script
 			src="https://cdn.counter.dev/script.js"
