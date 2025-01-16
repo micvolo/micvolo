@@ -1,0 +1,21 @@
+{
+  "title": "Michele Volonghi",
+  "shortDescription": "Indipendent creative developer & designer",
+  "image": "/assets/og.png",
+  "hero": "Independent creative developer\n& designer focusing on:\n\n3D\nShaders\nInteraction\nSmooth animations\n\nCurrently based in Las Palmas (ES)\nWorking remotely worldwide.",
+  "description": "Specialized in\n<i>blazingly</i> fast websites\nwith <i>crazy</i> designs\n\nthat clients can easly\nmanage themselves.",
+  "contacts": "[michele@stra.studio](mailto:michele@stra.studio)\n[+39 3317043898](tel:+393317043898)\n\n[Github](https://github.com/micvolo) ~ [Twitter](https://twitter.com/micvolo) ~ [Insta](https://instagram.com/mic.volo)",
+  "header": [
+    {
+      "title": "Projects",
+      "link": "/projects/",
+      "id": ""
+    },
+    {
+      "title": "Contacts",
+      "link": "",
+      "id": "contact-button"
+    }
+  ],
+  "position": "Las Palmas de Gran Canaria (ES)"
+}

@@ -1,30 +1,18 @@
 ---
 import Contacts from "./Contacts.astro";
-const menu = [
-    { name: "Projects", href: "/projects/" },
-    // { name: "Blog", href: "/blog/" },
-    // { name: "About", href: "/about/" },
-    { name: "Contacts", href: "", id: "contact-button" },
-];
+import { getEntry } from "astro:content";
+
+const settings = await getEntry("settings", "settings");
 ---
 
-<script>
-    const contactButton =
-        document.querySelector<HTMLElement>("#contact-button");
-    const contact = document.querySelector("#contact");
-    contactButton.onclick = (e) => {
-        e.preventDefault();
-        contact.classList.toggle("open");
-    };
-</script>
 <nav>
     {
-        menu.map((m) => (
+        settings.data.header.map((m) => (
             <>
-                {!m.href && <span id={m.id}>{m.name}</span>}
-                {m.href && (
-                    <a href={m.href} id={m.id}>
-                        <span>{m.name}</span>
+                {!m.link && <span id={m.id}>{m.title}</span>}
+                {m.link && (
+                    <a href={m.link} id={m.id}>
+                        <span>{m.title}</span>
                     </a>
                 )}
             </>

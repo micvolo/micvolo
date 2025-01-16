@@ -1,6 +1,29 @@
+import { navigate } from "astro:transitions/client";
+
+// LEFT PANEL
+document.querySelector(".panel.left").onclick = e => {
+    const t = e.target?.classList;
+    if (t?.contains("panel") && t?.contains("left")) {
+        if (
+            location.pathname !== "/" &&
+            !document.documentElement.classList.contains("transition")
+        ) {
+            navigate("/");
+        }
+    }
+};
+
+// MENU
+const contactButton = document.querySelector("#contact-button");
+const contact = document.querySelector("#contact");
+contactButton.onclick = (e) => {
+    e.preventDefault();
+    contact.classList.toggle("open");
+};
+
+// NAVIGATION
 let toggleOpen = false;
 let toHome = false;
-
 document.addEventListener('astro:before-preparation', (e) => {
     const original = e.loader;
     document.documentElement.classList.add('transition');

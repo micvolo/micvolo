@@ -1,8 +1,8 @@
 ---
-const { isHome } = Astro.props;
+const { page } = Astro.props;
 ---
 
-<div class="panel right" class:list={{ open: !isHome }}>
+<div class="panel right" class:list={{ open: page !== "index" }}>
     <div class="container">
         <slot />
     </div>

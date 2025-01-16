@@ -3,17 +3,16 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev --host",
+    "dev": "decap-server & astro dev --host",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "decap-server & astro preview"
   },
   "dependencies": {
-    "astro": "^4.4.0",
-    "gsap": "^3.12.5",
-    "ogl": "^1.0.4"
-  },
-  "devDependencies": {
-    "autoprefixer": "^10.4.17",
-    "sass": "^1.71.0"
+    "astro": "^5.1.7",
+    "autoprefixer": "^10.4.20",
+    "gsap": "^3.12.7",
+    "marked": "^15.0.6",
+    "ogl": "^1.0.10",
+    "sass": "^1.83.4"
   }
 }

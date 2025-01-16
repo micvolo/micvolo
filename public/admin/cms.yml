@@ -1,0 +1,70 @@
+backend:
+  name: github
+  repo: micvolo/micvolo
+  branch: main
+  base_url: https://stra.studio
+  auth_endpoint: /api/cms/auth
+
+local_backend: true
+
+logo_url: /favicon.svg
+
+media_folder: /public/assets
+public_folder: /assets
+
+show_preview_links: false
+search: false
+
+editor:
+    preview: false
+
+collections:
+  - name: settings
+    label: Settings
+    files:
+      - name: settings
+        label: Settings
+        file: src/data/settings/settings.json
+        fields:
+          - name: title
+            widget: string
+          - name: shortDescription
+            widget: text
+          - name: image
+            widget: image
+          - name: hero
+            widget: markdown
+          - name: description
+            widget: markdown
+          - name: contacts
+            widget: markdown
+          - name: header
+            widget: list
+            fields:
+            - name: title
+              widget: string
+            - name: link
+              widget: string
+              required: false
+            - name: id
+              widget: string
+              required: false
+
+  - name: projects
+    label: Projects
+    folder: src/data/projects
+    create: true
+    media_folder: /public/assets/projects
+    public_folder: /assets/projects
+    fields:
+      - name: title
+        widget: string
+      - name: date
+        widget: datetime
+        format: YYYY-MM-DD
+      - name: image
+        widget: image
+      - name: url
+        widget: string
+      - name: tags
+        widget: string

@@ -1,9 +1,8 @@
 ---
-import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
-const projects = await getCollection("projects");
-projects.sort((a, b) => b.data.year.getTime() - a.data.year.getTime());
+const list = await getCollection("projects");
+list.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
 <div class="page">
@@ -15,16 +14,18 @@ projects.sort((a, b) => b.data.year.getTime() - a.data.year.getTime());
     <div class="pageTitle">SELECTED WORKS</div>
     <div class="content">
         {
-            projects.map((p) => (
+            list.map((p) => (
                 <a href={p.data.url} target="_blank" class="card">
                     <div class="heading">
                         <div class="tags">{p.data.tags}</div>
                         <span>{p.data.title}</span>
-                        <span>{p.data.year.getFullYear()}</span>
+                        <span>{p.data.date.getFullYear()}</span>
                     </div>
-                    <Image
-                        src={p.data.img as ImageMetadata}
+                    <img
+                        src={p.data.image}
                         alt={p.data.title}
+                        width="1920"
+                        height="1080"
                     />
                 </a>
             ))

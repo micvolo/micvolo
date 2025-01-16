@@ -1,53 +1,28 @@
 ---
 import Menu from "./Menu.astro";
-import { frontmatter, Content } from "@content/settings/home.md";
-const { isHome } = Astro.props;
+import { getEntry } from "astro:content";
 
-const p1 = `Independent creative developer
-& designer focusing on:
-
-3D
-Shaders
-Interaction
-Smooth animations
-
-Currently based in Brescia (IT)
-Working remotely worldwide.`;
-
-const p2 = `Specialized in
-<i>blazingly</i> fast websites
-with <i>crazy</i> designs
-
-that clients can easly
-manage themselves.`;
+const { page } = Astro.props;
+const settings = await getEntry("settings", "settings");
 ---
 
-<script>
-    import { navigate } from "astro:transitions/client";
-    document.querySelector<HTMLElement>(".panel.left").onclick = (e: any) => {
-        const t = e.target?.classList;
-        if (t?.contains("panel") && t?.contains("left")) {
-            if (
-                location.pathname !== "/" &&
-                !document.documentElement.classList.contains("transition")
-            ) {
-                navigate("/");
-            }
-        }
-    };
-</script>
-<div class="panel left" class:list={{ open: isHome }} transition:persist>
+<div
+    class="panel left"
+    class:list={{ open: page === "index" }}
+    transition:persist
+>
     <div>
         <a href="/">
-            <h1>{frontmatter.title}</h1>
+            <h1>{settings.data.title}</h1>
         </a>
-        <h2 class="subhero" set:html={p1} />
+        <h2 class="subhero" set:html={settings.data.hero} />
     </div>
-    <h3 class="subhero right" set:html={p2} />
+    <h3 class="subhero right" set:html={settings.data.description} />
     <div class="menu-wrapper">
         <Menu />
     </div>
 </div>
+
 <style lang="scss">
     .panel {
         justify-content: space-between;
