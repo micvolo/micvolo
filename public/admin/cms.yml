@@ -54,8 +54,6 @@ collections:
     label: Projects
     folder: src/data/projects
     create: true
-    media_folder: /public/assets/projects
-    public_folder: /assets/projects
     fields:
       - name: title
         widget: string
