@@ -1,8 +1,15 @@
 {
   "name": "micvolo",
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-03-17",
-  "compatibility_flags": ["nodejs_compat", "disable_nodejs_process_v2"],
-  "pages_build_output_dir": "./dist",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist"
+  },
+  "observability": {
+    "enabled": true
+  },
   "d1_databases": [
     {
       "binding": "DB",
@@ -17,7 +24,7 @@
     }
   ],
   "vars": {
-    // COOKIE_SECRET: set via Cloudflare Pages dashboard → Settings → Environment Variables
+    // COOKIE_SECRET: set via wrangler secret put COOKIE_SECRET
     // Never commit the real value — this placeholder is for local dev only
     "COOKIE_SECRET": "dev-secret-change-in-production"
   }

@@ -8,10 +8,5 @@ export default defineConfig({
     imageService: 'compile',
     prerenderEnvironment: 'node',
   }),
-  build: {
-    client: './',
-    server: './_worker.js',
-    format: 'file',
-  },
   integrations: [sitemap()],
 });
