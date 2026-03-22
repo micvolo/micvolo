@@ -1,0 +1,40 @@
+---
+import type { Project } from '@/lib/db';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+
+const STATUS_MAP = {
+  starting:    { label: 'Starting',     dot: '🔵' },
+  in_progress: { label: 'In Progress',  dot: '🟡' },
+  on_hold:     { label: 'On Hold',      dot: '🟠' },
+  completed:   { label: 'Completed',    dot: '🟢' },
+  maintenance: { label: 'Maintenance',  dot: '⚫' },
+} as const;
+
+const status = STATUS_MAP[project.status];
+
+function formatDate(d: string | null): string {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+---
+
+<header class="portal-header">
+  <h1 class="project-name">{project.display_name}</h1>
+  <div class="header-meta">
+    <span class="status-badge">
+      {status.dot} {status.label}
+    </span>
+    <span class="date-range">
+      {formatDate(project.start_date)} → {formatDate(project.end_date)}
+    </span>
+  </div>
+</header>

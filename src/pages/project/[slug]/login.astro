@@ -1,0 +1,67 @@
+---
+export const prerender = false;
+
+import PortalLayout from '@/layouts/PortalLayout.astro';
+import { getProject } from '@/lib/db';
+import { verifyPassword, createSession } from '@/lib/auth';
+
+const { slug } = Astro.params;
+const db = Astro.locals.runtime.env.DB;
+const secret = Astro.locals.runtime.env.COOKIE_SECRET;
+
+const project = await getProject(db, slug!);
+
+if (!project) {
+  return Astro.redirect('/404');
+}
+
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const password = formData.get('password') as string;
+
+  const valid = await verifyPassword(password ?? '', project.password_hash);
+
+  if (valid) {
+    const token = await createSession(slug!, secret);
+
+    Astro.cookies.set(`session_${slug}`, token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: `/project/${slug}`,
+      maxAge: 60 * 60 * 24 * 30,
+    });
+
+    return Astro.redirect(`/project/${slug}`);
+  }
+
+  error = 'Incorrect password.';
+}
+---
+
+<PortalLayout title="Access" projectName={project.display_name}>
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-logo">micvolo.com</div>
+      <div class="login-title">{project.display_name}</div>
+      <div class="login-subtitle">Project portal — enter your access password</div>
+      {error && <div class="login-error">{error}</div>}
+      <form method="POST">
+        <div class="login-field">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            autocomplete="current-password"
+            autofocus
+            required
+          />
+        </div>
+        <button type="submit" class="login-submit">Enter</button>
+      </form>
+    </div>
+  </div>
+</PortalLayout>

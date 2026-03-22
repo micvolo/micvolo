@@ -1,0 +1,22 @@
+---
+import type { ProjectTechnology } from '@/lib/db';
+
+interface Props {
+  technologies: ProjectTechnology[];
+}
+
+const { technologies } = Astro.props;
+---
+
+<section class="portal-section">
+  <div class="section-title">Technologies</div>
+  <ul class="tech-list">
+    {technologies.map(t => (
+      <li class="tech-item">
+        <span class="tech-emoji">{t.emoji}</span>
+        <span class="tech-name">{t.name}</span>
+        <span class="tech-desc">{t.description}</span>
+      </li>
+    ))}
+  </ul>
+</section>

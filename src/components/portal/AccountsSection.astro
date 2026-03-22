@@ -1,0 +1,51 @@
+---
+import type { ProjectAccount } from '@/lib/db';
+
+interface Props {
+  accounts: ProjectAccount[];
+}
+
+const { accounts } = Astro.props;
+
+const totalCost = accounts.reduce((sum, a) => sum + (a.annual_cost ?? 0), 0);
+const monthlyCost = totalCost > 0 ? (totalCost / 12).toFixed(2) : null;
+---
+
+<section class="portal-section">
+  <div class="section-title">Accounts & Credentials</div>
+  <table class="accounts-table">
+    <thead>
+      <tr>
+        <th>Service</th>
+        <th>Username</th>
+        <th>Password</th>
+        <th class="cost-cell">€/yr</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {accounts.map(a => (
+        <tr>
+          <td data-label="Service">
+            {a.url
+              ? <a href={a.url} target="_blank" rel="noopener noreferrer">{a.service_name}</a>
+              : a.service_name
+            }
+          </td>
+          <td data-label="Username">{a.username ?? '—'}</td>
+          <td data-label="Password" class="password-cell">{a.password_plain ?? '—'}</td>
+          <td data-label="€/yr" class="cost-cell">
+            {a.annual_cost ? `€${a.annual_cost}` : '—'}
+          </td>
+          <td data-label="Notes" class="notes-cell">{a.notes ?? ''}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  {totalCost > 0 && (
+    <div class="cost-summary">
+      Estimated recurring costs: <strong>~€{totalCost}/yr</strong>
+      {monthlyCost && <span> (~€{monthlyCost}/mo)</span>}
+    </div>
+  )}
+</section>
