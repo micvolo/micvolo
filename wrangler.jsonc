@@ -1,0 +1,24 @@
+{
+  "name": "micvolo",
+  "compatibility_date": "2026-03-17",
+  "compatibility_flags": ["nodejs_compat", "disable_nodejs_process_v2"],
+  "pages_build_output_dir": "./dist",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "micvolo-portal",
+      "database_id": "a5d9ee4b-6283-4bad-8529-d68ddc57bdb1"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "micvolo-assets"
+    }
+  ],
+  "vars": {
+    // COOKIE_SECRET: set via Cloudflare Pages dashboard → Settings → Environment Variables
+    // Never commit the real value — this placeholder is for local dev only
+    "COOKIE_SECRET": "dev-secret-change-in-production"
+  }
+}
