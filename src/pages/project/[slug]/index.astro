@@ -5,10 +5,11 @@ import PortalLayout from '@/layouts/PortalLayout.astro';
 import ProjectHeader from '@/components/portal/ProjectHeader.astro';
 import TechnologiesList from '@/components/portal/TechnologiesList.astro';
 import AccountsSection from '@/components/portal/AccountsSection.astro';
+import { env } from 'cloudflare:workers';
 import { getProject, getProjectAccounts, getProjectTechnologies } from '@/lib/db';
 
 const { slug } = Astro.params;
-const db = Astro.locals.runtime.env.DB;
+const db = env.DB;
 
 const [project, accounts, technologies] = await Promise.all([
   getProject(db, slug!),

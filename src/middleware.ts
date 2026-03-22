@@ -24,7 +24,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return context.redirect(`/project/${slug}/login`);
   }
 
-  const secret = context.locals.runtime.env.COOKIE_SECRET;
+  const { env } = await import('cloudflare:workers');
+  const secret = env.COOKIE_SECRET;
   const valid = await verifySession(sessionCookie, slug, secret);
 
   if (!valid) {
