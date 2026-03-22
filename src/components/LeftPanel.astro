@@ -45,6 +45,10 @@ const settings = await getEntry("settings", "settings");
             text-transform: uppercase;
             pointer-events: none;
             white-space: pre-line;
+            :global(a) {
+                pointer-events: all;
+                text-decoration: underline;
+            }
             :global(i) {
                 font-style: normal;
                 font-variation-settings:

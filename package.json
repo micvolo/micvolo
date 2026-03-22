@@ -3,11 +3,12 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "decap-server & astro dev --host",
+    "dev": "astro dev --host",
     "build": "astro build",
-    "preview": "decap-server & astro preview"
+    "preview": "astro preview"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.1",
     "astro": "^5.1.7",
     "autoprefixer": "^10.4.20",
     "gsap": "^3.12.7",

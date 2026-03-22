@@ -20,8 +20,11 @@ const settings = await getEntry("settings", "settings");
 			content="width=device-width, initial-scale=1, user-scalable=no"
 		/>
 
-		<title>{`${settings.data.title} ${title ? " — " + title : ""}`}</title>
+		<title>{`${settings.data.title}${title ? " — " + title : ""}`}</title>
 		<meta name="description" content={settings.data.shortDescription} />
+		<meta name="author" content={settings.data.title} />
+		<meta name="robots" content="index, follow" />
+		<link rel="canonical" href={Astro.url} />
 
 		<link
 			rel="icon"
@@ -39,18 +42,17 @@ const settings = await getEntry("settings", "settings");
 		<link rel="manifest" href="/site.webmanifest" />
 
 		<!-- Open Graph Meta Tags -->
-		<meta property="og:title" content={settings.data.title} />
+		<meta property="og:title" content={`${settings.data.title}${title ? " — " + title : ""}`} />
 		<meta
 			property="og:description"
 			content={settings.data.shortDescription}
 		/>
-		<meta
-			property="og:image"
-			content={`${Astro.site}${settings.data.image}`}
-		/>
-		<meta property="og:url" content={Astro.site} />
+<meta property="og:url" content={Astro.url} />
 		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="en_US" />
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={`${settings.data.title}${title ? " — " + title : ""}`} />
+		<meta name="twitter:description" content={settings.data.shortDescription} />
 
 		<script
 			src="https://cdn.counter.dev/script.js"

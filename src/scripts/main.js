@@ -13,14 +13,6 @@ document.querySelector(".panel.left").onclick = e => {
     }
 };
 
-// MENU
-const contactButton = document.querySelector("#contact-button");
-const contact = document.querySelector("#contact");
-contactButton.onclick = (e) => {
-    e.preventDefault();
-    contact.classList.toggle("open");
-};
-
 // NAVIGATION
 let toggleOpen = false;
 let toHome = false;

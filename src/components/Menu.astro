@@ -1,5 +1,4 @@
 ---
-import Contacts from "./Contacts.astro";
 import { getEntry } from "astro:content";
 
 const settings = await getEntry("settings", "settings");
@@ -18,7 +17,6 @@ const settings = await getEntry("settings", "settings");
             </>
         ))
     }
-    <Contacts />
 </nav>
 <style lang="scss">
     nav {
@@ -27,7 +25,7 @@ const settings = await getEntry("settings", "settings");
         align-items: flex-start;
         font-weight: bold;
         cursor: pointer;
-        > * {
+        > a, > span {
             font-size: clamp(2rem, 10vw, 4rem);
             transition: text-shadow 0.4s;
             &:hover {

@@ -5,8 +5,6 @@ backend:
   base_url: https://stra.studio
   auth_endpoint: /api/cms/auth
 
-local_backend: true
-
 logo_url: /favicon.svg
 
 media_folder: /public/assets
