@@ -1,0 +1,77 @@
+---
+export const prerender = false;
+
+import PortalLayout from '@/layouts/PortalLayout.astro';
+import { env } from 'cloudflare:workers';
+
+const { slug } = Astro.params;
+const db = env.DB;
+
+const doc = await db
+  .prepare('SELECT id, name FROM ProjectDocument WHERE project_slug = ? AND is_quote = 1 LIMIT 1')
+  .bind(slug)
+  .first<{ id: number; name: string }>();
+
+if (!doc) return Astro.redirect(`/project/${slug}`);
+
+const pdfUrl = `/project/${slug}/api/documents/${doc.id}`;
+---
+
+<PortalLayout title={doc.name} projectName={doc.name}>
+  <div class="viewer-wrap">
+    <div class="viewer-bar">
+      <a class="viewer-back" href={`/project/${slug}`}>← Back</a>
+      <span class="viewer-title">{doc.name}</span>
+      <div class="viewer-bar-end">
+        <span class="viewer-pagecount" id="viewer-pagecount"></span>
+        <a class="viewer-download" href={pdfUrl}>Download</a>
+      </div>
+    </div>
+    <div class="viewer-area" id="viewer-area" data-url={pdfUrl}>
+      <div class="viewer-loading" id="viewer-loading">Loading…</div>
+    </div>
+  </div>
+</PortalLayout>
+
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script is:inline>
+  (function () {
+    const pdfjsLib = window['pdfjs-dist/build/pdf'];
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    const area      = document.getElementById('viewer-area');
+    const loading   = document.getElementById('viewer-loading');
+    const pagecount = document.getElementById('viewer-pagecount');
+
+    async function render() {
+      const pdf = await pdfjsLib.getDocument(area.dataset.url).promise;
+      const n = pdf.numPages;
+      loading.remove();
+      pagecount.textContent = n + (n === 1 ? ' page' : ' pages');
+
+      for (var i = 1; i <= n; i++) {
+        var page = await pdf.getPage(i);
+        var baseVp = page.getViewport({ scale: 1 });
+        var maxW = Math.min(area.clientWidth - 48, 860);
+        var dpr = window.devicePixelRatio || 1;
+        var scale = (maxW / baseVp.width) * dpr;
+        var vp = page.getViewport({ scale: scale });
+
+        var canvas = document.createElement('canvas');
+        canvas.className = 'viewer-page';
+        canvas.width = vp.width;
+        canvas.height = vp.height;
+        canvas.style.width  = (maxW) + 'px';
+        canvas.style.height = (maxW * (baseVp.height / baseVp.width)) + 'px';
+        area.appendChild(canvas);
+
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+      }
+    }
+
+    render().catch(function () {
+      loading.textContent = 'Could not load document.';
+    });
+  })();
+</script>

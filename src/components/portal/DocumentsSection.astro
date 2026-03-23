@@ -1,0 +1,240 @@
+---
+import type { ProjectDocument } from '@/lib/db';
+
+interface Props {
+  documents: ProjectDocument[];
+  slug: string;
+}
+
+const { documents, slug } = Astro.props;
+const hasQuote = documents.some(d => d.is_quote === 1);
+
+function formatSize(bytes: number): string {
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+---
+
+<section class="portal-section docs-section">
+  <div class="docs-header">
+    <div class="section-title">Documents</div>
+    <a
+      class="docs-view-quote"
+      id="docs-view-quote"
+      href={`/project/${slug}/quote`}
+      style={hasQuote ? '' : 'display:none'}
+    >View quote →</a>
+  </div>
+
+  <ul class="docs-list" id="docs-list">
+    {documents.map(doc => (
+      <li class="docs-item" data-id={String(doc.id)} data-quote={doc.is_quote ? '1' : '0'}>
+        <span class="docs-icon">PDF</span>
+        <span class="docs-name">{doc.name}</span>
+        <span class="docs-size">{formatSize(doc.size_bytes)}</span>
+        <a
+          class="docs-open"
+          href={doc.is_quote ? `/project/${slug}/quote` : `/project/${slug}/api/documents/${doc.id}`}
+          target="_blank"
+          rel="noopener"
+        >{doc.is_quote ? 'View' : 'Open'}</a>
+        <button
+          class={`docs-quote-btn${doc.is_quote ? ' is-quote' : ''}`}
+          data-id={String(doc.id)}
+          title={doc.is_quote ? 'Remove as quote' : 'Set as quote'}
+        >◆</button>
+        <button class="docs-delete" data-id={String(doc.id)} aria-label="Delete">×</button>
+      </li>
+    ))}
+  </ul>
+
+  <div class="docs-drop-zone" id="docs-drop-zone">
+    <input type="file" id="docs-file" accept="application/pdf,.pdf" multiple hidden />
+    <span class="docs-drop-label">
+      Drop PDFs here or <button class="docs-browse-btn" id="docs-browse" type="button">browse</button>
+    </span>
+  </div>
+  <div class="docs-status" id="docs-status"></div>
+</section>
+
+<script>
+  const slug = window.location.pathname.split('/')[2];
+
+  const docsList  = document.getElementById('docs-list') as HTMLUListElement;
+  const dropZone  = document.getElementById('docs-drop-zone') as HTMLElement;
+  const fileInput = document.getElementById('docs-file') as HTMLInputElement;
+  const browseBtn = document.getElementById('docs-browse') as HTMLButtonElement;
+  const statusEl  = document.getElementById('docs-status') as HTMLElement;
+  const viewQuote = document.getElementById('docs-view-quote') as HTMLAnchorElement;
+
+  // ── Drop zone ──
+
+  browseBtn.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files?.length) handleFiles(fileInput.files);
+    fileInput.value = '';
+  });
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('is-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('is-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('is-over');
+    if (e.dataTransfer?.files.length) handleFiles(e.dataTransfer.files);
+  });
+
+  // ── Upload ──
+
+  function handleFiles(files: FileList) {
+    Array.from(files).forEach(uploadFile);
+  }
+
+  async function uploadFile(file: File) {
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+      setStatus(`${file.name}: only PDFs allowed`, 'error');
+      return;
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      setStatus(`${file.name}: max 20 MB`, 'error');
+      return;
+    }
+
+    const name = file.name.replace(/\.pdf$/i, '');
+    const placeholder = buildRow({ id: 0, name, size_bytes: file.size, is_quote: 0, uploading: true });
+    docsList.prepend(placeholder);
+
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('name', name);
+
+    try {
+      const res = await fetch(`/project/${slug}/api/documents`, { method: 'POST', body: fd });
+      if (!res.ok) {
+        placeholder.remove();
+        const err = await res.json().catch(() => ({ error: 'Upload failed' })) as { error?: string };
+        setStatus(err.error ?? 'Upload failed', 'error');
+        return;
+      }
+      const doc = await res.json() as { id: number; name: string; size_bytes: number; is_quote: number };
+      const row = buildRow(doc);
+      placeholder.replaceWith(row);
+      bindRow(row);
+    } catch {
+      placeholder.remove();
+      setStatus(`Failed to upload ${file.name}`, 'error');
+    }
+  }
+
+  // ── Row builder ──
+
+  function esc(s: string): string {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function fmtSize(bytes: number): string {
+    if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  function buildRow(doc: { id: number; name: string; size_bytes: number; is_quote: number; uploading?: boolean }): HTMLLIElement {
+    const li = document.createElement('li');
+    li.className = 'docs-item' + (doc.uploading ? ' is-uploading' : '');
+    li.dataset.id = String(doc.id);
+    li.dataset.quote = doc.is_quote ? '1' : '0';
+
+    const openHref  = doc.is_quote ? `/project/${slug}/quote` : `/project/${slug}/api/documents/${doc.id}`;
+    const openLabel = doc.is_quote ? 'View' : 'Open';
+    const dis = doc.uploading ? ' disabled' : '';
+
+    li.innerHTML = `
+      <span class="docs-icon">PDF</span>
+      <span class="docs-name">${esc(doc.name)}</span>
+      <span class="docs-size">${doc.uploading ? '…' : fmtSize(doc.size_bytes)}</span>
+      <a class="docs-open" href="${doc.uploading ? '#' : openHref}" target="_blank" rel="noopener">${doc.uploading ? '' : openLabel}</a>
+      <button class="docs-quote-btn${doc.is_quote ? ' is-quote' : ''}" data-id="${doc.id}" title="${doc.is_quote ? 'Remove quote' : 'Set as quote'}"${dis}>◆</button>
+      <button class="docs-delete" data-id="${doc.id}" aria-label="Delete"${dis}>×</button>
+    `;
+    return li;
+  }
+
+  function bindRow(row: HTMLLIElement) {
+    row.querySelector<HTMLButtonElement>('.docs-quote-btn')?.addEventListener('click', handleQuote);
+    row.querySelector<HTMLButtonElement>('.docs-delete')?.addEventListener('click', handleDelete);
+  }
+
+  // Bind existing rows
+  document.querySelectorAll<HTMLLIElement>('.docs-item').forEach(bindRow);
+
+  // ── Quote toggle ──
+
+  async function handleQuote(e: Event) {
+    const btn = e.currentTarget as HTMLButtonElement;
+    const id = btn.dataset.id!;
+    const li = btn.closest<HTMLElement>('.docs-item')!;
+    const isQuote = li.dataset.quote === '1';
+
+    btn.disabled = true;
+    const res = await fetch(`/project/${slug}/api/documents/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_quote: !isQuote }),
+    });
+    btn.disabled = false;
+    if (!res.ok) return;
+
+    if (!isQuote) {
+      // Remove quote from all other rows first
+      document.querySelectorAll<HTMLElement>('.docs-item[data-quote="1"]').forEach(item => {
+        item.dataset.quote = '0';
+        item.querySelector('.docs-quote-btn')?.classList.remove('is-quote');
+        const a = item.querySelector<HTMLAnchorElement>('.docs-open');
+        if (a) { a.href = `/project/${slug}/api/documents/${item.dataset.id}`; a.textContent = 'Open'; }
+      });
+    }
+
+    li.dataset.quote = isQuote ? '0' : '1';
+    btn.classList.toggle('is-quote', !isQuote);
+    btn.title = isQuote ? 'Set as quote' : 'Remove quote';
+
+    const a = li.querySelector<HTMLAnchorElement>('.docs-open');
+    if (a) {
+      if (!isQuote) { a.href = `/project/${slug}/quote`; a.textContent = 'View'; }
+      else          { a.href = `/project/${slug}/api/documents/${id}`; a.textContent = 'Open'; }
+    }
+
+    viewQuote.style.display = !isQuote ? '' : 'none';
+  }
+
+  // ── Delete ──
+
+  async function handleDelete(e: Event) {
+    const btn = e.currentTarget as HTMLButtonElement;
+    const id = btn.dataset.id!;
+
+    if (btn.dataset.confirm !== '1') {
+      btn.dataset.confirm = '1';
+      btn.textContent = '?';
+      setTimeout(() => { if (btn.dataset.confirm === '1') { btn.dataset.confirm = ''; btn.textContent = '×'; } }, 2500);
+      return;
+    }
+
+    btn.disabled = true;
+    const res = await fetch(`/project/${slug}/api/documents/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      const li = btn.closest<HTMLElement>('.docs-item')!;
+      if (li.dataset.quote === '1') viewQuote.style.display = 'none';
+      li.remove();
+    } else {
+      btn.disabled = false;
+      btn.textContent = '×';
+      setStatus('Delete failed', 'error');
+    }
+  }
+
+  function setStatus(msg: string, type?: 'error') {
+    statusEl.textContent = msg;
+    statusEl.className = `docs-status${type ? ` docs-status--${type}` : ''}`;
+    if (msg) setTimeout(() => { if (statusEl.textContent === msg) { statusEl.textContent = ''; statusEl.className = 'docs-status'; } }, 4000);
+  }
+</script>

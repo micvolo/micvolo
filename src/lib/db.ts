@@ -96,3 +96,28 @@ export async function getProjectPayments(db: D1Database, slug: string): Promise<
     .all<Payment>();
   return result.results;
 }
+
+export interface ProjectDocument {
+  id: number;
+  project_slug: string;
+  name: string;
+  r2_key: string;
+  size_bytes: number;
+  is_quote: number;
+  uploaded_at: string;
+}
+
+export async function getProjectDocuments(db: D1Database, slug: string): Promise<ProjectDocument[]> {
+  const result = await db
+    .prepare('SELECT * FROM ProjectDocument WHERE project_slug = ? ORDER BY uploaded_at DESC')
+    .bind(slug)
+    .all<ProjectDocument>();
+  return result.results;
+}
+
+export async function getQuoteDocument(db: D1Database, slug: string): Promise<ProjectDocument | null> {
+  return db
+    .prepare('SELECT * FROM ProjectDocument WHERE project_slug = ? AND is_quote = 1 LIMIT 1')
+    .bind(slug)
+    .first<ProjectDocument>() ?? null;
+}
