@@ -4,8 +4,8 @@
   "compatibility_date": "2026-03-17",
   "compatibility_flags": ["nodejs_compat"],
   "routes": [
-    { "pattern": "micvolo.com", "custom_domain": true },
-    { "pattern": "www.micvolo.com", "custom_domain": true }
+    { "pattern": "micvolo.com", "custom_domain": true, "override_existing_dns_record": true },
+    { "pattern": "www.micvolo.com", "custom_domain": true, "override_existing_dns_record": true }
   ],
   "assets": { "directory": "./dist" },
   "observability": {
