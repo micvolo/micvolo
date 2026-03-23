@@ -1,0 +1,55 @@
+---
+import type { WorkLog } from '@/lib/db';
+
+interface Props {
+  workLogs: WorkLog[];
+}
+
+const { workLogs } = Astro.props;
+
+// Group by date, newest first
+const byDate = workLogs.reduce<Record<string, WorkLog[]>>((acc, log) => {
+  (acc[log.date] ??= []).push(log);
+  return acc;
+}, {});
+
+const dates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
+
+function formatDate(d: string) {
+  return new Date(d).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+
+const CAT_LABEL: Record<string, string> = {
+  design: 'Design',
+  dev: 'Dev',
+  call: 'Call',
+  fix: 'Fix',
+  content: 'Content',
+  maintenance: 'Maint.',
+};
+---
+
+<section class="portal-section worklog-section">
+  <div class="section-title">Work log</div>
+
+  <ol class="worklog-list">
+    {dates.map(date => (
+      <li class="worklog-day">
+        <span class="worklog-date">{formatDate(date)}</span>
+        <ul class="worklog-entries">
+          {byDate[date].map(log => (
+            <li class="worklog-entry">
+              <span class="worklog-cat">{CAT_LABEL[log.category] ?? log.category}</span>
+              <span class="worklog-desc">{log.public_description ?? '—'}</span>
+              <span class="worklog-hours">{log.hours % 1 === 0 ? `${log.hours}h` : `${log.hours.toFixed(1)}h`}</span>
+            </li>
+          ))}
+        </ul>
+      </li>
+    ))}
+  </ol>
+</section>

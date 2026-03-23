@@ -5,16 +5,19 @@ import PortalLayout from '@/layouts/PortalLayout.astro';
 import ProjectHeader from '@/components/portal/ProjectHeader.astro';
 import TechnologiesList from '@/components/portal/TechnologiesList.astro';
 import AccountsSection from '@/components/portal/AccountsSection.astro';
+import HoursBar from '@/components/portal/HoursBar.astro';
+import WorkLogList from '@/components/portal/WorkLogList.astro';
 import { env } from 'cloudflare:workers';
-import { getProject, getProjectAccounts, getProjectTechnologies } from '@/lib/db';
+import { getProject, getProjectAccounts, getProjectTechnologies, getProjectWorkLogs } from '@/lib/db';
 
 const { slug } = Astro.params;
 const db = env.DB;
 
-const [project, accounts, technologies] = await Promise.all([
+const [project, accounts, technologies, workLogs] = await Promise.all([
   getProject(db, slug!),
   getProjectAccounts(db, slug!),
   getProjectTechnologies(db, slug!),
+  getProjectWorkLogs(db, slug!),
 ]);
 
 if (!project) {
@@ -34,12 +37,18 @@ if (!project) {
       </section>
     )}
 
+    <HoursBar project={project} workLogs={workLogs} />
+
     {technologies.length > 0 && (
       <TechnologiesList technologies={technologies} />
     )}
 
     {accounts.length > 0 && (
       <AccountsSection accounts={accounts} />
+    )}
+
+    {workLogs.length > 0 && (
+      <WorkLogList workLogs={workLogs} />
     )}
 
   </div>
