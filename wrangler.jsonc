@@ -2,18 +2,21 @@
   "name": "micvolo",
   "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-03-17",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "compatibility_flags": ["nodejs_compat"],
   "routes": [
     { "pattern": "micvolo.com", "custom_domain": true },
     { "pattern": "www.micvolo.com", "custom_domain": true }
   ],
-  "assets": {
-    "binding": "ASSETS",
-    "directory": "./dist"
-  },
+  "assets": { "directory": "./dist" },
   "observability": {
     "enabled": true
   },
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "micvolo-assets"
+    }
+  ],
   "d1_databases": [
     {
       "binding": "DB",
@@ -21,15 +24,4 @@
       "database_id": "a5d9ee4b-6283-4bad-8529-d68ddc57bdb1"
     }
   ],
-  "r2_buckets": [
-    {
-      "binding": "R2",
-      "bucket_name": "micvolo-assets"
-    }
-  ],
-  "vars": {
-    // COOKIE_SECRET: set via wrangler secret put COOKIE_SECRET
-    // Never commit the real value — this placeholder is for local dev only
-    "COOKIE_SECRET": "dev-secret-change-in-production"
-  }
 }
