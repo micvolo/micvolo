@@ -18,7 +18,27 @@ const settings = await getEntry("settings", "settings");
         <h2 class="subhero" set:html={settings.data.hero} />
     </div>
     <h3 class="subhero right" set:html={settings.data.description} />
-    <div class="menu-wrapper">
+    <script>
+        document.addEventListener("click", (e) => {
+            const el = (e.target as HTMLElement).closest("[data-copy]") as HTMLElement | null;
+            if (!el) return;
+
+            const text = el.dataset.copy || "";
+            navigator.clipboard.writeText(text);
+
+            const chip = document.createElement("div");
+            chip.textContent = "COPIED";
+            chip.className = "copy-chip";
+            const r = el.getBoundingClientRect();
+            chip.style.left = r.left + r.width / 2 + "px";
+            chip.style.top = r.top + "px";
+            document.body.appendChild(chip);
+            requestAnimationFrame(() => chip.classList.add("show"));
+            setTimeout(() => chip.classList.add("hide"), 600);
+            setTimeout(() => chip.remove(), 900);
+        });
+    </script>
+<div class="menu-wrapper">
         <Menu />
     </div>
 </div>
@@ -55,6 +75,16 @@ const settings = await getEntry("settings", "settings");
                     "wdth" 92,
                     "wght" 600,
                     "slnt" -12;
+            }
+            :global(small) {
+                font-size: 0.7rem;
+                opacity: 0.9;
+                text-transform: none;
+                pointer-events: none;
+                :global([data-copy]) {
+                    pointer-events: all;
+                    cursor: copy;
+                }
             }
             &.right {
                 align-self: flex-end;

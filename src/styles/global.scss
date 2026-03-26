@@ -77,6 +77,41 @@ p {
     background: var(--bg2);
 }
 
+.copy-chip {
+    position: fixed;
+    transform: translateX(-50%) translateY(-4px);
+    z-index: 1000;
+    pointer-events: none;
+
+    background-color: var(--bg3);
+    background-image: var(--bg);
+    background-size: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+
+    color: var(--color);
+    font-family: monasans, sans-serif;
+    font-size: 0.6rem;
+    font-variation-settings: "wdth" 92, "wght" 700, "opsz" 20;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 4px var(--bg3);
+
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+
+    &.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-12px);
+    }
+
+    &.hide {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-18px);
+    }
+}
+
 main {
     overflow: hidden;
     display: flex;
