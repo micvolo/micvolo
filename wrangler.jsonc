@@ -13,7 +13,7 @@
   "r2_buckets": [
     {
       "binding": "R2",
-      "bucket_name": "micvolo-assets"
+      "bucket_name": "micvolo"
     }
   ],
   "d1_databases": [
