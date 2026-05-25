@@ -2,8 +2,8 @@ backend:
   name: github
   repo: micvolo/micvolo
   branch: main
-  base_url: https://stra.studio
-  auth_endpoint: /api/cms/auth
+  base_url: https://portiere.micvolo.com
+  auth_endpoint: /auth/github
 
 logo_url: /favicon.svg
 
