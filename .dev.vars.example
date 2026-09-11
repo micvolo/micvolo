@@ -1,0 +1,6 @@
+# Copy to .dev.vars. Never commit .dev.vars.
+ENVIRONMENT=development
+DEV_OTP_PREVIEW=true
+ADMIN_EMAIL=admin@example.test
+EMAIL_FROM=access@micvolo.com
+OTP_SECRET=replace-with-a-long-random-local-secret

@@ -1,0 +1,22 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  principal: Principal;
+  mode: 'admin' | 'client';
+}
+const { title, subtitle, principal, mode } = Astro.props;
+---
+<div class="app-shell">
+  <aside class="app-nav">
+    <div>
+      <a class="wordmark" href="/">micvolo</a>
+      <p class="nav-context">{mode === 'admin' ? 'Studio backoffice' : 'Collaboration portal'}<br />{principal.email}</p>
+    </div>
+    <form method="post" action="/api/auth/logout"><button type="submit">Sign out</button></form>
+  </aside>
+  <main class="app-main">
+    <header class="app-topbar"><h1>{title}</h1><p>{subtitle}</p></header>
+    <slot />
+  </main>
+</div>

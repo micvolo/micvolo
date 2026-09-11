@@ -1,37 +1,24 @@
+import { env as cloudflareEnv } from 'cloudflare:workers';
 import { defineMiddleware } from 'astro:middleware';
-import { verifySession } from '@/lib/auth';
+import { getPrincipal, sessionCookieName } from '@/lib/auth';
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  const { pathname } = context.url;
-
-  if (!pathname.startsWith('/project/')) {
-    return next();
+  context.locals.principal = null;
+  const name = sessionCookieName(cloudflareEnv, context.url);
+  context.locals.principal = await getPrincipal(cloudflareEnv.DB, context.cookies.get(name)?.value);
+  const response = await next();
+  const headers = new Headers(response.headers);
+  headers.set('Content-Security-Policy', "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'");
+  headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  headers.set('X-Content-Type-Options', 'nosniff');
+  headers.set('X-Frame-Options', 'DENY');
+  if (context.url.pathname.startsWith('/portal') || context.url.pathname.startsWith('/admin') || context.url.pathname.startsWith('/api') || context.url.pathname.startsWith('/documents')) {
+    headers.set('Cache-Control', 'private, no-store');
   }
-
-  // /project/[slug] or /project/[slug]/login or /project/[slug]/...
-  const parts = pathname.replace(/\/$/, '').split('/').filter(Boolean);
-  // parts[0] = 'project', parts[1] = slug, parts[2] = sub-page (optional)
-  const slug = parts[1];
-
-  if (!slug) return next();
-
-  // Login page is always accessible
-  if (parts[2] === 'login') return next();
-
-  const sessionCookie = context.cookies.get(`session_${slug}`)?.value;
-
-  if (!sessionCookie) {
-    return context.redirect(`/project/${slug}/login`);
-  }
-
-  const { env } = await import('cloudflare:workers');
-  const secret = env.COOKIE_SECRET;
-  const valid = await verifySession(sessionCookie, slug, secret);
-
-  if (!valid) {
-    context.cookies.delete(`session_${slug}`, { path: `/project/${slug}` });
-    return context.redirect(`/project/${slug}/login`);
-  }
-
-  return next();
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 });

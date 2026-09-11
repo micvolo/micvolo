@@ -1,0 +1,62 @@
+---
+import { env as cloudflareEnv } from 'cloudflare:workers';
+export const prerender = false;
+import AppLayout from '@/layouts/AppLayout.astro';
+import AppShell from '@/components/app/AppShell.astro';
+import { formatHours, formatMoney, type ProjectSummary } from '@/lib/db';
+const principal = Astro.locals.principal;
+if (!principal) return Astro.redirect('/admin/login');
+if (principal.role !== 'admin') return Astro.redirect('/portal');
+const db = cloudflareEnv.DB;
+const [projectsResult, totals] = await Promise.all([
+  db.prepare(`SELECT p.*, u.display_name AS client_name, u.email AS client_email,
+    COALESCE((SELECT SUM(w.minutes) FROM worklogs w WHERE w.project_id = p.id), 0) AS worked_minutes,
+    COALESCE((SELECT SUM(i.total_cents) FROM invoices i WHERE i.project_id = p.id AND i.status != 'void'), 0) AS invoiced_cents,
+    COALESCE((SELECT SUM(pay.amount_cents) FROM payments pay WHERE pay.project_id = p.id), 0) AS paid_cents
+    FROM projects p JOIN users u ON u.id = p.client_user_id ORDER BY p.updated_at DESC`).all<ProjectSummary>(),
+  db.prepare(`SELECT
+    (SELECT COUNT(*) FROM projects) AS projects,
+    COALESCE((SELECT SUM(minutes) FROM worklogs), 0) AS minutes,
+    COALESCE((SELECT SUM(total_cents) FROM invoices WHERE status != 'void'), 0) AS invoiced,
+    COALESCE((SELECT SUM(amount_cents) FROM payments), 0) AS paid`).first<{ projects: number; minutes: number; invoiced: number; paid: number }>(),
+]);
+const projects = projectsResult.results;
+const flash = Astro.url.searchParams.get('ok');
+const error = Astro.url.searchParams.get('error');
+---
+<AppLayout title="Studio backoffice">
+  <AppShell title="All collaborations" subtitle={`${totals?.projects ?? 0} projects`} {principal} mode="admin">
+    {flash && <p class="flash" role="status">Saved: {flash.replaceAll('-', ' ')}.</p>}
+    {error && <p class="flash form-error" role="alert">Could not save that record. Check unique emails, slugs and required values.</p>}
+    <div class="workspace">
+      <section class="app-section">
+        <div class="app-section-header"><h2>Studio totals</h2><p>Across every project</p></div>
+        <dl class="metric-ledger">
+          <div class="metric"><dt>Projects</dt><dd>{totals?.projects ?? 0}</dd></div>
+          <div class="metric"><dt>Hours</dt><dd>{formatHours(totals?.minutes ?? 0)}</dd></div>
+          <div class="metric"><dt>Invoiced</dt><dd>{formatMoney(totals?.invoiced ?? 0)}</dd></div>
+          <div class="metric"><dt>Received</dt><dd>{formatMoney(totals?.paid ?? 0)}</dd></div>
+        </dl>
+      </section>
+
+      <section class="app-section">
+        <div class="app-section-header"><h2>Projects</h2><p>Select a row to update its ledger</p></div>
+        {projects.length ? <ol class="admin-projects">{projects.map((project) => <li><a class="admin-project-row" href={`/admin/projects/${project.id}`}><strong>{project.name}</strong><span>{project.client_name}</span><span>{formatHours(project.worked_minutes)}</span><span>{formatMoney(project.invoiced_cents)}</span><span>{formatMoney(project.paid_cents)}</span><span>Open →</span></a></li>)}</ol> : <div class="empty-state">No projects yet. Create the first client and project below.</div>}
+      </section>
+
+      <section class="app-section">
+        <div class="app-section-header"><h2>New client + project</h2><p>One project per client for this first release</p></div>
+        <form class="editor-form" method="post" action="/api/admin/projects">
+          <div class="field"><label for="client_name">Client name</label><input id="client_name" name="client_name" required /></div>
+          <div class="field"><label for="client_email">Client email</label><input id="client_email" name="client_email" type="email" autocomplete="off" required /></div>
+          <div class="field"><label for="name">Project name</label><input id="name" name="name" required /></div>
+          <div class="field"><label for="slug">Project slug</label><input id="slug" name="slug" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required /></div>
+          <div class="field"><label for="estimated_hours">Estimated hours</label><input id="estimated_hours" name="estimated_hours" type="number" min="0" step="0.5" value="0" required /></div>
+          <div class="field"><label for="status">Status</label><select id="status" name="status"><option value="planning">Planning</option><option value="active">Active</option><option value="paused">Paused</option><option value="complete">Complete</option></select></div>
+          <div class="field span-2"><label for="description">Project description</label><textarea id="description" name="description"></textarea></div>
+          <button type="submit">Create collaboration</button>
+        </form>
+      </section>
+    </div>
+  </AppShell>
+</AppLayout>

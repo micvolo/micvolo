@@ -1,0 +1,12 @@
+---
+interface Props { current?: 'home' | 'projects'; }
+const { current } = Astro.props;
+---
+<header class="site-header">
+  <a class="wordmark" href="/">micvolo</a>
+  <nav aria-label="Main navigation">
+    <a href="/projects" aria-current={current === 'projects' ? 'page' : undefined}>Projects</a>
+    <a href="mailto:michele.volonghi@gmail.com">Contact</a>
+    <a class="client-access" href="/portal/login">Already a client? Access your project</a>
+  </nav>
+</header>

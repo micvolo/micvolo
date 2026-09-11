@@ -4,6 +4,12 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: 'https://micvolo.com',
+  session: false,
   adapter: cloudflare({ imageService: 'compile' }),
-  integrations: [sitemap()],
+  integrations: [sitemap({
+    filter: (page) => {
+      const pathname = new URL(page).pathname;
+      return !['/admin', '/portal', '/api', '/documents'].some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+    },
+  })],
 });

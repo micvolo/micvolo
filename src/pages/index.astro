@@ -1,5 +1,45 @@
 ---
-import Layout from "@/layouts/Layout.astro";
+import { getEntry } from 'astro:content';
+import PublicLayout from '@/layouts/PublicLayout.astro';
+import SiteHeader from '@/components/public/SiteHeader.astro';
+import ProjectGrid from '@/components/public/ProjectGrid.astro';
+const settings = await getEntry('settings', 'settings');
+if (!settings) throw new Error('Site settings are missing');
 ---
+<PublicLayout description={settings.data.shortDescription}>
+  <SiteHeader current="home" />
+  <main id="main">
+    <section class="hero section-grid" aria-labelledby="hero-title">
+      <div class="hero-name"><p class="eyebrow">Independent practice / Brescia → worldwide</p><h1 id="hero-title">{settings.data.title}</h1></div>
+      <p class="hero-copy">{settings.data.hero}</p>
+      <aside class="hero-contact" set:html={settings.data.description}></aside>
+    </section>
 
-<Layout title="Portfolio" page="index" />
+    <section class="selected-work" aria-labelledby="work-title">
+      <div class="section-heading section-grid">
+        <p class="eyebrow">Recent ledger / selected work</p>
+        <h2 id="work-title">Digital products with a clear job to do.</h2>
+        <a class="text-link" href="/projects">All 25 projects →</a>
+      </div>
+      <ProjectGrid limit={6} />
+    </section>
+
+    <section class="principles section-grid" aria-labelledby="principles-title">
+      <p class="eyebrow">Working model</p>
+      <h2 id="principles-title">One partner.<br />Visible progress.</h2>
+      <div class="principle-copy">
+        <p>Strategy, design and development stay connected from the first estimate to the final release.</p>
+        <dl>
+          <div><dt>Rate</dt><dd>€40 / hour</dd></div>
+          <div><dt>Billing</dt><dd>Monthly, on hours worked</dd></div>
+          <div><dt>Reporting</dt><dd>Live project timeline</dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer section-grid">
+    <p class="eyebrow">Available for thoughtful digital work</p>
+    <div class="footer-links"><a href="mailto:michele.volonghi@gmail.com">michele.volonghi@gmail.com</a><a href="https://wa.me/393317043898">WhatsApp</a><a href="https://cal.com/micvolo">Book a call</a></div>
+    <a class="client-access" href="/portal/login">Already a client? Access your project</a>
+  </footer>
+</PublicLayout>

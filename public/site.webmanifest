@@ -1,8 +1,8 @@
 {
-  "name": "Michele Volonghi",
-  "short_name": "Michele Volonghi",
-  "theme_color": "#3d4294",
-  "background_color": "#3d4294",
+  "name": "micvolo",
+  "short_name": "micvolo",
+  "theme_color": "#111111",
+  "background_color": "#111111",
   "orientation": "portrait",
   "display": "fullscreen",
   "icons": [

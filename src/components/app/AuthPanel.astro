@@ -1,0 +1,47 @@
+---
+interface Props {
+  role: 'admin' | 'client';
+  sent: boolean;
+  error: boolean;
+  preview?: string;
+}
+const { role, sent, error, preview } = Astro.props;
+const title = role === 'admin' ? 'Studio access' : 'Access your project';
+const note = role === 'admin'
+  ? 'A separate, allowlisted sign-in for the studio workspace.'
+  : 'Use the email connected to your project. No password required.';
+---
+<main class="auth-shell">
+  <a class="wordmark" href="/">micvolo</a>
+  <section class="auth-panel" aria-labelledby="auth-title">
+    <p class="eyebrow">{role === 'admin' ? 'Admin / private' : 'Client portal'}</p>
+    <h1 id="auth-title">{title}</h1>
+    <p class="muted">{note}</p>
+    {sent ? (
+      <>
+        <div class="notice" role="status">If the address is authorised, a six-digit code is on its way.</div>
+        {preview && <div class="preview-code"><span>Local preview</span><strong>{preview}</strong></div>}
+        <form method="post" action="/api/auth/verify-code" class="stack-form">
+          <input type="hidden" name="role" value={role} />
+          <label for="code">Access code</label>
+          <input id="code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required autofocus />
+          {error && <p class="form-error" role="alert">That code is invalid or has expired. Request a new one.</p>}
+          <button type="submit">Continue</button>
+        </form>
+        <form method="post" action="/api/auth/request-code" class="inline-reset">
+          <input type="hidden" name="role" value={role} />
+          <label for="email-again">Send another code</label>
+          <div class="input-action"><input id="email-again" name="email" type="email" autocomplete="email" required /><button type="submit">Resend</button></div>
+        </form>
+      </>
+    ) : (
+      <form method="post" action="/api/auth/request-code" class="stack-form">
+        <input type="hidden" name="role" value={role} />
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" autocomplete="email" required autofocus />
+        <button type="submit">Email me a code</button>
+      </form>
+    )}
+    <a class="text-link" href="/">← Return to the portfolio</a>
+  </section>
+</main>
