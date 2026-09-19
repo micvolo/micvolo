@@ -1,18 +1,22 @@
 ---
 import '@/styles/site.css';
+import { ClientRouter, fade } from 'astro:transitions';
+import InteractionRuntime from '@/components/InteractionRuntime.astro';
 interface Props { title: string; }
 const { title } = Astro.props;
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" transition:name="root" transition:animate={fade({ duration: '0.22s' })}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="theme-color" content="#f4f4f2" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)" />
+    <meta id="theme-color" name="theme-color" content="#1e1e1e" />
+    <script is:inline src="/theme.js"></script>
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <title>{title} — micvolo</title>
+    <ClientRouter />
+    <title>{title} — Michele Volonghi</title>
   </head>
-  <body class="app-body"><slot /></body>
+  <body class="app-body"><slot /><InteractionRuntime /></body>
 </html>

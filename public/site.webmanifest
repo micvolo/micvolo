@@ -1,10 +1,9 @@
 {
-  "name": "micvolo",
-  "short_name": "micvolo",
-  "theme_color": "#111111",
-  "background_color": "#111111",
-  "orientation": "portrait",
-  "display": "fullscreen",
+  "name": "Michele Volonghi",
+  "short_name": "Volonghi",
+  "theme_color": "#1e1e1e",
+  "background_color": "#1e1e1e",
+  "display": "standalone",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -17,6 +16,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }

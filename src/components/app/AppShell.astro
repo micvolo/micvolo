@@ -5,18 +5,19 @@ interface Props {
   principal: Principal;
   mode: 'admin' | 'client';
 }
+import ThemeToggle from '@/components/ThemeToggle.astro';
 const { title, subtitle, principal, mode } = Astro.props;
 ---
 <div class="app-shell">
-  <aside class="app-nav">
+  <aside class="app-nav glass">
     <div>
-      <a class="wordmark" href="/">micvolo</a>
+      <a class="wordmark" href="/">Michele Volonghi</a>
       <p class="nav-context">{mode === 'admin' ? 'Studio backoffice' : 'Collaboration portal'}<br />{principal.email}</p>
     </div>
-    <form method="post" action="/api/auth/logout"><button type="submit">Sign out</button></form>
+    <div class="app-nav-actions"><ThemeToggle /><form method="post" action="/api/auth/logout" data-astro-reload><button type="submit">Sign out</button></form></div>
   </aside>
   <main class="app-main">
-    <header class="app-topbar"><h1>{title}</h1><p>{subtitle}</p></header>
+    <header class="app-topbar glass"><h1>{title}</h1><p>{subtitle}</p></header>
     <slot />
   </main>
 </div>

@@ -1,0 +1,49 @@
+<script>
+  import Lenis from 'lenis';
+  import 'lenis/dist/lenis.css';
+  import { animate } from 'motion/mini';
+
+  let lenis: Lenis | undefined;
+  let animations: ReturnType<typeof animate>[] = [];
+
+  function initRuntime() {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const publicPage = document.querySelector<HTMLElement>('.page');
+
+    if (publicPage && !lenis) {
+      lenis = new Lenis({
+        autoRaf: true,
+        anchors: true,
+        smoothWheel: true,
+        lerp: 0.085,
+        stopInertiaOnNavigate: true,
+        respectReducedMotion: true,
+      });
+    }
+
+    if (!reduceMotion && publicPage) {
+      animations.push(animate(publicPage, { opacity: [0.96, 1] }, { duration: 0.18, ease: 'easeOut' }));
+    }
+
+    if (!reduceMotion) {
+      document.querySelectorAll<HTMLElement>('.progress-track > i').forEach((bar) => {
+        animations.push(animate(bar, { transform: ['scaleX(0)', 'scaleX(1)'] }, {
+          duration: 0.55,
+          ease: [0.22, 1, 0.36, 1],
+        }));
+        bar.style.transformOrigin = 'left center';
+      });
+    }
+  }
+
+  function destroyRuntime() {
+    lenis?.destroy();
+    lenis = undefined;
+    animations.forEach((animation) => animation.stop());
+    animations = [];
+  }
+
+  document.addEventListener('astro:page-load', initRuntime);
+  document.addEventListener('astro:before-swap', destroyRuntime);
+  window.addEventListener('pagehide', destroyRuntime, { once: true });
+</script>

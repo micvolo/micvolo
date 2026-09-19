@@ -131,7 +131,6 @@ const accrued = Math.round(project.worked_minutes * project.hourly_rate_cents / 
           <div class="field"><label for="file">PDF file</label><input id="file" name="file" type="file" accept="application/pdf,.pdf" required /></div>
           <button type="submit">Upload PDF</button>
         </form>
-        <div style="height:1.5rem"></div>
         {documentsResult.results.length ? <table class="ledger-table"><thead><tr><th>Title</th><th>Kind</th><th>Period</th><th class="align-right">File</th></tr></thead><tbody>{documentsResult.results.map((document) => <tr><td>{document.title}</td><td>{document.kind}</td><td>{document.period || '—'}</td><td class="align-right"><a class="text-link" href={`/documents/${document.id}`}>Download</a></td></tr>)}</tbody></table> : <div class="empty-state">No documents uploaded.</div>}
       </section>
     </div>

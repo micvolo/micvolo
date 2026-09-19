@@ -1,34 +1,56 @@
 ---
 import '@/styles/site.css';
-import LedgerRail from '@/components/public/LedgerRail.astro';
+import { ClientRouter, fade } from 'astro:transitions';
+import InteractionRuntime from '@/components/InteractionRuntime.astro';
 interface Props { title?: string; description?: string; }
-const { title, description = 'Digital partner — 7+ years building modern digital products. Web, marketing, e-commerce, 3D & shaders. €40/hr.' } = Astro.props;
-const pageTitle = title ? `${title} — micvolo` : 'micvolo — Independent creative developer & designer';
+const {
+  title,
+  description = 'Web developer e programmatore freelance a Brescia. Siti web, e-commerce, web app, 3D e animazioni per aziende e studi, in Lombardia e da remoto.',
+} = Astro.props;
+const pageTitle = title ? `${title} — Michele Volonghi` : 'Michele Volonghi — Web Developer & Programmatore a Brescia';
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Michele Volonghi',
+  url: 'https://micvolo.com',
+  jobTitle: 'Web Developer',
+  description,
+  email: 'mailto:michele.volonghi@gmail.com',
+  telephone: '+393317043898',
+  address: { '@type': 'PostalAddress', addressLocality: 'Brescia', addressRegion: 'Lombardy', addressCountry: 'IT' },
+  areaServed: ['Brescia', 'Lombardy', 'Italy'],
+  knowsAbout: ['Web development', 'Web design', 'E-commerce', 'Web applications', '3D & shaders', 'Motion design', 'Digital marketing'],
+  sameAs: ['https://github.com/micvolo'],
+};
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" transition:name="root" transition:animate={fade({ duration: '0.22s' })}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={description} />
-    <meta name="author" content="micvolo" />
-    <meta name="theme-color" content="#f4f4f2" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)" />
+    <meta name="author" content="Michele Volonghi" />
+    <meta name="robots" content="index, follow" />
+    <meta id="theme-color" name="theme-color" content="#1e1e1e" />
+    <script is:inline src="/theme.js"></script>
     <meta property="og:title" content={pageTitle} />
+    <meta property="og:site_name" content="Michele Volonghi" />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url} />
     <meta property="og:image" content={new URL('/assets/og.png', Astro.site)} />
     <link rel="canonical" href={Astro.url} />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <ClientRouter />
     <title>{pageTitle}</title>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <LedgerRail />
-    <slot />
+    <div class="page shell-layout"><slot /></div>
+    <InteractionRuntime />
   </body>
 </html>

@@ -1,0 +1,37 @@
+---
+import { getEntry } from 'astro:content';
+import ThemeToggle from '@/components/ThemeToggle.astro';
+
+const settings = await getEntry('settings', 'settings');
+if (!settings) throw new Error('Site settings are missing');
+---
+<aside class="rail" aria-label="Site information" data-lenis-prevent>
+  <section class="card rail-identity">
+    <div class="rail-headline">
+      <h1>{settings.data.title}</h1>
+      <p class="rail-lede">{settings.data.lede}</p>
+    </div>
+    <p class="rail-where">Brescia, Italy → working worldwide</p>
+  </section>
+
+  <nav class="card rail-nav" aria-label="Main navigation">
+    <a class="nav-pill nav-pill--primary" href="/portal/login">Client access</a>
+    <ThemeToggle />
+  </nav>
+
+  <section class="card rail-services" aria-label="Services">
+    <p class="hero-copy">{settings.data.hero}</p>
+  </section>
+
+  <section class="card rail-info" aria-label="Working model and contact">
+    <p class="rail-info__title">One partner. Visible progress.</p>
+    <p class="rail-info__copy">Strategy, design and development stay connected from the first estimate to the final release.</p>
+    <dl class="rail-info__stats">
+      <div><dt>Rate</dt><dd>€40 / hour</dd></div>
+      <div><dt>Billing</dt><dd>Monthly, on hours worked</dd></div>
+      <div><dt>Reporting</dt><dd>Live project timeline</dd></div>
+    </dl>
+    <div class="rail-info__contact" set:html={settings.data.description}></div>
+    <a class="rail-egg" href="https://lab.micvolo.com" target="_blank" rel="noreferrer">Laboratory<span aria-hidden="true"> ↗</span></a>
+  </section>
+</aside>

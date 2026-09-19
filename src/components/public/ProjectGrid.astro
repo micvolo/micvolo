@@ -12,14 +12,14 @@ const imageFor = (path: string) => images[`/src/assets/projects/${path.split('/'
 <ol class="project-list">
   {visible.map((project, index) => (
     <li>
-      <a href={`/work/${project.id}`} class="project-row">
-        <span class="project-index">{String(index + 1).padStart(2, '0')}</span>
-        <span class="project-image">
-          <Image src={imageFor(project.data.image)} alt="" widths={[480, 800, 1200]} sizes="(max-width: 720px) 92vw, 46vw" format="webp" quality={78} loading={index < 2 ? 'eager' : 'lazy'} />
-        </span>
-        <span class="project-title">{project.data.title}</span>
-        <span class="project-type">{project.data.tags}</span>
-        <time datetime={project.data.date.toISOString()}>{project.data.date.getFullYear()}</time>
+      <a href={project.data.url} class="work-card" target="_blank" rel="noreferrer" aria-label={`${project.data.title} — ${project.data.tags}, opens in a new tab`}>
+        <figure class="work-card__media">
+          <Image src={imageFor(project.data.image)} alt="" widths={[480, 800, 1200]} sizes="(max-width: 720px) calc(100vw - 32px), 50vw" format="webp" quality={82} loading={index < 2 ? 'eager' : 'lazy'} />
+        </figure>
+        <div class="work-card__foot">
+          <span class="work-card__title">{project.data.title} <span aria-hidden="true">↗</span></span>
+          <span class="work-card__meta">{project.data.tags} · <time datetime={project.data.date.toISOString()}>{project.data.date.getFullYear()}</time></span>
+        </div>
       </a>
     </li>
   ))}

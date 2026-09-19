@@ -6,6 +6,7 @@ const settings = defineCollection({
   schema: z.object({
     title: z.string(),
     shortDescription: z.string(),
+    lede: z.string(),
     hero: z.string(),
     description: z.string(),
     contacts: z.string(),
