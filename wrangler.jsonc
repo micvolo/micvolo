@@ -12,7 +12,7 @@
     "ADMIN_EMAIL": "michele.volonghi@gmail.com"
   },
   "send_email": [
-    { "name": "EMAIL" }
+    { "name": "EMAIL", "remote": true }
   ],
   "r2_buckets": [
     {
