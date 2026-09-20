@@ -325,14 +325,23 @@ button, .button { color: var(--bg); background: var(--ink); font-weight: 650; }
   .rail {
     position: sticky;
     top: var(--s2);
-    max-height: calc(100svh - 16px);
+    height: calc(100svh - 16px);
+    height: calc(100dvh - 16px);
     display: grid;
+    grid-auto-rows: max-content;
+    align-content: start;
     gap: var(--s2);
+    overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
-    scrollbar-width: none;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--ink-3) 35%, transparent) transparent;
   }
-  .rail::-webkit-scrollbar { display: none; }
+  .rail::-webkit-scrollbar { width: 4px; }
+  .rail::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--ink-3) 35%, transparent); border-radius: var(--pill); }
+  .rail::-webkit-scrollbar-track { background: transparent; }
   .rail-nav, .rail-identity, .rail-services, .rail-info, main { order: initial; }
   .rail-nav { width: auto; }
   .rail-identity { gap: var(--s5); }
