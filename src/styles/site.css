@@ -11,11 +11,11 @@
   --ink: light-dark(#1a1a19, #f0f0ee);
   --ink-2: light-dark(#4a4a47, #b8b8b5);
   --ink-3: light-dark(#666663, #92928f);
-  --fill: light-dark(rgba(247, 247, 244, .62), rgba(34, 34, 34, .62));
-  --fill-2: light-dark(rgba(226, 226, 222, .68), rgba(52, 52, 52, .68));
-  --fill-3: light-dark(rgba(205, 205, 200, .74), rgba(73, 73, 73, .74));
-  --glass-surface: light-dark(rgba(255, 255, 252, .58), rgba(27, 27, 27, .58));
-  --glass-edge: light-dark(rgba(255, 255, 255, .76), rgba(255, 255, 255, .10));
+  --fill: light-dark(rgba(247, 247, 244, .56), rgba(34, 34, 34, .56));
+  --fill-2: light-dark(rgba(226, 226, 222, .64), rgba(52, 52, 52, .64));
+  --fill-3: light-dark(rgba(205, 205, 200, .72), rgba(73, 73, 73, .72));
+  --glass-surface: light-dark(rgba(255, 255, 252, .50), rgba(27, 27, 27, .50));
+  --glass-edge: light-dark(rgba(255, 255, 255, .82), rgba(255, 255, 255, .13));
   --glass-shadow: light-dark(0 14px 42px rgba(28, 28, 24, .07), 0 16px 48px rgba(0, 0, 0, .20));
   --accent: light-dark(#b8552e, #d9784f);
   --accent-ink: light-dark(#ffffff, #1e1e1e);
@@ -105,7 +105,7 @@ button { cursor: pointer; }
   width: 100%;
   height: 100%;
   pointer-events: none;
-  opacity: .58;
+  opacity: .62;
   filter: grayscale(1);
 }
 .page, .auth-shell, .app-shell { position: relative; z-index: 1; }
@@ -118,8 +118,8 @@ button { cursor: pointer; }
 }
 @supports (backdrop-filter: blur(1px)) {
   .card, .glass, .work-card, .auth-panel, .app-nav, .app-topbar, .app-section, .metric, .admin-project-row, .notice, .preview-code, .empty-state, .flash {
-    backdrop-filter: blur(24px) saturate(112%);
-    -webkit-backdrop-filter: blur(24px) saturate(112%);
+    backdrop-filter: blur(28px) saturate(114%);
+    -webkit-backdrop-filter: blur(28px) saturate(114%);
   }
 }
 
