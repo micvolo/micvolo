@@ -1,6 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import ThemeToggle from '@/components/ThemeToggle.astro';
+import ArrowIcon from '@/components/ArrowIcon.astro';
 
 const settings = await getEntry('settings', 'settings');
 if (!settings) throw new Error('Site settings are missing');
@@ -32,6 +33,6 @@ if (!settings) throw new Error('Site settings are missing');
       <div><dt>Reporting</dt><dd>Live project timeline</dd></div>
     </dl>
     <div class="rail-info__contact" set:html={settings.data.description}></div>
-    <a class="rail-egg" href="https://lab.micvolo.com" target="_blank" rel="noreferrer">Laboratory<span aria-hidden="true"> ↗</span></a>
+    <a class="rail-egg link-with-arrow" href="https://lab.micvolo.com" target="_blank" rel="noreferrer">Laboratory<ArrowIcon direction="external" /></a>
   </section>
 </aside>

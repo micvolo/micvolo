@@ -3,6 +3,7 @@ import { env as cloudflareEnv } from 'cloudflare:workers';
 export const prerender = false;
 import AppLayout from '@/layouts/AppLayout.astro';
 import AppShell from '@/components/app/AppShell.astro';
+import ArrowIcon from '@/components/ArrowIcon.astro';
 import { formatHours, formatMoney, type ProjectSummary } from '@/lib/db';
 const principal = Astro.locals.principal;
 if (!principal) return Astro.redirect('/admin/login');
@@ -41,7 +42,7 @@ const error = Astro.url.searchParams.get('error');
 
       <section class="app-section">
         <div class="app-section-header"><h2>Projects</h2><p>Select a row to update its ledger</p></div>
-        {projects.length ? <ol class="admin-projects">{projects.map((project) => <li><a class="admin-project-row" href={`/admin/projects/${project.id}`}><strong>{project.name}</strong><span>{project.client_name}</span><span>{formatHours(project.worked_minutes)}</span><span>{formatMoney(project.invoiced_cents)}</span><span>{formatMoney(project.paid_cents)}</span><span>Open →</span></a></li>)}</ol> : <div class="empty-state">No projects yet. Create the first client and project below.</div>}
+        {projects.length ? <ol class="admin-projects">{projects.map((project) => <li><a class="admin-project-row" href={`/admin/projects/${project.id}`}><strong>{project.name}</strong><span>{project.client_name}</span><span>{formatHours(project.worked_minutes)}</span><span>{formatMoney(project.invoiced_cents)}</span><span>{formatMoney(project.paid_cents)}</span><span class="link-with-arrow">Open<ArrowIcon direction="right" /></span></a></li>)}</ol> : <div class="empty-state">No projects yet. Create the first client and project below.</div>}
       </section>
 
       <section class="app-section">
