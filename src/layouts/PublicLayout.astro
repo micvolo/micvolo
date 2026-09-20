@@ -2,6 +2,7 @@
 import '@/styles/site.css';
 import { ClientRouter, fade } from 'astro:transitions';
 import InteractionRuntime from '@/components/InteractionRuntime.astro';
+import AmbientShader from '@/components/AmbientShader.astro';
 interface Props { title?: string; description?: string; }
 const {
   title,
@@ -49,6 +50,7 @@ const structuredData = {
     <title>{pageTitle}</title>
   </head>
   <body>
+    <AmbientShader />
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="page shell-layout"><slot /></div>
     <InteractionRuntime />

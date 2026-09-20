@@ -2,6 +2,7 @@
 import '@/styles/site.css';
 import { ClientRouter, fade } from 'astro:transitions';
 import InteractionRuntime from '@/components/InteractionRuntime.astro';
+import AmbientShader from '@/components/AmbientShader.astro';
 interface Props { title: string; }
 const { title } = Astro.props;
 ---
@@ -18,5 +19,5 @@ const { title } = Astro.props;
     <ClientRouter />
     <title>{title} — Michele Volonghi</title>
   </head>
-  <body class="app-body"><slot /><InteractionRuntime /></body>
+  <body class="app-body"><AmbientShader /><slot /><InteractionRuntime /></body>
 </html>

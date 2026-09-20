@@ -1,0 +1,240 @@
+<canvas
+  class="ambient-shader"
+  data-ambient-shader
+  aria-hidden="true"
+  transition:persist="ambient-shader"
+></canvas>
+
+<script>
+  import { Flowmap, Geometry, Mesh, Program, Renderer, Vec2, Vec3, Vec4 } from 'ogl';
+
+  type Palette = [number, number, number][];
+
+  const vertex = /* glsl */ `
+    attribute vec2 uv;
+    attribute vec2 position;
+    varying vec2 vUv;
+
+    void main() {
+      vUv = uv;
+      gl_Position = vec4(position, 0.0, 1.0);
+    }
+  `;
+
+  const fragment = /* glsl */ `
+    precision highp float;
+    precision highp int;
+
+    uniform sampler2D tFlow;
+    uniform float uTime;
+    uniform vec4 res;
+    uniform vec3 bg1;
+    uniform vec3 bg2;
+    uniform vec3 bg3;
+    varying vec2 vUv;
+
+    float rand(vec2 n) {
+      return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+    }
+
+    vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+    vec4 perm(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
+
+    float noise(vec3 p) {
+      vec3 a = floor(p);
+      vec3 d = p - a;
+      d = d * d * (3.0 - 2.0 * d);
+      vec4 b = a.xxyy + vec4(0.0, 1.0, 0.0, 1.0);
+      vec4 k1 = perm(b.xyxy);
+      vec4 k2 = perm(k1.xyxy + b.zzww);
+      vec4 c = k2 + a.zzzz;
+      vec4 k3 = perm(c);
+      vec4 k4 = perm(c + 1.0);
+      vec4 o1 = fract(k3 * (1.0 / 41.0));
+      vec4 o2 = fract(k4 * (1.0 / 41.0));
+      vec4 o3 = o2 * d.z + o1 * (1.0 - d.z);
+      vec2 o4 = o3.yw * d.x + o3.xz * (1.0 - d.x);
+      return o4.y * d.y + o4.x * (1.0 - d.y);
+    }
+
+    float lines(float value, float offset) {
+      float wave = abs(0.5 * cos(value) + offset * 0.5);
+      return smoothstep(0.0, 0.5 + offset * 0.5, wave);
+    }
+
+    void main() {
+      vec3 flow = texture2D(tFlow, vUv).rgb;
+      vec2 uv = (vUv - vec2(0.5)) * res.zw + vec2(0.5);
+      uv -= flow.xy * 0.075;
+
+      float n = noise(vec3(uv * 5.5, uTime * 0.035)) * 7.0;
+      float baseUv = (1.0 - uv.y) * n;
+      float basePattern = lines(baseUv, 1.0);
+      float secondPattern = lines(baseUv, 0.12);
+      vec3 baseColor = mix(bg1, bg2, basePattern);
+      vec3 color = mix(baseColor, bg3, secondPattern);
+
+      vec2 grainUv = vUv;
+      grainUv.y *= rand(vec2(grainUv.y, 1.0));
+      color += rand(grainUv) * 0.022;
+
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `;
+
+  const palettes: Record<'light' | 'dark', Palette> = {
+    light: [[0.96, 0.96, 0.945], [0.82, 0.82, 0.80], [0.67, 0.67, 0.65]],
+    dark: [[0.075, 0.075, 0.075], [0.15, 0.15, 0.15], [0.27, 0.27, 0.26]],
+  };
+
+  function effectiveTheme(): 'light' | 'dark' {
+    const explicit = document.documentElement.dataset.theme;
+    if (explicit === 'light' || explicit === 'dark') return explicit;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function initShader() {
+    const canvas = document.querySelector<HTMLCanvasElement>('[data-ambient-shader]');
+    if (!canvas || canvas.dataset.ready === 'true') return;
+    canvas.dataset.ready = 'true';
+
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const systemTheme = matchMedia('(prefers-color-scheme: dark)');
+    let frame = 0;
+    let visible = !document.hidden;
+
+    try {
+      const renderer = new Renderer({ canvas, dpr: Math.min(devicePixelRatio, 1.5) });
+      const gl = renderer.gl;
+      const mouse = new Vec2(-1);
+      const velocity = new Vec2();
+      const flowmap = new Flowmap(gl, { falloff: 0.22, dissipation: 0.965 });
+      const geometry = new Geometry(gl, {
+        position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
+        uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) },
+      });
+
+      const initial = palettes[effectiveTheme()].map((color) => [...color]) as Palette;
+      let target = palettes[effectiveTheme()];
+      let aspect = 1;
+      let lastTime = 0;
+      const lastMouse = new Vec2();
+
+      const program = new Program(gl, {
+        vertex,
+        fragment,
+        uniforms: {
+          uTime: { value: 0 },
+          bg1: { value: new Vec3(...initial[0]) },
+          bg2: { value: new Vec3(...initial[1]) },
+          bg3: { value: new Vec3(...initial[2]) },
+          res: { value: new Vec4(innerWidth, innerHeight, 1, 1) },
+          tFlow: flowmap.uniform,
+        },
+      });
+      const mesh = new Mesh(gl, { geometry, program });
+
+      function resize() {
+        const width = document.documentElement.clientWidth;
+        const height = document.documentElement.clientHeight;
+        const imageAspect = 1080 / 1920;
+        let x = 1;
+        let y = 1;
+        if (height / width < imageAspect) y = height / width / imageAspect;
+        else x = width / height * imageAspect;
+        program.uniforms.res.value.set(width, height, x, y);
+        renderer.setSize(width, height);
+        aspect = width / height;
+      }
+
+      function updatePointer(event: MouseEvent | TouchEvent) {
+        const touch = 'changedTouches' in event ? event.changedTouches[0] : undefined;
+        const x = touch?.clientX ?? (event as MouseEvent).clientX;
+        const y = touch?.clientY ?? (event as MouseEvent).clientY;
+        if (x === undefined || y === undefined) return;
+        mouse.set(x / gl.renderer.width, 1 - y / gl.renderer.height);
+        const now = performance.now();
+        if (!lastTime) {
+          lastTime = now;
+          lastMouse.set(x, y);
+        }
+        const delta = Math.max(10.4, now - lastTime);
+        velocity.set((x - lastMouse.x) / delta, (y - lastMouse.y) / delta);
+        velocity.needsUpdate = true;
+        lastMouse.set(x, y);
+        lastTime = now;
+      }
+
+      function updatePalette() {
+        target = palettes[effectiveTheme()];
+        if (reduceMotion.matches) renderOnce();
+      }
+
+      function blendPalette() {
+        ([program.uniforms.bg1.value, program.uniforms.bg2.value, program.uniforms.bg3.value] as Vec3[]).forEach((uniform, index) => {
+          uniform.x += (target[index][0] - uniform.x) * 0.075;
+          uniform.y += (target[index][1] - uniform.y) * 0.075;
+          uniform.z += (target[index][2] - uniform.z) * 0.075;
+        });
+      }
+
+      function renderOnce(time = performance.now()) {
+        blendPalette();
+        program.uniforms.uTime.value = time * 0.001;
+        renderer.render({ scene: mesh });
+      }
+
+      function update(time: number) {
+        if (!visible || reduceMotion.matches) return;
+        if (!velocity.needsUpdate) {
+          mouse.set(-1);
+          velocity.set(0);
+        }
+        velocity.needsUpdate = false;
+        flowmap.aspect = aspect;
+        flowmap.mouse.copy(mouse);
+        flowmap.velocity.lerp(velocity, 0.11);
+        flowmap.update();
+        renderOnce(time);
+        frame = requestAnimationFrame(update);
+      }
+
+      function handleVisibility() {
+        visible = !document.hidden;
+        cancelAnimationFrame(frame);
+        if (visible && !reduceMotion.matches) frame = requestAnimationFrame(update);
+      }
+
+      const observer = new MutationObserver(updatePalette);
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      addEventListener('resize', resize, { passive: true });
+      addEventListener('mousemove', updatePointer, { passive: true });
+      addEventListener('touchstart', updatePointer, { passive: true });
+      addEventListener('touchmove', updatePointer, { passive: true });
+      document.addEventListener('visibilitychange', handleVisibility);
+      systemTheme.addEventListener('change', updatePalette);
+      reduceMotion.addEventListener('change', handleVisibility);
+
+      resize();
+      renderOnce();
+      if (!reduceMotion.matches) frame = requestAnimationFrame(update);
+
+      addEventListener('pagehide', () => {
+        cancelAnimationFrame(frame);
+        observer.disconnect();
+        removeEventListener('resize', resize);
+        removeEventListener('mousemove', updatePointer);
+        removeEventListener('touchstart', updatePointer);
+        removeEventListener('touchmove', updatePointer);
+        document.removeEventListener('visibilitychange', handleVisibility);
+        systemTheme.removeEventListener('change', updatePalette);
+        reduceMotion.removeEventListener('change', handleVisibility);
+      }, { once: true });
+    } catch {
+      canvas.dataset.failed = 'true';
+    }
+  }
+
+  document.addEventListener('astro:page-load', initShader);
+  if (document.readyState !== 'loading') initShader();
+</script>
