@@ -158,10 +158,10 @@ button { cursor: pointer; }
 .shell-layout { display: flex; flex-direction: column; align-items: stretch; gap: var(--s2); }
 .rail { display: contents; }
 .rail-identity { order: 1; }
-main { order: 2; }
-.rail-services { order: 3; }
-.rail-info { order: 4; }
-.rail-nav { order: 5; width: 100%; }
+.rail-services { order: 2; }
+.rail-info { order: 3; }
+.rail-nav { order: 4; width: 100%; }
+main { order: 5; }
 .rail-identity, .rail-services, .rail-info { padding: var(--s4); }
 .rail-identity { display: grid; gap: var(--s4); }
 .rail-where { color: var(--ink-3); font-size: var(--f-small); }
