@@ -1,50 +1,78 @@
 (function () {
+  var STORAGE_KEY = 'micvolo-theme';
+  var LEGACY_KEY = 'theme';
+  var systemPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  var memoryTheme = null;
+
+  function isTheme(value) {
+    return value === 'light' || value === 'dark';
+  }
+
   function systemTheme() {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return systemPreference.matches ? 'dark' : 'light';
   }
 
   function storedTheme() {
     try {
-      var value = localStorage.getItem('theme');
-      return value === 'light' || value === 'dark' ? value : null;
+      var value = sessionStorage.getItem(STORAGE_KEY);
+      return isTheme(value) ? value : memoryTheme;
     } catch (_) {
-      return null;
+      return memoryTheme;
     }
+  }
+
+  function migrateLegacyTheme() {
+    try {
+      var current = sessionStorage.getItem(STORAGE_KEY);
+      if (isTheme(current)) return current;
+
+      var legacy = localStorage.getItem(LEGACY_KEY);
+      localStorage.removeItem(LEGACY_KEY);
+      if (isTheme(legacy)) {
+        sessionStorage.setItem(STORAGE_KEY, legacy);
+        return legacy;
+      }
+    } catch (_) {}
+    return null;
   }
 
   function effectiveTheme() {
     return storedTheme() || systemTheme();
   }
 
+  function applyThemeToDocument(target, preference) {
+    if (!target) return;
+    if (isTheme(preference)) target.documentElement.dataset.theme = preference;
+    else delete target.documentElement.dataset.theme;
+
+    var theme = preference || systemTheme();
+    var lightMeta = target.querySelector('#theme-color-light');
+    var darkMeta = target.querySelector('#theme-color-dark');
+    if (lightMeta) lightMeta.setAttribute('media', theme === 'light' ? 'all' : 'not all');
+    if (darkMeta) darkMeta.setAttribute('media', theme === 'dark' ? 'all' : 'not all');
+  }
+
   function syncThemeControls() {
     var theme = effectiveTheme();
     document.querySelectorAll('[data-theme-toggle]').forEach(function (button) {
+      var next = theme === 'dark' ? 'light' : 'dark';
       button.setAttribute('aria-checked', String(theme === 'dark'));
-      button.title = theme === 'dark' ? 'Use light theme' : 'Use dark theme';
+      button.setAttribute('aria-label', 'Switch to ' + next + ' theme');
+      button.title = 'Switch to ' + next + ' theme';
     });
-    var meta = document.querySelector('#theme-color');
-    if (meta) meta.content = theme === 'dark' ? '#1e1e1e' : '#f7f7f5';
+    applyThemeToDocument(document, storedTheme());
   }
 
-  try {
-    var initial = localStorage.getItem('theme');
-    if (initial === 'light' || initial === 'dark') {
-      document.documentElement.dataset.theme = initial;
-    }
-  } catch (_) {}
+  var initialTheme = migrateLegacyTheme() || storedTheme();
+  memoryTheme = initialTheme;
+  applyThemeToDocument(document, initialTheme);
 
   function applyTheme(next) {
+    memoryTheme = next;
     try {
-      if (next === systemTheme()) {
-        localStorage.removeItem('theme');
-        delete document.documentElement.dataset.theme;
-      } else {
-        localStorage.setItem('theme', next);
-        document.documentElement.dataset.theme = next;
-      }
-    } catch (_) {
-      document.documentElement.dataset.theme = next;
-    }
+      sessionStorage.setItem(STORAGE_KEY, next);
+    } catch (_) {}
+    document.documentElement.dataset.theme = next;
     syncThemeControls();
   }
 
@@ -64,7 +92,7 @@
       }).finished.then(clearSwitchingState, clearSwitchingState);
     } else {
       applyTheme(next);
-      setTimeout(clearSwitchingState, 320);
+      window.setTimeout(clearSwitchingState, 320);
     }
   }
 
@@ -77,12 +105,19 @@
     syncThemeControls();
   }
 
+  document.addEventListener('astro:before-swap', function (event) {
+    applyThemeToDocument(event.newDocument, storedTheme());
+  });
+  document.addEventListener('astro:page-load', bindThemeControls);
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bindThemeControls);
+    document.addEventListener('DOMContentLoaded', bindThemeControls, { once: true });
   } else {
     bindThemeControls();
   }
-  document.addEventListener('astro:page-load', bindThemeControls);
 
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncThemeControls);
+  systemPreference.addEventListener('change', function () {
+    if (!storedTheme()) delete document.documentElement.dataset.theme;
+    syncThemeControls();
+  });
 })();

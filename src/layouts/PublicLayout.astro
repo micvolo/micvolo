@@ -32,7 +32,9 @@ const structuredData = {
     <meta name="description" content={description} />
     <meta name="author" content="Michele Volonghi" />
     <meta name="robots" content="index, follow" />
-    <meta id="theme-color" name="theme-color" content="#1e1e1e" />
+    <meta name="color-scheme" content="light dark" />
+    <meta id="theme-color-light" name="theme-color" content="#f7f7f5" media="(prefers-color-scheme: light)" />
+    <meta id="theme-color-dark" name="theme-color" content="#1e1e1e" media="(prefers-color-scheme: dark)" />
     <script is:inline src="/theme.js"></script>
     <meta property="og:title" content={pageTitle} />
     <meta property="og:site_name" content="Michele Volonghi" />
