@@ -206,7 +206,7 @@ dd { font-variant-numeric: tabular-nums; }
 .auth-panel h1 { margin: var(--s4) 0 var(--s2); font-size: 17px; font-weight: 650; line-height: 1.25; letter-spacing: -.01em; }
 .muted { color: var(--ink-2); line-height: 1.45; }
 .stack-form { display: grid; gap: var(--s2); margin: var(--s6) 0; }
-.stack-form label, .inline-reset label, .field label { color: var(--ink-3); font-size: var(--f-label); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.stack-form label, .field label { color: var(--ink-3); font-size: var(--f-label); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
 input, select, textarea { width: 100%; min-height: var(--ctl); padding: 0 var(--s3); border: 0; border-radius: var(--r-2); background: var(--fill-2); font-size: 16px; outline: 0; transition: background-color var(--t-color); }
 textarea { min-height: 104px; padding-block: var(--s3); resize: vertical; }
 input:hover, select:hover, textarea:hover, input:focus, select:focus, textarea:focus { background: var(--fill-3); }
@@ -218,10 +218,6 @@ button, .button { color: var(--bg); background: var(--ink); font-weight: 650; }
 .preview-code { margin-top: var(--s2); display: flex; justify-content: space-between; align-items: baseline; }
 .preview-code strong { color: var(--ink); font-size: 18px; letter-spacing: .15em; font-variant-numeric: tabular-nums; }
 .form-error { color: var(--danger); }
-.inline-reset { margin: var(--s6) 0; }
-.inline-reset > label { display: block; margin-bottom: var(--s2); }
-.input-action { display: flex; gap: var(--s2); }
-.input-action button { flex: 0 0 auto; }
 .auth-panel > .text-link { font-size: var(--f-small); }
 
 .app-shell { min-height: calc(100svh - 16px); display: grid; grid-template-columns: 1fr; gap: var(--s2); }

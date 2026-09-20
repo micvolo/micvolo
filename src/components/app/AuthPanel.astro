@@ -25,13 +25,8 @@ const note = role === 'admin'
           <input type="hidden" name="role" value={role} />
           <label for="code">Access code</label>
           <input id="code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required autofocus />
-          {error && <p class="form-error" role="alert">That code is invalid or has expired. Request a new one.</p>}
+          {error && <p class="form-error" role="alert">That code is invalid or has expired.</p>}
           <button type="submit">Continue</button>
-        </form>
-        <form method="post" action="/api/auth/request-code" class="inline-reset" data-astro-reload>
-          <input type="hidden" name="role" value={role} />
-          <label for="email-again">Send another code</label>
-          <div class="input-action"><input id="email-again" name="email" type="email" autocomplete="email" required /><button type="submit">Resend</button></div>
         </form>
       </>
     ) : (
