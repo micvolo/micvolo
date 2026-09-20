@@ -159,8 +159,8 @@ button { cursor: pointer; }
 .rail { display: contents; }
 .rail-identity { order: 1; }
 .rail-services { order: 2; }
-.rail-info { order: 3; }
-.rail-nav { order: 4; width: 100%; }
+.rail-nav { order: 3; width: 100%; }
+.rail-info { order: 4; }
 main { order: 5; }
 .rail-identity, .rail-services, .rail-info { padding: var(--s4); }
 .rail-identity { display: grid; gap: var(--s4); }

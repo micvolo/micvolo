@@ -18,6 +18,11 @@ if (!settings) throw new Error('Site settings are missing');
     <p class="hero-copy">{settings.data.hero}</p>
   </section>
 
+  <nav class="card rail-nav" aria-label="Main navigation">
+    <a class="nav-pill nav-pill--primary" href="/portal/login">Client access</a>
+    <ThemeToggle />
+  </nav>
+
   <section class="card rail-info" aria-label="Working model and contact">
     <p class="rail-info__title">Independent setup. Product mindset.</p>
     <p class="rail-info__copy">Direct collaboration, short feedback loops and production-ready delivery—from first scope to launch.</p>
@@ -29,9 +34,4 @@ if (!settings) throw new Error('Site settings are missing');
     <div class="rail-info__contact" set:html={settings.data.description}></div>
     <a class="rail-egg" href="https://lab.micvolo.com" target="_blank" rel="noreferrer">Laboratory<span aria-hidden="true"> ↗</span></a>
   </section>
-
-  <nav class="card rail-nav" aria-label="Main navigation">
-    <a class="nav-pill nav-pill--primary" href="/portal/login">Client access</a>
-    <ThemeToggle />
-  </nav>
 </aside>
