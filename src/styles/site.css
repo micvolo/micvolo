@@ -70,7 +70,10 @@
 html { background: var(--bg); -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
 body { min-width: 320px; margin: 0; overflow-x: clip; color: var(--ink); background: transparent; text-rendering: optimizeSpeed; letter-spacing: -.31px; }
 body, button, input, select, textarea { font: inherit; }
-a { color: inherit; text-decoration: none; }
+a { color: inherit; text-decoration: none; transition: color var(--t-color); }
+@media (hover: hover) {
+  a:not(.nav-pill):not(.button):hover { color: var(--accent); }
+}
 img { display: block; max-width: 100%; }
 figure, p, dl, dd { margin: 0; }
 p { text-wrap: pretty; }
@@ -134,7 +137,7 @@ button { cursor: pointer; }
 }
 .text-link { color: var(--ink-2); text-decoration: none; transition: color var(--t-color); }
 @media (hover: hover) {
-  .text-link:hover { color: var(--ink); text-decoration: underline; text-decoration-thickness: .75px; text-underline-offset: 4px; }
+  .text-link:hover { color: var(--accent); }
 }
 .nav-pill, button, .button {
   min-height: var(--ctl);
@@ -154,11 +157,11 @@ button { cursor: pointer; }
 /* Public shell */
 .shell-layout { display: flex; flex-direction: column; align-items: stretch; gap: var(--s2); }
 .rail { display: contents; }
-.rail-nav { order: 0; width: 100%; }
 .rail-identity { order: 1; }
 main { order: 2; }
 .rail-services { order: 3; }
 .rail-info { order: 4; }
+.rail-nav { order: 5; width: 100%; }
 .rail-identity, .rail-services, .rail-info { padding: var(--s4); }
 .rail-identity { display: grid; gap: var(--s4); }
 .rail-where { color: var(--ink-3); font-size: var(--f-small); }
@@ -190,7 +193,7 @@ main { order: 2; }
 .rail-info__contact small { color: var(--ink-3); font-size: var(--f-small); }
 .rail-info__contact a { color: var(--ink); text-decoration: none; transition: color var(--t-color); }
 @media (hover: hover) {
-  .rail-info__contact a:hover { color: var(--ink-2); text-decoration: underline; text-decoration-thickness: .75px; text-underline-offset: 4px; }
+  .rail-info__contact a:hover { color: var(--accent); }
 }
 .rail-egg { margin-top: var(--s2); color: var(--ink-3); font-size: var(--f-label); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; transition: color var(--t-color); }
 .rail-egg:hover { color: var(--accent); }

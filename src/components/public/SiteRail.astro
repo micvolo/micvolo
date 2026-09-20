@@ -14,18 +14,13 @@ if (!settings) throw new Error('Site settings are missing');
     <p class="rail-where">Brescia, Italy → working worldwide</p>
   </section>
 
-  <nav class="card rail-nav" aria-label="Main navigation">
-    <a class="nav-pill nav-pill--primary" href="/portal/login">Client access</a>
-    <ThemeToggle />
-  </nav>
-
   <section class="card rail-services" aria-label="Services">
     <p class="hero-copy">{settings.data.hero}</p>
   </section>
 
   <section class="card rail-info" aria-label="Working model and contact">
-    <p class="rail-info__title">One partner. Visible progress.</p>
-    <p class="rail-info__copy">Strategy, design and development stay connected from the first estimate to the final release.</p>
+    <p class="rail-info__title">Independent setup. Product mindset.</p>
+    <p class="rail-info__copy">Direct collaboration, short feedback loops and production-ready delivery—from first scope to launch.</p>
     <dl class="rail-info__stats">
       <div><dt>Rate</dt><dd>€40 / hour</dd></div>
       <div><dt>Billing</dt><dd>Monthly, on hours worked</dd></div>
@@ -34,4 +29,9 @@ if (!settings) throw new Error('Site settings are missing');
     <div class="rail-info__contact" set:html={settings.data.description}></div>
     <a class="rail-egg" href="https://lab.micvolo.com" target="_blank" rel="noreferrer">Laboratory<span aria-hidden="true"> ↗</span></a>
   </section>
+
+  <nav class="card rail-nav" aria-label="Main navigation">
+    <a class="nav-pill nav-pill--primary" href="/portal/login">Client access</a>
+    <ThemeToggle />
+  </nav>
 </aside>
