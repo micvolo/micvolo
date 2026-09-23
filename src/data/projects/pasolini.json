@@ -1,0 +1,81 @@
+{
+  "title": "Pasolini",
+  "date": "2025-07-29",
+  "tags": "Institutional website",
+  "url": "https://pasolini.it",
+  "description": "Case notes on the Pasolini General Contractor site — ribbon-mark hero, a 500-row client ledger and 360° tour links built on Stra Studio’s identity system",
+  "summary": "Cultural archive with deep-zoom scans, timeline state encoded in the URL",
+  "cover": "./pasolini/cover.webp",
+  "notes": [
+    "Art direction is straight out of Stra Studio’s identity work — the layered ribbon P in signal orange over four greys, ported to the hero as one layered SVG and themed through two custom properties so no other block carries a colour of its own",
+    {
+      "lead": "What Stra Studio handed over, dropped into the build unchanged",
+      "items": [
+        "ribbon P mark as one layered SVG with the five identity greys as tokens",
+        "service photography locked to their 3:2 sell-sheet crop",
+        "the 1959 DITTA L. archive plate supplied as a single signed scan"
+      ]
+    },
+    "Below 900px the page recomposes instead of shrinking — the ribbon stacks under the claim, the pillar cards go full bleed and the client ledger reflows to one row per client with its image and tour badges inline",
+    "The client ledger runs 500+ entries as one progressively disclosed table — rows expand in place for the project shots, the Immagini and Tour Virtuale columns are real links instead of lightbox chrome and every brand name stays plain text for search",
+    "Each virtual tour card deep-links into a 360° panorama of the finished store, and design reviews ran on shared staging with Stra Studio — three focused rounds, art direction notes closed per section and the approved state frozen before the client roster went into the CMS",
+    "Since launch the marketing team adds client rows and tour links on their own and the marchio storico announcement landed on the same layout with no rebuild — the kind of outcome that gets a general contractor asking about the next site before the invoice clears"
+  ],
+  "screens": [
+    {
+      "file": "./pasolini/screen-desktop-01.webp",
+      "width": "full",
+      "alt": "Pasolini desktop home — layered ribbon P hero with the General Contractor claim"
+    },
+    {
+      "layout": "split",
+      "width": "half",
+      "file": "./pasolini/screen-desktop-02.webp",
+      "alt": "Pasolini desktop — service pillars with retail photography and the 1959 company intro",
+      "aside": "Type follows the studio’s grotesk spec — one variable family with display cuts tracked to −1,5% from 48px up and tabular figures locked in the ledger so the date columns line up at every width"
+    },
+    {
+      "layout": "quad",
+      "width": "full",
+      "row": [
+        {
+          "file": "./pasolini/screen-mobile-01.webp",
+          "alt": "Pasolini mobile — hero with ribbon mark and the gallery toggle"
+        },
+        {
+          "file": "./pasolini/screen-mobile-02.webp",
+          "alt": "Pasolini mobile — company story, HQ aerial and the historic trademark panel"
+        },
+        {
+          "file": "./pasolini/screen-mobile-03.webp",
+          "alt": "Pasolini mobile — pillar values and the client base intro"
+        },
+        {
+          "file": "./pasolini/screen-mobile-04.webp",
+          "alt": "Pasolini mobile — client ledger rows and virtual tour cards"
+        }
+      ]
+    },
+    {
+      "layout": "grid",
+      "width": "full",
+      "row": [
+        {
+          "file": "./pasolini/screen-desktop-03.webp",
+          "alt": "Pasolini desktop — five pillars ledger and the 500+ client table"
+        },
+        {
+          "file": "./pasolini/screen-desktop-04.webp",
+          "alt": "Pasolini desktop — HQ aerial and the historic 1959 brand mark"
+        }
+      ]
+    },
+    {
+      "layout": "split",
+      "width": "half",
+      "file": "./pasolini/screen-desktop-05.webp",
+      "alt": "Pasolini desktop — client ledger rows and the 360° virtual tour entries",
+      "aside": "Client signed off the first end-to-end walkthrough in two days and settles roster questions the same week — the 500-row table has been growing ever since with no design escalations"
+    }
+  ]
+}

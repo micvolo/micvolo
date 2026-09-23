@@ -1,56 +1,35 @@
 ---
-import type { ImageMetadata } from 'astro';
 import ArrowIcon from '@/components/ArrowIcon.astro';
 import CaseFrame from '@/components/project-page/CaseFrame.astro';
 import CaseNote from '@/components/project-page/CaseNote.astro';
-import type { ProjectCase, ScreenWidth } from '@/lib/project-page/cases';
-import { isRowSlot, isSplitSlot } from '@/lib/project-page/cases';
-import { appIcon } from '@/lib/project-page/app-icons';
-import { projectDateLabel } from '@/lib/project-page/project-date';
+import { appIcon } from '@/lib/projects/app-icons';
+import { projectDateLabel } from '@/lib/projects/project-date';
+import { isRowSlot, isSplitSlot, type Project, type ScreenWidth } from '@/lib/projects';
 
 interface Props {
-  title: string;
-  date: Date;
-  url?: string;
-  projectCase: ProjectCase;
+  project: Project;
 }
-const { title, date, url, projectCase } = Astro.props;
+const { project } = Astro.props;
 
-const images = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/assets/project-screens/**/*.webp',
-  { eager: true }
-);
-const imageFor = (slug: string, file: string) => images[`/src/assets/project-screens/${slug}/${file}`]?.default;
+/** viewport share (in vw) each slot width renders at on desktop — feeds the responsive `sizes` */
+const viewportShare: Record<ScreenWidth, number> = { full: 60, half: 30, quarter: 15 };
 
-const vwFor: Record<ScreenWidth, number> = { full: 60, half: 30, quarter: 15 };
-
-const slots = projectCase.screens.map((slot) => {
-  if (isRowSlot(slot)) {
-    const items = slot.row.map((item) => ({ ...item, meta: imageFor(projectCase.slug, item.file) }));
-    const first = items[0]?.meta;
-    return {
-      slot,
-      items,
-      sizes: `(max-width: 900px) calc(100vw - 32px), ${vwFor[slot.width] / slot.row.length}vw`,
-      aspect: first ? `${first.width} / ${first.height}` : undefined,
-    };
-  }
-  const file = isSplitSlot(slot) ? slot.file : slot.file;
-  const alt = isSplitSlot(slot) ? slot.alt : slot.alt;
-  const meta = imageFor(projectCase.slug, file);
+const slots = project.screens.map((slot) => {
+  const items = isRowSlot(slot) ? slot.row : [{ file: slot.file, alt: slot.alt }];
+  const share = isRowSlot(slot) ? viewportShare[slot.width] / slot.row.length : viewportShare[slot.width];
+  // row cells share the first cell's aspect ratio so heights stay equal (no crop)
+  const first = items[0];
   return {
     slot,
-    items: [{ file, alt, meta }],
-    sizes: isSplitSlot(slot)
-      ? '(max-width: 900px) calc(100vw - 32px), 30vw'
-      : `(max-width: 900px) calc(100vw - 32px), ${vwFor[slot.width]}vw`,
-    aspect: undefined,
+    items,
+    sizes: `(max-width: 900px) calc(100vw - 32px), ${share}vw`,
+    aspect: isRowSlot(slot) && first ? `${first.file.width} / ${first.file.height}` : undefined,
   };
 });
 
-const closingNotes = projectCase.notes.slice(projectCase.screens.length);
-const icon = appIcon(projectCase.slug);
-const dateLabel = projectDateLabel(date);
+const closingNotes = project.notes.slice(project.screens.length);
+const icon = appIcon(project.slug);
+const dateLabel = projectDateLabel(project.date);
 ---
 
 <header class="case-head">
@@ -58,16 +37,16 @@ const dateLabel = projectDateLabel(date);
     {icon
       ? <span class="case-icon" aria-hidden="true"><img src={icon} width="40" height="40" alt="" /></span>
       : <span class="case-icon case-icon--placeholder" aria-hidden="true"></span>}
-    <h1 class="case-title">{title}</h1>
+    <h1 class="case-title">{project.title}</h1>
     <span class="case-year">{dateLabel}</span>
   </div>
 </header>
 <div class="case-flow">
   {slots.map(({ slot, items, sizes, aspect }, index) => (
     <>
-      <CaseNote note={projectCase.notes[index]} />
-      {index === 0 && url && (
-        <a class="case-visit" href={url} target="_blank" rel="noreferrer">
+      <CaseNote note={project.notes[index]} />
+      {index === 0 && project.url && (
+        <a class="case-visit" href={project.url} target="_blank" rel="noreferrer">
           Visit site<ArrowIcon direction="external" />
         </a>
       )}
@@ -77,19 +56,19 @@ const dateLabel = projectDateLabel(date);
           style={`--case-cols: ${items.length}`}
         >
           {items.map((item) => (
-            <CaseFrame src={item.meta} alt={item.alt} sizes={sizes} aspect={aspect} />
+            <CaseFrame src={item.file} alt={item.alt} sizes={sizes} aspect={aspect} />
           ))}
         </div>
       ) : isSplitSlot(slot) ? (
         <div class="case-split">
           <figure class:list={['case-split__media', `case-shot--${slot.width}`]}>
-            <CaseFrame src={items[0].meta} alt={items[0].alt} sizes={sizes} />
+            <CaseFrame src={items[0].file} alt={items[0].alt} sizes={sizes} />
           </figure>
           <CaseNote note={slot.aside} />
         </div>
       ) : (
         <figure class:list={['case-shot', `case-shot--${slot.width}`]}>
-          <CaseFrame src={items[0].meta} alt={items[0].alt} sizes={sizes} />
+          <CaseFrame src={items[0].file} alt={items[0].alt} sizes={sizes} />
         </figure>
       )}
     </>
@@ -182,7 +161,13 @@ const dateLabel = projectDateLabel(date);
   @media (max-width: 720px) {
     .case-shot--half, .case-shot--quarter { width: 100%; }
     /* landscapes stack full width, portrait rows go 2-up / 2×2 — never a lone tall column */
-    .case-row--grid { --case-cols: 1; }
-    .case-row--pair, .case-row--quad { --case-cols: 2; }
+    .case-row--grid { --case-cols: 1 !important; }
+    /* !important: --case-cols is also set inline per row, inline beats plain class vars */
+    .case-row--pair, .case-row--quad { --case-cols: 2 !important; }
+    .case-row--quad { grid-auto-rows: 1fr; } /* equal heights for both 2×2 rows */
+    /* tighter vertical rhythm on small screens (tokens only) */
+    .case-flow { gap: var(--s4); }
+    .case-row { gap: var(--s3); }
+    .case-split { gap: var(--s4); }
   }
 </style>

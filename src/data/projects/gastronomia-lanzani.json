@@ -1,0 +1,79 @@
+{
+  "title": "Gastronomia Lanzani",
+  "date": "2024-06-20",
+  "tags": "Institutional website",
+  "url": "https://gastronomialanzani.it/",
+  "description": "Case notes on the Lanzani Bottega & Bistrot site — horizontal filmstrip layout, packaging-driven art direction and a CMS-owned seasonal menu flow",
+  "summary": "Restaurant site, daily menu rendered from headless CMS, cache-tag invalidation on publish",
+  "cover": "./gastronomia-lanzani/cover.webp",
+  "notes": [
+    "Art direction comes from the studio’s identity work for the bottega — cream paper base, ink serif display and one powder-blue panel colour lifted straight from their delicatessen packaging, wired as custom properties so the whole filmstrip stays consistent",
+    "Desktop runs as one horizontal filmstrip — every section lives on a single translateX track driven by rAF, one easing curve, zero layout work per frame and no per-section scrollbars; below 900px the same markup stacks vertical with no JS layout code at all",
+    "The menu layer is their print system re-drawn for screen — display serif at 96px for MENÙ, EVENTI and ORARI, and the PRANZO / CENA / LUNCH / DINNER / APERITIVO pill row generated from the same content list as the print PDFs so the two can never drift apart",
+    {
+      "lead": "Studio handover, dropped in unchanged",
+      "items": [
+        "wordmark and monoline logo lockups as layered SVG",
+        "serif display + grotesk label pair, self-hosted WOFF2",
+        "packaging palette: cream, ink and one powder blue"
+      ]
+    },
+    "Opening hours and contacts are one typed content block — the ORARI table sets tabular figures so the 07:00 → 23:00 rows align at every breakpoint, and phone, Maps and reservation links are plain deep links to Cooperto with no third-party widget on the page",
+    "Alessandro signs off copy within days and the team runs seasonal menu swaps through the CMS on their own — the PDF menus are the only files they upload and nothing has come back to the design side since launch"
+  ],
+  "screens": [
+    {
+      "file": "./gastronomia-lanzani/screen-desktop-01.webp",
+      "width": "full",
+      "alt": "Gastronomia Lanzani desktop home — sliced culatello plate under the wordmark"
+    },
+    {
+      "layout": "grid",
+      "width": "full",
+      "row": [
+        {
+          "file": "./gastronomia-lanzani/screen-desktop-02.webp",
+          "alt": "Gastronomia Lanzani desktop — bottega story running into the menu panel"
+        },
+        {
+          "file": "./gastronomia-lanzani/screen-desktop-03.webp",
+          "alt": "Gastronomia Lanzani desktop — MENÙ panel with service pills beside the dining room"
+        }
+      ]
+    },
+    {
+      "layout": "split",
+      "width": "half",
+      "file": "./gastronomia-lanzani/screen-desktop-04.webp",
+      "alt": "Gastronomia Lanzani desktop — Eventi & Catering panel with the ORARI block",
+      "aside": "Food photography is served from one master at three crops — AVIF with a WebP ladder, 24px LQIP blur-up and a hard zero-CLS budget so the plate shots never nudge the type beside them"
+    },
+    {
+      "layout": "quad",
+      "width": "full",
+      "row": [
+        {
+          "file": "./gastronomia-lanzani/screen-mobile-01.webp",
+          "alt": "Gastronomia Lanzani mobile — hero with the culatello plate and wordmark"
+        },
+        {
+          "file": "./gastronomia-lanzani/screen-mobile-02.webp",
+          "alt": "Gastronomia Lanzani mobile — bottega story with the Michelin and Ristoranti recognition badges"
+        },
+        {
+          "file": "./gastronomia-lanzani/screen-mobile-03.webp",
+          "alt": "Gastronomia Lanzani mobile — menu pills over the dining room photo"
+        },
+        {
+          "file": "./gastronomia-lanzani/screen-mobile-04.webp",
+          "alt": "Gastronomia Lanzani mobile — events and catering with the ORARI table"
+        }
+      ]
+    },
+    {
+      "file": "./gastronomia-lanzani/screen-desktop-05.webp",
+      "width": "half",
+      "alt": "Gastronomia Lanzani desktop — Dove e Contatti panel next to the plated dish"
+    }
+  ]
+}
