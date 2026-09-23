@@ -1,9 +1,8 @@
-import type { Project } from '@/lib/lab/projects';
 import { disposeAllP5 } from './shared';
 
 export type MountOptions = {
   reducedMotion: boolean;
-  /** Description-area slot the experiment renders its parameter fields into. */
+  /** Header slot for the experiment's "Parameters" toggle; the pane docks into the stage. */
   params: HTMLElement;
 };
 export type MountFn = (stage: HTMLElement, opts: MountOptions) => (() => void) | Promise<() => void>;

@@ -1,5 +1,5 @@
 import type { MountFn } from './index';
-import { disposeP5, fitStage, loadP5, pointerRelative, trackP5, watchSize } from './shared';
+import { disposeP5, fitStage, loadP5, trackP5, watchSize } from './shared';
 import { createParams } from '@/lib/params/params';
 
 const a42: MountFn = async (stage, opts) => {
@@ -17,6 +17,7 @@ const a42: MountFn = async (stage, opts) => {
 
   const paramsUI = createParams({
     root: opts.params,
+    stage,
     onChange: () => { (p5Instance as any)?.resetTrail?.(); },
     setup: (fields) => {
       fields.addNumber(o, 'size', { min: 1, max: 50, step: 1 });

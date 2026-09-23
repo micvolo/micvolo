@@ -26,6 +26,7 @@ const a32: MountFn = async (stage, opts) => {
 
   const paramsUI = createParams({
     root: opts.params,
+    stage,
     // Slider → gsap-tweened uniform wiring (three.js:22-37). Tweaks retarget the
     // tween as values move; overwrite keeps one tween per uniform.
     onChange: () => {

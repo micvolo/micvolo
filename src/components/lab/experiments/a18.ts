@@ -24,7 +24,7 @@ const a18: MountFn = async (stage, opts) => {
 
   const paramsUI = createParams({
     root: opts.params,
-    toggle: true,
+    stage,
     onChange: () => { (p5Instance as any)?.recalculate?.(); },
     setup: (fields) => {
       fields.addText(PARAMS, 'string');

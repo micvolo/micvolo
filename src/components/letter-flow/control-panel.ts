@@ -43,11 +43,12 @@ export function setupControlPanel(
   saveScreen: () => void,
   reset: () => Promise<void>,
   root: HTMLElement,
+  stage: HTMLElement,
 ): ParamsApi {
   return createParams({
     root,
+    stage,
     label: 'Parameters',
-    toggle: true,
     onChange: () => { saveCurrent(params); void refreshTexts(); },
     setup: (fields) => {
       fields.addNumber(params, 'mouseSize', { label: 'Mouse size', min: 0, max: 1000, step: 1 });
@@ -105,7 +106,7 @@ function getBase64(file: File): Promise<string> {
 
 function addTextFields(fields: FieldsApi, text: TextParams, params: LetterFlowParams, refreshTexts: () => Promise<void>, index: number) {
   fields.addGroup(`TYPE ${index}: "${text.string}"`, (group) => {
-    group.addText(text, 'string', { label: 'Text', multiline: true, placeholder: 'Type here…' });
+    group.addText(text, 'string', { label: 'Text' });
     group.addNumber(text, 'lineHeight', { label: 'Line height', min: -50, max: 50, step: 0.1 });
     group.addNumber(text, 'size', { min: 0, max: 1000, step: 1 });
     group.addNumber(text.move, 'x', { label: 'Move x', min: -1, max: 1, step: 0.01 });

@@ -100,7 +100,7 @@ export function initLetterFlow(frame: HTMLElement, paramsRoot: HTMLElement) {
       const createParamsUI = () => {
         const open = controls?.isOpen() ?? false;
         controls?.dispose();
-        controls = setupControlPanel(params, resetValues, () => rebuild?.() ?? Promise.resolve(), saveScreen, reset, paramsRoot);
+        controls = setupControlPanel(params, resetValues, () => rebuild?.() ?? Promise.resolve(), saveScreen, reset, paramsRoot, frame);
         controls.setOpen(open);
       };
       recreateParams = createParamsUI;

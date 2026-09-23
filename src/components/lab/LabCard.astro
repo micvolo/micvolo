@@ -29,8 +29,10 @@ const { project, previous, next } = Astro.props;
 
 <script>
   import { mountExperiment } from '@/components/lab/experiments/index';
+  import { initFocusModality } from '@/lib/focus-modality';
 
   function initLabCard() {
+    initFocusModality();
     document.querySelectorAll<HTMLElement>('[data-lab-stage]').forEach((stage) => {
       if (stage.dataset.experimentBound) return;
       stage.dataset.experimentBound = 'true';
@@ -56,18 +58,21 @@ const { project, previous, next } = Astro.props;
 <style is:global>
   /* In-flow column layout: header at top, stage fills the remaining .stream column height. */
   .lab-card { display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: calc(100dvh - max(var(--s2), env(safe-area-inset-top)) - max(var(--s2), env(safe-area-inset-bottom))); }
-  /* Header rows: title, description, params, nav — hairline separators only. */
+  /* One tight inline row: title, description, params toggle — nav arrows beside
+     the header at the right. No bar, no separators. */
   .lab-card__header {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s2) var(--s3);
     padding: clamp(var(--s4), 4vw, var(--s7));
-    padding-bottom: 0;
+    padding-bottom: var(--s3);
   }
-  .lab-card__header > * { margin: 0; min-width: 0; padding-block: var(--s3); }
-  .lab-card__header > * + * { border-top: 1px solid color-mix(in srgb, var(--ink-3) 24%, transparent); }
+  .lab-card__header > * { margin: 0; min-width: 0; }
   .lab-card__title { font-size: var(--f-lead); font-weight: 500; }
   .lab-card__description { max-width: 56ch; color: var(--ink-2); line-height: 1.45; }
   .lab-card__params:empty { display: none; }
-  .lab-card__nav { display: flex; justify-content: flex-end; gap: var(--s1); }
+  .lab-card__nav { display: flex; gap: var(--s1); margin-left: auto; }
   .lab-card__nav a {
     width: var(--ctl); height: var(--ctl); display: grid; place-items: center;
     color: var(--ink-2); border-radius: var(--pill);
@@ -82,10 +87,6 @@ const { project, previous, next } = Astro.props;
   }
   .lab-card__stage canvas, .lab-p5, .lab-webgl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .lab-card__stage video, .lab-video-source, .lab-image-source { display: none; }
-  .lab-camera { position: absolute; inset: 0; display: grid; place-items: center; gap: var(--s3); padding: var(--s4); }
-  .lab-camera__output { z-index: 1; }
-  .lab-camera__start, .lab-camera__status { position: relative; z-index: 2; }
-  .lab-camera__status { max-width: 32ch; color: rgba(255, 255, 255, .85); text-align: center; }
   .lab-card__loading, .lab-card__fallback {
     position: absolute; inset: 0; display: grid; place-items: center; padding: var(--s4);
     color: rgba(255, 255, 255, .85); text-align: center;
@@ -93,4 +94,8 @@ const { project, previous, next } = Astro.props;
   .lab-card__fallback { z-index: 12; background: rgba(10, 10, 10, .86); }
   noscript .lab-card__fallback { z-index: 1; }
   .lab-card__fallback a { color: #fff; text-decoration: underline; }
+  /* The accent focus outline is keyboard-only (lib/focus-modality.ts): pointer
+     clicks and canvas drags must never flash it on stage, canvas or controls. */
+  [data-focus-modality='pointer'] .lab-card :focus-visible,
+  [data-focus-modality='pointer'] .lab-card :focus { outline: none; }
 </style>

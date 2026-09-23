@@ -22,7 +22,7 @@ const a41: MountFn = async (stage, opts) => {
 
   const paramsUI = createParams({
     root: opts.params,
-    toggle: true,
+    stage,
     setup: (fields) => {
       fields.addNumber(o, 'size', { min: 1, max: 500, step: 1 });
       fields.addNumber(o, 'speed', { min: 0.001, max: 0.1, step: 0.001 });

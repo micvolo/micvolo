@@ -10,8 +10,10 @@
 
 <script>
   import { initLetterFlow } from '@/components/letter-flow/letter-flow';
+  import { initFocusModality } from '@/lib/focus-modality';
 
   function setup() {
+    initFocusModality();
     document.querySelectorAll<HTMLElement>('[data-letter-flow-card]').forEach((card) => {
       if (card.dataset.letterFlowBound) return;
       const frame = card.querySelector<HTMLElement>('[data-letter-flow-frame]');
@@ -44,16 +46,20 @@
     margin-inline: clamp(var(--s4), 4vw, var(--s7));
     margin-bottom: clamp(var(--s4), 4vw, var(--s7));
   }
-  /* Params row in the intro area above the frame (mirrors LabCard's header row). */
+  /* Compact params row above the frame: just the Parameters toggle, no bar. */
   .letter-flow__params {
-    padding: var(--s3) clamp(var(--s4), 4vw, var(--s7));
-    border-bottom: 1px solid color-mix(in srgb, var(--ink-3) 24%, transparent);
+    display: flex;
+    padding: 0 clamp(var(--s4), 4vw, var(--s7)) var(--s3);
   }
   .letter-flow__params:empty { display: none; }
   .letter-flow-frame canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
   .letter-flow-error {
-    /* Top-right within the frame; parameter fields live in the header row. */
+    /* Top-right within the frame; the Parameters toggle lives in the row above. */
     position: absolute; z-index: 11; right: var(--s3); top: var(--s3); max-width: 32ch; margin: 0;
     padding: var(--s3); color: var(--ink); background: var(--fill);
   }
+  /* The accent focus outline is keyboard-only (lib/focus-modality.ts): pointer
+     clicks and canvas drags must never flash it on the frame or controls. */
+  [data-focus-modality='pointer'] .letter-flow-wrap :focus-visible,
+  [data-focus-modality='pointer'] .letter-flow-wrap :focus { outline: none; }
 </style>

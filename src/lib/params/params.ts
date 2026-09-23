@@ -1,3 +1,4 @@
+import { Pane, type FolderApi } from 'tweakpane';
 import './params.css';
 
 /** Keys of T whose values are assignable to V. */
@@ -8,35 +9,31 @@ export type NumberFieldOptions = {
   min?: number;
   max?: number;
   step?: number;
-  /** Read-only display; kept in sync via ParamsApi.refresh(). */
+  /** Read-only monitor; kept in sync via ParamsApi.refresh(). */
   readonly?: boolean;
 };
 
-export type TextFieldOptions = {
-  label?: string;
-  placeholder?: string;
-  multiline?: boolean;
-};
+export type TextFieldOptions = { label?: string };
 
 export type FieldOptions = { label?: string };
 
-/** Builds fields into a params row; available inside setup() and addGroup(). */
+/** Builds fields into a params pane; available inside setup() and addGroup(). */
 export type FieldsApi = {
-  addNumber<T extends object>(target: T, key: KeyOfType<T, number>, opts?: NumberFieldOptions): void;
-  addText<T extends object>(target: T, key: KeyOfType<T, string>, opts?: TextFieldOptions): void;
-  addColor<T extends object>(target: T, key: KeyOfType<T, string>, opts?: FieldOptions): void;
-  addBoolean<T extends object>(target: T, key: KeyOfType<T, boolean>, opts?: FieldOptions): void;
+  addNumber<T extends Record<string, any>>(target: T, key: KeyOfType<T, number>, opts?: NumberFieldOptions): void;
+  addText<T extends Record<string, any>>(target: T, key: KeyOfType<T, string>, opts?: TextFieldOptions): void;
+  addColor<T extends Record<string, any>>(target: T, key: KeyOfType<T, string>, opts?: FieldOptions): void;
+  addBoolean<T extends Record<string, any>>(target: T, key: KeyOfType<T, boolean>, opts?: FieldOptions): void;
   addButton(title: string, onClick: () => void): void;
   addGroup(title: string, build: (fields: FieldsApi) => void): void;
 };
 
 export type ParamsOptions = {
-  /** Description-area slot the fields render into (LabCard / LetterFlowCard header row). */
+  /** Header slot the "Parameters" toggle button renders into (LabCard / LetterFlowCard). */
   root: HTMLElement;
-  /** Toggle button text when `toggle` is set. Default 'Parameters'. */
+  /** Stage the native Tweakpane pane docks into (bottom-right) while open. */
+  stage: HTMLElement;
+  /** Toggle button text. Default 'Parameters'. */
   label?: string;
-  /** Many-param layout: fields start collapsed behind the toggle button. */
-  toggle?: boolean;
   /** Called after any field writes its target. */
   onChange?: () => void;
   setup: (fields: FieldsApi) => void;
@@ -53,8 +50,8 @@ export type ParamsApi = {
 
 let paramsCount = 0;
 
-// Parameter fields live in the header, but pointer gestures on them must not
-// reach window-level handlers (p5 letter drags listen on the window).
+// Parameter controls must not reach window-level handlers (p5 letter drags
+// listen on the window), neither from the toggle button nor from the pane.
 const INTERACTION_EVENTS = [
   'pointerdown', 'pointermove', 'pointerup', 'pointercancel',
   'mousedown', 'mousemove', 'mouseup',
@@ -66,176 +63,108 @@ const prettify = (key: string) =>
   key.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/^./, (c) => c.toUpperCase());
 
 /**
- * Shared inline parameter fields for experiment description areas. Each field
- * binds directly to a property of the experiment's param object and writes it
- * in place. Few params: fields render straight into the row (`toggle: false`);
- * many params: they collapse behind a "Parameters" button (`toggle: true`).
+ * Shared parameter pane backed by native Tweakpane (no theme overrides). Each
+ * field binds directly to a property of the experiment's param object and Tweakpane
+ * writes it in place. The pane starts closed behind a small brand "Parameters"
+ * toggle in the header slot and docks at the bottom-right of the stage while open.
  */
-export function createParams({ root, label = 'Parameters', toggle = false, onChange, setup }: ParamsOptions): ParamsApi {
+export function createParams({ root, stage, label = 'Parameters', onChange, setup }: ParamsOptions): ParamsApi {
   const syncs: Array<() => void> = [];
+  const notify = () => onChange?.();
 
   const el = document.createElement('div');
   el.className = 'params';
 
-  const row = document.createElement('div');
-  row.className = 'params__row';
+  const paneBox = document.createElement('div');
+  paneBox.className = 'params__pane';
+  paneBox.id = `params-pane-${++paramsCount}`;
 
-  let button: HTMLButtonElement | null = null;
-  if (toggle) {
-    row.id = `params-row-${++paramsCount}`;
-    button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'params__toggle';
-    button.textContent = label;
-    button.setAttribute('aria-expanded', 'false');
-    button.setAttribute('aria-controls', row.id);
-    row.hidden = true;
-    el.append(button, row);
-  } else {
-    el.append(row);
-  }
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'params__toggle';
+  button.textContent = label;
+  button.setAttribute('aria-expanded', 'false');
+  button.setAttribute('aria-controls', paneBox.id);
+  el.appendChild(button);
+
+  const pane = new Pane({ container: paneBox });
 
   const setOpen = (open: boolean) => {
-    if (!button) return;
-    row.hidden = !open;
+    paneBox.hidden = !open;
     button.setAttribute('aria-expanded', String(open));
   };
-  const isOpen = () => (button ? !row.hidden : true);
+  const isOpen = () => !paneBox.hidden;
+  setOpen(false);
 
-  if (button) {
-    button.addEventListener('click', () => setOpen(!isOpen()));
-    el.addEventListener('keydown', (event) => {
+  button.addEventListener('click', () => setOpen(!isOpen()));
+  for (const host of [el, paneBox]) {
+    host.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape' || !isOpen()) return;
       setOpen(false);
-      button?.focus();
+      button.focus();
     });
-  }
-  for (const type of INTERACTION_EVENTS) {
-    el.addEventListener(type, (event) => event.stopPropagation());
+    for (const type of INTERACTION_EVENTS) {
+      host.addEventListener(type, (event) => event.stopPropagation());
+    }
   }
 
-  setup(fieldsFor(row, syncs, () => onChange?.()));
+  setup(fieldsFor(pane, syncs, notify));
   root.appendChild(el);
+  stage.appendChild(paneBox);
 
   return {
     el,
     isOpen,
     setOpen,
     refresh: () => syncs.forEach((apply) => apply()),
-    dispose: () => el.remove(),
+    dispose: () => {
+      pane.dispose();
+      el.remove();
+      paneBox.remove();
+    },
   };
 }
 
-function fieldsFor(container: HTMLElement, syncs: Array<() => void>, notify: () => void): FieldsApi {
-  const addField = (label: string | undefined, key: string, control: HTMLElement, extra = '') => {
-    const field = document.createElement('label');
-    field.className = `params__field${extra ? ` ${extra}` : ''}`;
-    const text = document.createElement('span');
-    text.className = 'params__label';
-    text.textContent = label ?? prettify(key);
-    field.append(text, control);
-    container.append(field);
-  };
+type AnyBinding = ReturnType<FolderApi['addBinding']>;
 
-  const track = (control: HTMLElement, apply: () => void) => {
+function fieldsFor(container: FolderApi, syncs: Array<() => void>, notify: () => void): FieldsApi {
+  /** Input bindings report edits through notify(); monitors only re-sync on refresh(). */
+  const track = (binding: AnyBinding, monitor: boolean) => {
+    if (!monitor) binding.on('change', notify);
+    // Never clobber a control the user is editing when re-syncing from the target.
     syncs.push(() => {
-      if (control !== document.activeElement) apply();
+      if (!binding.element.contains(document.activeElement)) binding.refresh();
     });
   };
 
   return {
     addNumber(target, key, opts = {}) {
-      const input = document.createElement('input');
-      input.type = 'number';
-      input.className = 'params__input params__input--number';
-      if (opts.min !== undefined) input.min = String(opts.min);
-      if (opts.max !== undefined) input.max = String(opts.max);
-      if (opts.step !== undefined) input.step = String(opts.step);
-      if (opts.readonly) { input.readOnly = true; input.tabIndex = -1; }
-      input.value = String(Reflect.get(target, key));
-      input.addEventListener('input', () => {
-        if (input.value.trim() === '') return;
-        const value = Number(input.value);
-        if (!Number.isFinite(value)) return;
-        Reflect.set(target, key, value);
-        notify();
-      });
-      input.addEventListener('change', () => {
-        const current = Number(Reflect.get(target, key));
-        const parsed = input.value.trim() === '' ? Number.NaN : Number(input.value);
-        const value = Number.isFinite(parsed) ? parsed : current;
-        const clamped = Math.min(opts.max ?? Infinity, Math.max(opts.min ?? -Infinity, value));
-        if (clamped !== current) {
-          Reflect.set(target, key, clamped);
-          notify();
-        }
-        input.value = String(clamped);
-      });
-      addField(opts.label, key, input, opts.readonly ? 'params__field--monitor' : '');
-      track(input, () => { input.value = String(Reflect.get(target, key)); });
+      const label = opts.label ?? prettify(key);
+      track(opts.readonly
+        ? container.addBinding(target, key, { label, readonly: true, min: opts.min, max: opts.max })
+        : container.addBinding(target, key, { label, min: opts.min, max: opts.max, step: opts.step }),
+      Boolean(opts.readonly));
     },
 
     addText(target, key, opts = {}) {
-      const control = opts.multiline ? document.createElement('textarea') : document.createElement('input');
-      if (control instanceof HTMLInputElement) control.type = 'text';
-      else control.rows = 3;
-      control.className = 'params__input params__input--text';
-      if (opts.placeholder) control.placeholder = opts.placeholder;
-      control.value = String(Reflect.get(target, key) ?? '');
-      control.addEventListener('input', () => {
-        Reflect.set(target, key, control.value);
-        notify();
-      });
-      addField(opts.label, key, control);
-      track(control, () => { control.value = String(Reflect.get(target, key) ?? ''); });
+      track(container.addBinding(target, key, { label: opts.label ?? prettify(key) }), false);
     },
 
     addColor(target, key, opts = {}) {
-      const input = document.createElement('input');
-      input.type = 'color';
-      input.className = 'params__input params__input--color';
-      input.value = String(Reflect.get(target, key));
-      input.addEventListener('input', () => {
-        Reflect.set(target, key, input.value);
-        notify();
-      });
-      addField(opts.label, key, input);
-      track(input, () => { input.value = String(Reflect.get(target, key)); });
+      // A '#rrggbb' string auto-binds to Tweakpane's color input and keeps the string format.
+      track(container.addBinding(target, key, { label: opts.label ?? prettify(key) }), false);
     },
 
     addBoolean(target, key, opts = {}) {
-      const input = document.createElement('input');
-      input.type = 'checkbox';
-      input.className = 'params__check';
-      input.checked = Boolean(Reflect.get(target, key));
-      input.addEventListener('input', () => {
-        Reflect.set(target, key, input.checked);
-        notify();
-      });
-      addField(opts.label, key, input, 'params__field--check');
-      track(input, () => { input.checked = Boolean(Reflect.get(target, key)); });
+      track(container.addBinding(target, key, { label: opts.label ?? prettify(key) }), false);
     },
 
     addButton(title, onClick) {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'params__button';
-      button.textContent = title;
-      button.addEventListener('click', onClick);
-      container.append(button);
+      container.addButton({ title }).on('click', () => onClick());
     },
 
     addGroup(title, build) {
-      const group = document.createElement('details');
-      group.className = 'params__group';
-      const summary = document.createElement('summary');
-      summary.className = 'params__group-title';
-      summary.textContent = title;
-      const inner = document.createElement('div');
-      inner.className = 'params__row';
-      group.append(summary, inner);
-      container.append(group);
-      build(fieldsFor(inner, syncs, notify));
+      build(fieldsFor(container.addFolder({ title, expanded: false }), syncs, notify));
     },
   };
 }

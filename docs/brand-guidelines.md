@@ -55,10 +55,10 @@ La rail è divisa in gruppi di categoria:
 
 1. **Work** — Projects (indice di tutti i progetti).
 2. **Experiments** — Lab (archivio degli esperimenti), Letter Flow.
-3. **Games** — Chameleon, Teamword.
+3. **Table games** — Camaleonte, Reazione a catena.
 4. **Main** — Client access, Palette toggle.
 
-Ogni voce integrata è una `.rail-app-card`: segnaposto neutro a sinistra (`.rail-app-card__placeholder`, fondo `var(--fill-2)`, nessun logo), titolo e breve descrizione a destra, freccia. Lab, Chameleon e Teamword non usano icone. Gli stati attivi usano `aria-current="page"` e un fondo/bordo accentuato. La rail persiste attraverso la navigazione via `transition:persist="site-rail"`; lo scroll e lo stato attivo vengono ripristinati su ogni cambio di rotta interna.
+Ogni voce integrata è una `.rail-app-card`: segnaposto neutro a sinistra (`.rail-app-card__placeholder`, fondo `var(--fill-2)`, nessun logo), titolo e breve descrizione a destra, freccia. Lab, Camaleonte e Reazione a catena non usano icone. Gli stati attivi usano `aria-current="page"` e un fondo/bordo accentuato. La rail persiste attraverso la navigazione via `transition:persist="site-rail"`; lo scroll e lo stato attivo vengono ripristinati su ogni cambio di rotta interna.
 
 ## Route map
 
@@ -67,11 +67,11 @@ Ogni voce integrata è una `.rail-app-card`: segnaposto neutro a sinistra (`.rai
 | `/` | Prerendered | Home con shader ambientale |
 | `/projects` | Prerendered | Griglia di tutti i progetti |
 | `/projects/letter-flow` | Prerendered | Esperienza nativa Letter Flow |
-| `/lab` | Prerendered | Indice degli esperimenti |
-| `/lab/[slug]` | Prerendered | Dettaglio di un esperimento |
-| `/games` | Prerendered | Indice dei giochi |
-| `/games/chameleon` e sotto-route | Prerendered | Gioco Chameleon |
-| `/games/teamword` | Prerendered | Gioco Teamword |
+| `/graphic-experiments` | Prerendered | Indice degli esperimenti |
+| `/graphic-experiments/[slug]` | Prerendered | Dettaglio di un esperimento |
+| `/table-games` | Prerendered | Indice dei giochi |
+| `/table-games/camaleonte` e sotto-route | Prerendered | Gioco Camaleonte |
+| `/table-games/reazione-a-catena` | Prerendered | Gioco Reazione a catena |
 | `/portal/*`, `/admin/*`, `/api/*`, `/documents/*` | On-demand | Area riservata e API |
 
 ## Liste ed elenchi (no AI slop)
@@ -87,7 +87,7 @@ Il Lab è il **pattern canonico** per qualsiasi elenco o dettaglio del sito. Usa
 
 ### Indice: lista di righe
 
-La pagina `/lab` mostra l’intero archivio come elenco, non come griglia. È il layout predefinito per qualunque cosa sia “molte cose, una riga ciascuna”.
+La pagina `/graphic-experiments` mostra l’intero archivio come elenco, non come griglia. È il layout predefinito per qualunque cosa sia “molte cose, una riga ciascuna”.
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -113,7 +113,7 @@ La pagina `/lab` mostra l’intero archivio come elenco, non come griglia. È il
 
 ### Dettaglio: header su una riga + stage
 
-La pagina `/lab/[slug]` apre un singolo esperimento con la stessa economia dell’indice. Il pattern vale per qualsiasi dettaglio (singolo progetto nativo, singolo documento, singolo gioco quando non ha shell propria).
+La pagina `/graphic-experiments/[slug]` apre un singolo esperimento con la stessa economia dell’indice. Il pattern vale per qualsiasi dettaglio (singolo progetto nativo, singolo documento, singolo gioco quando non ha shell propria).
 
 - **Header**: `display: flex; justify-content: space-between` su una sola riga.
   - A sinistra: `h1` con `font-weight: 500`, `font-size: var(--f-lead)`, e descrizione sotto in `var(--ink-2)` con `max-width: 56ch`.
@@ -150,8 +150,8 @@ Non usarlo per:
 
 | Pezzo | File |
 | --- | --- |
-| Indice Lab | `src/pages/lab.astro`, `.lab-list` / `.lab-row` |
-| Dettaglio Lab | `src/pages/lab/[slug].astro`, `src/components/lab/LabCard.astro` |
+| Indice Lab | `src/pages/graphic-experiments/index.astro`, `.lab-list` / `.lab-row` |
+| Dettaglio Lab | `src/pages/graphic-experiments/[slug].astro`, `src/components/lab/LabCard.astro` |
 | Dati elenco | `src/lib/lab/projects.ts` |
 | Pattern complementare | `src/components/games/teamword/Teamword.astro` (`.teamword__board`, `.word`, `.skip-count`) |
 
@@ -201,7 +201,7 @@ Ogni esperienza (Lab, Letter Flow, giochi) vive dentro la pagina del sito, non a
 
 ## Pannelli di calibrazione
 
-Tutti i pannelli Tweakpane v4 (esperimenti Lab e Letter Flow) usano un’unica factory condivisa in `src/lib/panel/panel.ts` e un tema minimal in `src/lib/panel/panel.css`. Il tema applica i token di brand (SF Pro, superficie in vetro, bordi sottili, colore accent), posizionamento coerente in alto a destra, righe compatte e stato collapsed di default su schermi ≤720px. Letter Flow usa la variante compatta (max 240px, righe da 32px). Il Reset vive solo dentro il pannello Settings, niente pulsanti Reset sparsi né scorciatoie da tastiera. Non si aggiungono stili per-pannello né variabili `--tp-*` sparse.
+Tutti i pannelli di calibrazione (esperimenti Lab e Letter Flow) usano un’unica factory condivisa in `src/lib/params/params.ts` (dock e toggle in `src/lib/params/params.css`), basata su Tweakpane v4 con il suo look nativo: nessun tema applicato, nessuna variabile di tema sovrascritta, nessuno stile per-pannello. Il pannello parte chiuso dietro un piccolo toggle “Parameters” e si aggancia in basso a destra dello stage solo mentre è aperto; Letter Flow usa la stessa factory in forma compatta. Le azioni di reset vivono solo dentro il pannello, niente pulsanti Reset sparsi né scorciatoie da tastiera.
 
 ## CSS scoped per componente
 
