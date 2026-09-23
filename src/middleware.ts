@@ -8,7 +8,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   context.locals.principal = await getPrincipal(cloudflareEnv.DB, context.cookies.get(name)?.value);
   const response = await next();
   const headers = new Headers(response.headers);
-  headers.set('Content-Security-Policy', "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'");
+  headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'");
   headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   headers.set('X-Content-Type-Options', 'nosniff');

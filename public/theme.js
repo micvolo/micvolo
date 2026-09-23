@@ -1,123 +1,74 @@
 (function () {
-  var STORAGE_KEY = 'micvolo-theme';
-  var LEGACY_KEY = 'theme';
-  var systemPreference = window.matchMedia('(prefers-color-scheme: dark)');
-  var memoryTheme = null;
+  var STORAGE_KEY = 'micvolo-palette-v2';
+  var memoryPalette = null;
 
-  function isTheme(value) {
-    return value === 'light' || value === 'dark';
+  function isPalette(value) {
+    return value === 'accent' || value === 'greyscale';
   }
 
-  function systemTheme() {
-    return systemPreference.matches ? 'dark' : 'light';
-  }
-
-  function storedTheme() {
+  function storedPalette() {
     try {
-      var value = sessionStorage.getItem(STORAGE_KEY);
-      return isTheme(value) ? value : memoryTheme;
+      var value = localStorage.getItem(STORAGE_KEY);
+      return isPalette(value) ? value : memoryPalette;
     } catch (_) {
-      return memoryTheme;
+      return memoryPalette;
     }
   }
 
-  function migrateLegacyTheme() {
-    try {
-      var current = sessionStorage.getItem(STORAGE_KEY);
-      if (isTheme(current)) return current;
-
-      var legacy = localStorage.getItem(LEGACY_KEY);
-      localStorage.removeItem(LEGACY_KEY);
-      if (isTheme(legacy)) {
-        sessionStorage.setItem(STORAGE_KEY, legacy);
-        return legacy;
-      }
-    } catch (_) {}
-    return null;
+  // First visit (nothing stored yet): accent palette is on by default.
+  function effectivePalette() {
+    return storedPalette() || 'accent';
   }
 
-  function effectiveTheme() {
-    return storedTheme() || systemTheme();
-  }
-
-  function applyThemeToDocument(target, preference) {
+  function applyPaletteToDocument(target, palette) {
     if (!target) return;
-    if (isTheme(preference)) target.documentElement.dataset.theme = preference;
-    else delete target.documentElement.dataset.theme;
-
-    var theme = preference || systemTheme();
-    var lightMeta = target.querySelector('#theme-color-light');
-    var darkMeta = target.querySelector('#theme-color-dark');
-    if (lightMeta) lightMeta.setAttribute('media', theme === 'light' ? 'all' : 'not all');
-    if (darkMeta) darkMeta.setAttribute('media', theme === 'dark' ? 'all' : 'not all');
+    target.documentElement.dataset.palette = palette;
   }
 
-  function syncThemeControls() {
-    var theme = effectiveTheme();
-    document.querySelectorAll('[data-theme-toggle]').forEach(function (button) {
-      var next = theme === 'dark' ? 'light' : 'dark';
-      button.setAttribute('aria-checked', String(theme === 'dark'));
-      button.setAttribute('aria-label', 'Switch to ' + next + ' theme');
-      button.title = 'Switch to ' + next + ' theme';
+  function syncPaletteControls() {
+    var palette = effectivePalette();
+    document.querySelectorAll('[data-palette-toggle]').forEach(function (button) {
+      var accent = palette === 'accent';
+      var label = accent ? 'Use greyscale shader palette' : 'Use accent shader palette';
+      button.setAttribute('aria-checked', String(accent));
+      button.setAttribute('aria-label', label);
+      button.title = label;
     });
-    applyThemeToDocument(document, storedTheme());
   }
 
-  var initialTheme = migrateLegacyTheme() || storedTheme();
-  memoryTheme = initialTheme;
-  applyThemeToDocument(document, initialTheme);
-
-  function applyTheme(next) {
-    memoryTheme = next;
+  function applyPalette(palette) {
+    memoryPalette = palette;
     try {
-      sessionStorage.setItem(STORAGE_KEY, next);
+      localStorage.setItem(STORAGE_KEY, palette);
     } catch (_) {}
-    document.documentElement.dataset.theme = next;
-    syncThemeControls();
+    applyPaletteToDocument(document, palette);
+    syncPaletteControls();
   }
 
-  function toggleTheme() {
-    var root = document.documentElement;
-    var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
-    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    root.dataset.themeSwitching = '';
-
-    function clearSwitchingState() {
-      delete root.dataset.themeSwitching;
-    }
-
-    if (!reduceMotion && document.startViewTransition) {
-      document.startViewTransition(function () {
-        applyTheme(next);
-      }).finished.then(clearSwitchingState, clearSwitchingState);
-    } else {
-      applyTheme(next);
-      window.setTimeout(clearSwitchingState, 320);
-    }
+  function togglePalette() {
+    applyPalette(effectivePalette() === 'accent' ? 'greyscale' : 'accent');
   }
 
-  function bindThemeControls() {
-    document.querySelectorAll('[data-theme-toggle]').forEach(function (button) {
-      if (button.dataset.themeBound) return;
-      button.dataset.themeBound = '1';
-      button.addEventListener('click', toggleTheme);
+  function bindPaletteControls() {
+    document.querySelectorAll('[data-palette-toggle]').forEach(function (button) {
+      if (button.dataset.paletteBound) return;
+      button.dataset.paletteBound = 'true';
+      button.addEventListener('click', togglePalette);
     });
-    syncThemeControls();
+    syncPaletteControls();
   }
+
+  memoryPalette = storedPalette();
+  applyPaletteToDocument(document, effectivePalette());
 
   document.addEventListener('astro:before-swap', function (event) {
-    applyThemeToDocument(event.newDocument, storedTheme());
+    applyPaletteToDocument(event.newDocument, effectivePalette());
   });
-  document.addEventListener('astro:page-load', bindThemeControls);
+  document.addEventListener('astro:page-load', bindPaletteControls);
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bindThemeControls, { once: true });
+    document.addEventListener('DOMContentLoaded', bindPaletteControls, { once: true });
   } else {
-    bindThemeControls();
+    bindPaletteControls();
   }
-
-  systemPreference.addEventListener('change', function () {
-    if (!storedTheme()) delete document.documentElement.dataset.theme;
-    syncThemeControls();
-  });
 })();

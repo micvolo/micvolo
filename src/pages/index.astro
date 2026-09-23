@@ -2,15 +2,12 @@
 import { getEntry } from 'astro:content';
 import PublicLayout from '@/layouts/PublicLayout.astro';
 import SiteRail from '@/components/public/SiteRail.astro';
-import ProjectGrid from '@/components/public/ProjectGrid.astro';
 const settings = await getEntry('settings', 'settings');
 if (!settings) throw new Error('Site settings are missing');
 ---
 <PublicLayout description={settings.data.shortDescription}>
   <SiteRail />
-  <main id="main" class="stream">
-    <section class="selected-work" aria-label="Selected work">
-      <ProjectGrid />
-    </section>
+  <main id="main" class="home-canvas" aria-label="Interactive background">
+    <h2 class="sr-only">Interactive background</h2>
   </main>
 </PublicLayout>

@@ -6,6 +6,7 @@ export default defineConfig({
   site: 'https://micvolo.com',
   session: false,
   adapter: cloudflare({ imageService: 'compile' }),
+  vite: { build: { assetsInlineLimit: 0 } },
   integrations: [sitemap({
     filter: (page) => {
       const pathname = new URL(page).pathname;

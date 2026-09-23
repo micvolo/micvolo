@@ -1,0 +1,49 @@
+---
+export type StrokeIconName =
+  | 'arrow-left'
+  | 'arrow-right'
+  | 'briefcase'
+  | 'check'
+  | 'copy'
+  | 'external'
+  | 'eye'
+  | 'play'
+  | 'plus'
+  | 'rotate-ccw'
+  | 'skip-forward'
+  | 'volume-2'
+  | 'volume-x'
+  | 'x';
+
+interface Props {
+  name: StrokeIconName;
+  class?: string;
+}
+
+const { name, class: className = '' } = Astro.props;
+
+const paths: Record<StrokeIconName, string[]> = {
+  'arrow-left': ['M11 7H3m3-3L3 7l3 3'],
+  'arrow-right': ['M3 7h8M8 4l3 3-3 3'],
+  briefcase: ['M3 6.5h8v5H3z', 'M5 6.5V5h4v1.5', 'M3 8.5h8'],
+  check: ['m3 7 2.25 2.25L9.5 5'],
+  copy: ['M5 4h5v7H5z', 'M3 2h5'],
+  external: ['M4 10 10 4M5 4h5v5'],
+  eye: ['M1.5 7s2-3 5.5-3 5.5 3 5.5 3-2 3-5.5 3S1.5 7 1.5 7Z', 'M7 5.75a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z'],
+  play: ['m5 3 5 4-5 4z'],
+  plus: ['M7 3v8M3 7h8'],
+  'rotate-ccw': ['M4 5V2L2.5 3.5', 'M4 3.5A4.5 4.5 0 1 1 2.8 8.2'],
+  'skip-forward': ['M3 4v6l4-3zM8 4v6M10 4v6'],
+  'volume-2': ['M3 5h2l2-2v8L5 9H3z', 'M8.5 5.2a2.5 2.5 0 0 1 0 3.6', 'M10 3.8a4.5 4.5 0 0 1 0 6.4'],
+  'volume-x': ['M3 5h2l2-2v8L5 9H3z', 'm9 4-3 3m0-3 3 3'],
+  x: ['m4 4 6 6m0-6-6 6'], 
+};
+---
+
+<svg class:list={['stroke-icon', `stroke-icon--${name}`, className]} viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false">
+  {paths[name].map((d) => <path d={d} />)}
+</svg>
+
+<style>
+  .stroke-icon { width: 1em; height: 1em; flex: 0 0 auto; overflow: visible; stroke: currentColor; stroke-width: 1.25; stroke-linecap: square; stroke-linejoin: miter; }
+</style>

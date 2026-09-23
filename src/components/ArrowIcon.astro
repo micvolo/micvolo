@@ -1,21 +1,12 @@
 ---
+import StrokeIcon from '@/components/StrokeIcon.astro';
+
 interface Props {
   direction?: 'external' | 'right' | 'left';
   class?: string;
 }
 const { direction = 'external', class: className = '' } = Astro.props;
-const paths = {
-  external: 'M4 10 10 4M5 4h5v5',
-  right: 'M3 7h8M8 4l3 3-3 3',
-  left: 'M11 7H3m3-3L3 7l3 3',
-};
+const names = { external: 'external', right: 'arrow-right', left: 'arrow-left' } as const;
 ---
-<svg
-  class:list={['arrow-icon', `arrow-icon--${direction}`, className]}
-  viewBox="0 0 14 14"
-  fill="none"
-  aria-hidden="true"
-  focusable="false"
->
-  <path d={paths[direction]} stroke="currentColor" stroke-width="1.25" stroke-linecap="square" stroke-linejoin="miter" />
-</svg>
+
+<StrokeIcon name={names[direction]} class:list={['arrow-icon', `arrow-icon--${direction}`, className]} />

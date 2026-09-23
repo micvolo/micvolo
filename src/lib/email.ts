@@ -9,13 +9,13 @@ export async function sendOtpEmail(env: Env, recipient: string, code: string): P
   await env.EMAIL.send({
     to: recipient,
     from: env.EMAIL_FROM,
-    subject: 'Your micvolo access code',
-    text: `Your micvolo access code is ${code}. It expires in 10 minutes and can be used once. If you did not request it, ignore this email.`,
-    html: `<div style="font-family:ui-sans-serif,system-ui,sans-serif;color:#111;max-width:32rem;margin:0 auto;padding:32px">
-      <p style="font-size:13px;color:#666;margin:0 0 32px">micvolo.com / collaboration portal</p>
-      <p style="font-size:16px;margin:0 0 12px">Your one-time access code</p>
-      <p style="font:600 36px ui-monospace,SFMono-Regular,monospace;letter-spacing:.18em;margin:0 0 24px">${safeCode}</p>
-      <p style="font-size:13px;line-height:1.5;color:#666">It expires in 10 minutes and can be used once. If you did not request it, ignore this email.</p>
+    subject: `${code} — micvolo access code`,
+    text: `${code}\n\nUse this code to sign in to micvolo\nIt expires in 10 minutes and can be used once\n\nIf you did not request it, ignore this email`,
+    html: `<div style="max-width:480px;padding:32px 24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#171717">
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.5">Your micvolo access code</p>
+      <p style="margin:0 0 24px;font-size:40px;font-weight:700;line-height:1;letter-spacing:.12em">${safeCode}</p>
+      <p style="margin:0;font-size:14px;line-height:1.5;color:#555">Expires in 10 minutes · One use only</p>
+      <p style="margin:24px 0 0;font-size:12px;line-height:1.5;color:#777">If you did not request it, ignore this email</p>
     </div>`,
   });
 }

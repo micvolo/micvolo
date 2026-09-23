@@ -8,7 +8,7 @@
   "observability": { "enabled": true },
   "vars": {
     "ENVIRONMENT": "production",
-    "EMAIL_FROM": "access@micvolo.com",
+    "EMAIL_FROM": "access@send.micvolo.com",
     "ADMIN_EMAIL": "michele.volonghi@gmail.com"
   },
   "send_email": [

@@ -18,7 +18,7 @@ const { title } = Astro.props;
     <script is:inline src="/theme.js"></script>
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <ClientRouter />
+    <ClientRouter fallback="animate" />
     <title>{title} — Michele Volonghi</title>
   </head>
   <body class="app-body"><AmbientShader /><slot /><InteractionRuntime /></body>

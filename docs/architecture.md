@@ -2,7 +2,9 @@
 
 ## Boundaries
 
-Astro renders `/`, `/projects` and `/work/*` at build time. Auth, portal, admin, API and private document routes opt into on-demand rendering. No client framework, ORM, UI kit or charting package is used.
+Astro renders `/`, `/projects`, `/projects/letter-flow`, `/lab`, `/lab/*`, `/games`, `/games/chameleon/*` and `/games/teamword` at build time. Auth, portal, admin, API and private document routes opt into on-demand rendering. No client framework, ORM, UI kit or charting package is used.
+
+Native experiences (Lab, Letter Flow, Chameleon, Teamword) are implemented as in-repo Astro pages and client scripts. They render inside the existing `.card`/window surfaces and reuse the persistent `SiteRail`; no cross-origin iframe is used. Dynamic experiment modules in Lab are lazy-loaded on the client.
 
 - **D1 (`DB`)** stores identities, one-project client ownership, OTP challenges, revocable sessions, time, timeline, invoice and payment records.
 - **R2 (`DOCUMENTS`)** stores private PDFs under random object keys. Keys are never authorization credentials or exposed as public URLs.
@@ -16,7 +18,7 @@ Client and admin have distinct login routes and requested roles. The admin email
 
 A six-digit code is generated with Web Crypto rejection sampling and stored only as an HMAC over challenge id, normalized email and code using `OTP_SECRET`. Challenges expire after ten minutes, allow five attempts, invalidate earlier challenges and are throttled per identity and hashed source IP. Responses do not reveal whether an account exists.
 
-Successful verification conditionally consumes the challenge once, creates a random opaque session token, stores only its SHA-256 digest, and writes an HttpOnly, SameSite=Lax cookie. Production uses the `Secure` `__Host-micvolo_session` cookie. Sessions expire after seven days and are revoked on POST logout.
+Successful verification conditionally consumes the challenge once, creates a random opaque session token, stores only its SHA-256 digest, and writes an HttpOnly, SameSite=Lax cookie. Production uses the `Secure` `__Host-micvolo_session` cookie. Sessions expire after one year and are revoked on POST logout.
 
 Every mutation validates same-origin `Origin` and independently requires the admin role. Client project queries derive ownership from the authenticated user rather than a route slug. Document downloads repeat project ownership checks for both roles and return `private, no-store`, `nosniff` responses.
 

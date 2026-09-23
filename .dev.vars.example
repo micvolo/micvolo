@@ -1,6 +1,11 @@
 # Copy to .dev.vars. Never commit .dev.vars.
+# Local login without email: with ENVIRONMENT=development on localhost, `astro dev`
+# skips email delivery and prints the code to the dev server console as
+# `[dev] login code for x@y.z: 123456`. The whole path is compiled out of production
+# builds (import.meta.env.DEV) and never logs codes in production.
 ENVIRONMENT=development
+# Optional: also show the code in the login UI as a local preview (dev only).
 DEV_OTP_PREVIEW=true
 ADMIN_EMAIL=admin@example.test
-EMAIL_FROM=access@micvolo.com
+EMAIL_FROM=access@send.micvolo.com
 OTP_SECRET=replace-with-a-long-random-local-secret

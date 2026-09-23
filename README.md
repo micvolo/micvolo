@@ -57,7 +57,7 @@ Configure secrets without placing values in `wrangler.jsonc`:
 npx wrangler secret put OTP_SECRET
 ```
 
-`EMAIL_FROM` and `ENVIRONMENT` are non-secret Worker vars. The sender domain must be onboarded and verified in Cloudflare Email Service before deployment. Email Service outbound sending is currently public beta, requires an eligible paid plan for arbitrary recipients, and is configured through the `EMAIL` `send_email` binding.
+`EMAIL_FROM` and `ENVIRONMENT` are non-secret Worker vars. `EMAIL_FROM` must use the exact sending domain onboarded in Cloudflare Email Service; this project uses `access@send.micvolo.com`. Email Service outbound sending is currently public beta, requires an eligible paid plan for arbitrary recipients, and is configured through the `EMAIL` `send_email` binding.
 
 Deploy only after remote migrations and sender verification:
 
@@ -65,4 +65,4 @@ Deploy only after remote migrations and sender verification:
 npm run deploy
 ```
 
-See [`docs/architecture.md`](docs/architecture.md) for the data and security model.
+See [`docs/architecture.md`](docs/architecture.md) for the data and security model and [`docs/brand-guidelines.md`](docs/brand-guidelines.md) for the visual identity, voice and interaction rules.

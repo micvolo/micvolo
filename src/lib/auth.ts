@@ -1,5 +1,5 @@
 const OTP_TTL_SECONDS = 10 * 60;
-const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60;
+export const SESSION_TTL_SECONDS = 365 * 24 * 60 * 60;
 const MAX_ATTEMPTS = 5;
 
 export const SESSION_COOKIE_PRODUCTION = '__Host-micvolo_session';

@@ -65,32 +65,47 @@
     void main() {
       vec3 flow = texture2D(tFlow, vUv).rgb;
       vec2 uv = (vUv - vec2(0.5)) * res.zw + vec2(0.5);
-      uv -= flow.xy * 0.075;
+      uv -= flow.xy * 0.2;
 
-      float n = noise(vec3(uv * 5.5, uTime * 0.035)) * 7.0;
+      float n = noise(vec3(uv * 8.0, uTime * 0.01)) * 10.0;
       float baseUv = (1.0 - uv.y) * n;
       float basePattern = lines(baseUv, 1.0);
-      float secondPattern = lines(baseUv, 0.12);
+      float secondPattern = lines(baseUv, 0.1);
       vec3 baseColor = mix(bg1, bg2, basePattern);
       vec3 color = mix(baseColor, bg3, secondPattern);
 
       vec2 grainUv = vUv;
       grainUv.y *= rand(vec2(grainUv.y, 1.0));
-      color += rand(grainUv) * 0.022;
+      color += rand(grainUv) * 0.15;
 
       gl_FragColor = vec4(color, 1.0);
     }
   `;
 
-  const palettes: Record<'light' | 'dark', Palette> = {
-    light: [[0.955, 0.955, 0.94], [0.80, 0.80, 0.78], [0.64, 0.64, 0.62]],
-    dark: [[0.07, 0.07, 0.07], [0.145, 0.145, 0.145], [0.29, 0.29, 0.28]],
+  type PaletteMode = 'accent' | 'greyscale';
+  type ColorScheme = 'light' | 'dark';
+
+  const palettes: Record<ColorScheme, Record<PaletteMode, Palette>> = {
+    light: {
+      accent: [[255 / 255, 255 / 255, 229 / 255], [255 / 255, 113 / 255, 66 / 255], [61 / 255, 66 / 255, 148 / 255]],
+      greyscale: [[0.955, 0.955, 0.94], [0.80, 0.80, 0.78], [0.64, 0.64, 0.62]],
+    },
+    dark: {
+      accent: [[10 / 255, 12 / 255, 28 / 255], [255 / 255, 113 / 255, 66 / 255], [61 / 255, 66 / 255, 148 / 255]],
+      greyscale: [[0.07, 0.07, 0.07], [0.145, 0.145, 0.145], [0.29, 0.29, 0.28]],
+    },
   };
 
-  function effectiveTheme(): 'light' | 'dark' {
-    const explicit = document.documentElement.dataset.theme;
-    if (explicit === 'light' || explicit === 'dark') return explicit;
+  function effectivePalette(): PaletteMode {
+    return document.documentElement.dataset.palette === 'accent' ? 'accent' : 'greyscale';
+  }
+
+  function effectiveScheme(): ColorScheme {
     return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function selectedPalette(): Palette {
+    return palettes[effectiveScheme()][effectivePalette()];
   }
 
   function initShader() {
@@ -104,18 +119,18 @@
     let visible = !document.hidden;
 
     try {
-      const renderer = new Renderer({ canvas, dpr: Math.min(devicePixelRatio, 1.5) });
+      const renderer = new Renderer({ canvas, dpr: Math.min(devicePixelRatio, 2) });
       const gl = renderer.gl;
       const mouse = new Vec2(-1);
       const velocity = new Vec2();
-      const flowmap = new Flowmap(gl, { falloff: 0.22, dissipation: 0.965 });
+      const flowmap = new Flowmap(gl, { falloff: 0.3, dissipation: 0.99 });
       const geometry = new Geometry(gl, {
         position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
         uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) },
       });
 
-      const initial = palettes[effectiveTheme()].map((color) => [...color]) as Palette;
-      let target = palettes[effectiveTheme()];
+      const initial = selectedPalette().map((color) => [...color]) as Palette;
+      let target = selectedPalette();
       let aspect = 1;
       let lastTime = 0;
       const lastMouse = new Vec2();
@@ -166,8 +181,13 @@
       }
 
       function updatePalette() {
-        target = palettes[effectiveTheme()];
-        if (reduceMotion.matches) renderOnce();
+        target = selectedPalette();
+        if (reduceMotion.matches) {
+          ([program.uniforms.bg1.value, program.uniforms.bg2.value, program.uniforms.bg3.value] as Vec3[]).forEach((uniform, index) => {
+            uniform.set(target[index][0], target[index][1], target[index][2]);
+          });
+          renderOnce();
+        }
       }
 
       function blendPalette() {
@@ -180,7 +200,7 @@
 
       function renderOnce(time = performance.now()) {
         blendPalette();
-        program.uniforms.uTime.value = time * 0.001;
+        program.uniforms.uTime.value = time * 0.01;
         renderer.render({ scene: mesh });
       }
 
@@ -193,7 +213,7 @@
         velocity.needsUpdate = false;
         flowmap.aspect = aspect;
         flowmap.mouse.copy(mouse);
-        flowmap.velocity.lerp(velocity, 0.11);
+        flowmap.velocity.lerp(velocity, 0.15);
         flowmap.update();
         renderOnce(time);
         frame = requestAnimationFrame(update);
@@ -206,7 +226,7 @@
       }
 
       const observer = new MutationObserver(updatePalette);
-      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-palette'] });
       addEventListener('resize', resize, { passive: true });
       addEventListener('mousemove', updatePointer, { passive: true });
       addEventListener('touchstart', updatePointer, { passive: true });

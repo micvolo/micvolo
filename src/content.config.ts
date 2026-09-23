@@ -20,8 +20,12 @@ const projects = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     image: z.string(),
-    url: z.string().url(),
+    url: z.string().url().optional(),
     tags: z.string(),
+    kind: z.enum(['external', 'native']).default('external'),
+    slug: z.string().optional(),
+    category: z.enum(['client-work', 'lab', 'experiment', 'game', 'tool']).default('client-work'),
+    description: z.string().optional(),
   }),
 });
 

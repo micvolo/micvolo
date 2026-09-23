@@ -9,20 +9,6 @@ const {
   description = 'Web developer e programmatore freelance a Brescia. Siti web, e-commerce, web app, 3D e animazioni per aziende e studi, in Lombardia e da remoto.',
 } = Astro.props;
 const pageTitle = title ? `${title} — Michele Volonghi` : 'Michele Volonghi — Web Developer & Programmatore a Brescia';
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Michele Volonghi',
-  url: 'https://micvolo.com',
-  jobTitle: 'Web Developer',
-  description,
-  email: 'mailto:michele.volonghi@gmail.com',
-  telephone: '+393317043898',
-  address: { '@type': 'PostalAddress', addressLocality: 'Brescia', addressRegion: 'Lombardy', addressCountry: 'IT' },
-  areaServed: ['Brescia', 'Lombardy', 'Italy'],
-  knowsAbout: ['Web development', 'Web design', 'E-commerce', 'Web applications', '3D & shaders', 'Motion design', 'Digital marketing'],
-  sameAs: ['https://github.com/micvolo'],
-};
 ---
 <!doctype html>
 <html lang="en" transition:name="root" transition:animate={fade({ duration: '0.22s' })}>
@@ -35,7 +21,12 @@ const structuredData = {
     <meta name="color-scheme" content="light dark" />
     <meta id="theme-color-light" name="theme-color" content="#f7f7f5" media="(prefers-color-scheme: light)" />
     <meta id="theme-color-dark" name="theme-color" content="#1e1e1e" media="(prefers-color-scheme: dark)" />
+    <link rel="preload" href="/fonts/sf-pro-text-regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/sf-pro-text-semibold.woff2" as="font" type="font/woff2" crossorigin />
     <script is:inline src="/theme.js"></script>
+    <!-- Pre-paint scroll state (rail + homepage persistence). Must stay an external
+         classic script: inline scripts are blocked by the `script-src 'self'` CSP. -->
+    <script is:inline src="/nav-boot.js"></script>
     <meta property="og:title" content={pageTitle} />
     <meta property="og:site_name" content="Michele Volonghi" />
     <meta property="og:description" content={description} />
@@ -47,13 +38,16 @@ const structuredData = {
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
-    <ClientRouter />
+    <script is:inline type="application/ld+json" src="/person.schema.json"></script>
+    <ClientRouter fallback="animate" />
     <title>{pageTitle}</title>
   </head>
   <body>
     <AmbientShader />
-    <a class="skip-link" href="#main">Skip to content</a>
+    <!-- data-astro-reload: a same-page anchor is not a view transition. Without it the
+         router jumps the scroll while Lenis smooths it; InteractionRuntime handles the
+         click (focus + smooth scroll) instead. -->
+    <a class="skip-link" href="#main" data-astro-reload>Skip to content</a>
     <div class="page shell-layout"><slot /></div>
     <InteractionRuntime />
   </body>
