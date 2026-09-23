@@ -1,0 +1,131 @@
+---
+// The single project page, identical for the studio and for the client.
+import ArrowIcon from '@/components/ArrowIcon.astro';
+import {
+  estimateRows,
+  estimatedHours,
+  formatEuro,
+  formatNumber,
+  formatOre,
+  italianDate,
+  sortByDate,
+  workedHours,
+  projectRate,
+  workedLabel,
+  type AdminProject,
+} from './project-view';
+
+interface Props {
+  project: AdminProject;
+}
+const { project } = Astro.props;
+const rate = projectRate(project);
+const estimated = estimatedHours(project);
+const worked = workedHours(project);
+const percent = estimated > 0 ? Math.min(100, Math.round((worked / estimated) * 100)) : 0;
+const progressText = `${formatNumber(worked)} di ${formatNumber(estimated)} ore stimate lavorate`;
+const entries = sortByDate(project.entries, 'desc');
+const estimates = estimateRows(project);
+---
+<article class="project-page" aria-labelledby="project-title">
+  <header class="project-head">
+    <h1 id="project-title">{project.title}</h1>
+    {project.description && <p class="muted">{project.description}</p>}
+  </header>
+
+  <section class="project-stats" aria-label="Stima, avanzamento e consuntivo">
+    <p class="progress-label">{progressText}</p>
+    <div class="progress-track" role="progressbar" aria-label="Ore stimate lavorate" aria-valuemin="0" aria-valuemax="100" aria-valuenow={percent} aria-valuetext={progressText}><i style={`width:${percent}%`}></i></div>
+    <p class="estimate-line">{formatOre(estimated)} a {formatEuro(estimated * rate)}</p>
+    <p class="estimate-rate">estimate {formatNumber(rate)} €/ora</p>
+    <p class="worked-line">{workedLabel(worked)} · {formatEuro(worked * rate)}</p>
+  </section>
+
+  <section class="project-section" aria-labelledby="worklog-title">
+    <h2 id="worklog-title">Registro lavori</h2>
+    {entries.length ? (
+      <ol class="row-list">
+        {entries.map((entry) => (
+          <li>
+            <time datetime={entry.date.slice(0, 10)}>{italianDate(entry.date)}</time>
+            <span class="row-sep" aria-hidden="true">·</span>
+            <span class="row-hours">{formatOre(entry.hours)}</span>
+            <span class="row-sep" aria-hidden="true">·</span>
+            <span class="row-note">{entry.note}</span>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <p class="empty-state">Nessun lavoro registrato.</p>
+    )}
+  </section>
+
+  <section class="project-section" aria-labelledby="estimates-title">
+    <h2 id="estimates-title">Preventivi</h2>
+    {estimates.length ? (
+      <ol class="row-list">
+        {estimates.map((estimate, index) => (
+          <li>
+            <time datetime={estimate.date.slice(0, 10)}>{italianDate(estimate.date)}</time>
+            <span class="row-sep" aria-hidden="true">·</span>
+            <span class="row-note">{estimate.note}</span>
+            <span class="row-sep" aria-hidden="true">·</span>
+            <span class="row-hours">{index === 0 ? '' : '+'}{formatOre(estimate.hours)} a {formatEuro(estimate.amount)}</span>
+            <span class="row-sep" aria-hidden="true">·</span>
+            <span class="row-hours">totale {formatOre(estimate.cumulativeHours)}</span>
+            <a class="text-link link-with-arrow row-link" href={estimate.pdfUrl} target="_blank" rel="noopener noreferrer">
+              Apri il PDF<span class="visually-hidden"> (si apre in una nuova scheda)</span>
+              <ArrowIcon direction="external" />
+            </a>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <p class="empty-state">Nessun preventivo allegato.</p>
+    )}
+  </section>
+</article>
+
+<style>
+  .project-page { padding-bottom: var(--s8); }
+  .project-head h1 { margin: 0; font-size: 22px; font-weight: 650; line-height: 1.2; letter-spacing: -.02em; }
+  .project-head p { margin: var(--s2) 0 0; max-width: 62ch; }
+
+  .project-stats { margin-top: var(--s5); padding-top: var(--s4); border-top: 1px solid var(--glass-edge); }
+  .progress-label { margin: 0; font-size: var(--f-lead); font-variant-numeric: tabular-nums; }
+  .progress-track { margin-top: var(--s3); }
+  .estimate-line { margin: var(--s3) 0 0; font-variant-numeric: tabular-nums; }
+  .estimate-rate { margin: var(--s1) 0 0; color: var(--ink-3); font-size: var(--f-small); }
+  .worked-line { margin: var(--s3) 0 0; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+  .project-section { margin-top: var(--s6); }
+  .project-section h2 { margin: 0 0 var(--s2); font-size: var(--f-lead); font-weight: 600; letter-spacing: -.01em; }
+
+  .row-list { list-style: none; margin: 0; padding: 0; }
+  .row-list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s2);
+    padding: var(--s3) 0;
+    border-top: 1px solid var(--glass-edge);
+    font-size: var(--f-small);
+    line-height: 1.45;
+  }
+  .row-list time, .row-hours { color: var(--ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .row-note { flex: 1 1 24ch; min-width: 0; }
+  .row-sep { color: var(--ink-3); }
+  .row-link { margin-left: auto; white-space: nowrap; }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

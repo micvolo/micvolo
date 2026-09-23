@@ -1,23 +1,42 @@
 ---
+// Thin main column for the reserved area: it sits next to the site rail inside
+// the standard shell-layout, so the rail stays visible exactly like the rest of
+// the site. Sign-in data is read-only here; the only control is signing out.
+import ArrowIcon from '@/components/ArrowIcon.astro';
+
 interface Props {
-  title: string;
-  subtitle: string;
-  principal: Principal;
-  mode: 'admin' | 'client';
+  title?: string;
+  subtitle?: string;
+  back?: { href: string; label: string };
 }
-import ThemeToggle from '@/components/ThemeToggle.astro';
-const { title, subtitle, principal, mode } = Astro.props;
+const { title, subtitle, back } = Astro.props;
 ---
-<div class="app-shell">
-  <aside class="app-nav glass">
-    <div>
-      <a class="wordmark" href="/">Michele Volonghi</a>
-      <p class="nav-context">{mode === 'admin' ? 'Studio backoffice' : 'Collaboration portal'}<br />{principal.email}</p>
-    </div>
-    <div class="app-nav-actions"><ThemeToggle /><form method="post" action="/api/auth/logout" data-astro-reload><button type="submit">Sign out</button></form></div>
-  </aside>
-  <main class="app-main">
-    <header class="app-topbar glass"><h1>{title}</h1><p>{subtitle}</p></header>
-    <slot />
-  </main>
-</div>
+<main id="main" class="app-main">
+  <header class="app-topbar glass">
+    {back ? (
+      <a class="text-link link-with-arrow app-back" href={back.href}><ArrowIcon direction="left" />{back.label}</a>
+    ) : (
+      <div class="app-topbar-text">
+        {title && <h1>{title}</h1>}
+        {subtitle && <p>{subtitle}</p>}
+      </div>
+    )}
+    <form class="app-signout" method="post" action="/api/auth/logout" data-astro-reload><button type="submit">Esci</button></form>
+  </header>
+  <slot />
+</main>
+
+<style>
+  .app-topbar { align-items: center; }
+  .app-topbar-text { min-width: 0; }
+  .app-back { font-size: var(--f-small); }
+  .app-signout { margin-left: auto; }
+  .app-signout button {
+    min-height: 36px;
+    padding-inline: var(--s4);
+    color: var(--ink);
+    background: var(--fill);
+    font-size: var(--f-small);
+    font-weight: 500;
+  }
+</style>

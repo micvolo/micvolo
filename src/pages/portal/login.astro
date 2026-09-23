@@ -1,13 +1,20 @@
 ---
 import { env as cloudflareEnv } from 'cloudflare:workers';
 export const prerender = false;
-import AppLayout from '@/layouts/AppLayout.astro';
+import PublicLayout from '@/layouts/PublicLayout.astro';
+import SiteRail from '@/components/public/SiteRail.astro';
 import AuthPanel from '@/components/app/AuthPanel.astro';
 import { isDevelopment } from '@/lib/auth';
-if (Astro.locals.principal?.role === 'client') return Astro.redirect('/portal');
+const principal = Astro.locals.principal;
+if (principal) return Astro.redirect(principal.role === 'admin' ? '/admin' : '/portal');
 const env = cloudflareEnv;
-const preview = env.DEV_OTP_PREVIEW === 'true' && isDevelopment(env, Astro.url) && /^\d{6}$/.test(Astro.url.searchParams.get('preview') ?? '')
+// Dev-only code preview (see request-code.ts): import.meta.env.DEV is `false` in
+// production builds, so this whole expression folds to undefined and is stripped.
+const preview = import.meta.env.DEV && env.DEV_OTP_PREVIEW === 'true' && isDevelopment(env, Astro.url) && /^\d{6}$/.test(Astro.url.searchParams.get('preview') ?? '')
   ? Astro.url.searchParams.get('preview') ?? undefined
   : undefined;
 ---
-<AppLayout title="Client access"><AuthPanel role="client" sent={Astro.url.searchParams.has('sent')} error={Astro.url.searchParams.has('error')} {preview} /></AppLayout>
+<PublicLayout title="Client access">
+  <SiteRail />
+  <AuthPanel sent={Astro.url.searchParams.has('sent')} error={Astro.url.searchParams.has('error')} {preview} />
+</PublicLayout>

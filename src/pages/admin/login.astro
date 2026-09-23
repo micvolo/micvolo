@@ -1,13 +1,20 @@
 ---
 import { env as cloudflareEnv } from 'cloudflare:workers';
 export const prerender = false;
-import AppLayout from '@/layouts/AppLayout.astro';
+import PublicLayout from '@/layouts/PublicLayout.astro';
+import SiteRail from '@/components/public/SiteRail.astro';
 import AuthPanel from '@/components/app/AuthPanel.astro';
 import { isDevelopment } from '@/lib/auth';
-if (Astro.locals.principal?.role === 'admin') return Astro.redirect('/admin');
+// Deep-link alias: the single email-based access point is shared with the portal,
+// and the server routes admins to the studio and clients to their project.
+const principal = Astro.locals.principal;
+if (principal) return Astro.redirect(principal.role === 'admin' ? '/admin' : '/portal');
 const env = cloudflareEnv;
-const preview = env.DEV_OTP_PREVIEW === 'true' && isDevelopment(env, Astro.url) && /^\d{6}$/.test(Astro.url.searchParams.get('preview') ?? '')
+const preview = import.meta.env.DEV && env.DEV_OTP_PREVIEW === 'true' && isDevelopment(env, Astro.url) && /^\d{6}$/.test(Astro.url.searchParams.get('preview') ?? '')
   ? Astro.url.searchParams.get('preview') ?? undefined
   : undefined;
 ---
-<AppLayout title="Studio access"><AuthPanel role="admin" sent={Astro.url.searchParams.has('sent')} error={Astro.url.searchParams.has('error')} {preview} /></AppLayout>
+<PublicLayout title="Client access">
+  <SiteRail />
+  <AuthPanel sent={Astro.url.searchParams.has('sent')} error={Astro.url.searchParams.has('error')} {preview} />
+</PublicLayout>

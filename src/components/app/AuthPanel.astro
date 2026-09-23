@@ -1,43 +1,54 @@
 ---
-import ArrowIcon from '@/components/ArrowIcon.astro';
+// Single email-based access point for clients and for the studio. The server
+// derives the role from the email address, so the form carries no role.
 interface Props {
-  role: 'admin' | 'client';
   sent: boolean;
   error: boolean;
   preview?: string;
 }
-const { role, sent, error, preview } = Astro.props;
-const title = role === 'admin' ? 'Studio access' : 'Access your project';
-const note = role === 'admin'
-  ? 'A separate, allowlisted sign-in for the studio workspace.'
-  : 'Use the email connected to your project. No password required.';
+const { sent, error, preview } = Astro.props;
 ---
-<main class="auth-shell">
-  <a class="wordmark" href="/">Michele Volonghi</a>
-  <section class="auth-panel" aria-labelledby="auth-title">
-    <p class="eyebrow">{role === 'admin' ? 'Admin / private' : 'Client portal'}</p>
-    <h1 id="auth-title">{title}</h1>
-    <p class="muted">{note}</p>
+<main id="main" class="auth-pane">
+  <section class="auth-stack" aria-labelledby="auth-title">
+    <h1 id="auth-title">Client &amp; studio access</h1>
+    <p class="muted">Use the email linked to your project or to the studio. The address decides where you land</p>
     {sent ? (
       <>
-        <div class="notice" role="status">If the address is authorised, a six-digit code is on its way.</div>
+        <p class="muted" role="status">If the address is authorised, a six-digit code is on its way</p>
         {preview && <div class="preview-code"><span>Local preview</span><strong>{preview}</strong></div>}
-        <form method="post" action="/api/auth/verify-code" class="stack-form" data-astro-reload>
-          <input type="hidden" name="role" value={role} />
+        <form method="post" action="/api/auth/verify-code" class="stack-form" data-verify-form data-auto-code={preview}>
           <label for="code">Access code</label>
           <input id="code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required autofocus />
-          {error && <p class="form-error" role="alert">That code is invalid or has expired.</p>}
+          {error && <p class="form-error" role="alert">That code is invalid or has expired</p>}
           <button type="submit">Continue</button>
         </form>
       </>
     ) : (
-      <form method="post" action="/api/auth/request-code" class="stack-form" data-astro-reload>
-        <input type="hidden" name="role" value={role} />
+      <form method="post" action="/api/auth/request-code" class="stack-form">
         <label for="email">Email address</label>
         <input id="email" name="email" type="email" autocomplete="email" required autofocus />
         <button type="submit">Email me a code</button>
       </form>
     )}
-    <a class="text-link link-with-arrow" href="/"><ArrowIcon direction="left" />Return to the portfolio</a>
   </section>
 </main>
+
+<script>
+  // Dev preview only: fill and submit the one-time-code form with the previewed
+  // code. Bundled (not inline) so the site CSP allows it, and bound on
+  // astro:page-load so it also runs after client-side swaps. Guarded so the
+  // auto-submit fires once per form.
+  function submitAutoCode() {
+    const form = document.querySelector<HTMLFormElement>('form[data-verify-form][data-auto-code]');
+    if (!form) return;
+    const autoCode = form.dataset.autoCode ?? '';
+    if (form.dataset.autoCodeDone === 'true' || !/^\d{6}$/.test(autoCode)) return;
+    form.dataset.autoCodeDone = 'true';
+    const input = form.querySelector<HTMLInputElement>('input[name="code"]');
+    if (input) input.value = autoCode;
+    form.requestSubmit();
+  }
+
+  document.addEventListener('astro:page-load', submitAutoCode);
+  if (document.readyState !== 'loading') submitAutoCode();
+</script>
