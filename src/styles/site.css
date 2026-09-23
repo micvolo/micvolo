@@ -97,8 +97,9 @@
 }
 
 * { box-sizing: border-box; }
-html { background: var(--bg); -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
-body { min-width: 320px; margin: 0; overflow-x: clip; color: var(--ink); background: var(--bg); text-rendering: optimizeLegibility; letter-spacing: -.01em; }
+/* Root background-color paints the whole canvas: behind iOS Safari's toolbar and in overscroll areas. */
+html { background-color: var(--bg); -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+body { min-width: 320px; margin: 0; overflow-x: clip; color: var(--ink); background-color: var(--bg); text-rendering: optimizeLegibility; letter-spacing: -.01em; }
 body, button, input, select, textarea { font: inherit; }
 a { color: inherit; text-decoration: none; transition: color var(--t-color) var(--ease); }
 @media (hover: hover) {
@@ -149,6 +150,7 @@ button { cursor: pointer; }
   inset: 0;
   width: 100%;
   height: 100%;
+  height: 100dvh; /* tracks iOS Safari's collapsing URL bar; %/svh stay as fallback */
   pointer-events: none;
   opacity: .62;
   filter: grayscale(1);
@@ -215,9 +217,10 @@ main { order: 5; }
 .hero-copy { white-space: pre-line; color: var(--ink-2); line-height: 1.35; }
 dt { color: var(--ink-3); }
 dd { font-variant-numeric: tabular-nums; }
-/* Authenticated application */
-.app-body { min-height: 100svh; padding: var(--s2); padding-top: max(var(--s2), env(safe-area-inset-top)); padding-bottom: max(var(--s2), env(safe-area-inset-bottom)); padding-left: max(var(--s2), env(safe-area-inset-left)); padding-right: max(var(--s2), env(safe-area-inset-right)); }
-.auth-shell { min-height: calc(100svh - 16px); display: grid; grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+/* Authenticated application.
+   Full-height shells: svh first (fallback), dvh override so they track iOS Safari's collapsing chrome. */
+.app-body { min-height: 100svh; min-height: 100dvh; padding: var(--s2); padding-top: max(var(--s2), env(safe-area-inset-top)); padding-bottom: max(var(--s2), env(safe-area-inset-bottom)); padding-left: max(var(--s2), env(safe-area-inset-left)); padding-right: max(var(--s2), env(safe-area-inset-right)); }
+.auth-shell { min-height: calc(100svh - 16px); min-height: calc(100dvh - 16px); display: grid; grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
 .auth-shell > .wordmark { grid-column: 1 / -1; padding: var(--s4); }
 .auth-panel { grid-column: 1; align-self: center; padding: var(--s4); background: var(--fill); border-radius: var(--r-1); }
 .auth-panel h1 { margin: var(--s4) 0 var(--s2); font-size: 17px; font-weight: 650; line-height: 1.25; letter-spacing: -.01em; }
@@ -264,7 +267,7 @@ button, .button { color: var(--bg); background: var(--ink); font-weight: 650; }
 .auth-stack > .text-link { font-size: var(--f-small); margin-top: var(--s3); }
 .auth-stack .form-error { color: var(--danger); }
 
-.app-shell { min-height: calc(100svh - 16px); display: grid; grid-template-columns: 1fr; gap: var(--s2); }
+.app-shell { min-height: calc(100svh - 16px); min-height: calc(100dvh - 16px); display: grid; grid-template-columns: 1fr; gap: var(--s2); }
 .app-nav { position: static; height: auto; padding: var(--s4); border-radius: var(--r-1); display: flex; flex-direction: row; align-items: center; gap: var(--s4); }
 .app-nav .nav-context { margin: var(--s2) 0 0; color: var(--ink-2); font-size: var(--f-small); line-height: 1.4; }
 .app-nav-actions { display: grid; grid-template-columns: auto 1fr; gap: var(--s2); margin-left: auto; }
@@ -365,13 +368,14 @@ button, .button { color: var(--bg); background: var(--ink); font-weight: 650; }
   .rail-nav, .rail-actions { width: auto; }
   .auth-pane {
     min-height: 100svh;
+    min-height: 100dvh;
     padding: var(--s5) var(--s6) var(--s6);
     align-items: start;
     justify-items: start;
   }
   .rail-identity { gap: var(--s5); }
   .app-shell { grid-template-columns: 240px minmax(0, 1fr); }
-  .app-nav { position: sticky; top: var(--s2); height: calc(100svh - 16px); flex-direction: column; align-items: stretch; justify-content: space-between; }
+  .app-nav { position: sticky; top: var(--s2); height: calc(100svh - 16px); height: calc(100dvh - 16px); flex-direction: column; align-items: stretch; justify-content: space-between; }
   .app-nav .nav-context { margin: var(--s6) 0 0; }
   .app-nav-actions { margin-left: 0; }
   .metric-ledger { grid-template-columns: repeat(4, 1fr); }

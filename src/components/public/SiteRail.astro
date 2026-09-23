@@ -1,44 +1,21 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
 import PaletteToggle from '@/components/PaletteToggle.astro';
 import ArrowIcon from '@/components/ArrowIcon.astro';
 import StrokeIcon from '@/components/StrokeIcon.astro';
-import { appIcon } from '@/lib/project-page/app-icons';
-import { projectDateLabel } from '@/lib/project-page/project-date';
+import { getProjects } from '@/lib/projects';
+import { appIcon } from '@/lib/projects/app-icons';
+import { projectDateLabel } from '@/lib/projects/project-date';
 
 const settings = await getEntry('settings', 'settings');
 if (!settings) throw new Error('Site settings are missing');
 
-const projectSummaries: Record<string, string> = {
-  'abitare-in-legno': 'Timber-home showcase, self-hosted variable fonts, lazy galleries holding LCP under 900ms',
-  'apr-instruments': 'Instrument shop with faceted catalogue search, headless cart, sub-200ms filtered queries',
-  bloem: 'Longform editorial engine, scroll-linked chapter typography, zero cumulative layout shift',
-  'davide-derocchi': 'Photographer portfolio with masked view transitions and per-route subsetted variable fonts',
-  'ea-kahane': 'Minimal portfolio, art-directed image pipeline, contact form fenced against scripted spam',
-  'fame-la-frittura-di-napoli': 'Fritteria site with structured-data menu, deferred map embed, offline-tolerant opening hours',
-  'flavio-nani': 'Illustrator site, SVG-heavy archive with lazy thumbnails and a sticky index',
-  'francesco-bellisario': 'Scroll-scrubbed hero, breakpoint-level art direction, media preloaded on pointer intent',
-  'gastronomia-lanzani': 'Restaurant site, daily menu rendered from headless CMS, cache-tag invalidation on publish',
-  'laura-baresi': 'E-commerce with product configurator, locally persisted cart, AVIF-first responsive images',
-  lorem: 'Parts catalogue with instant client-side search over a prebuilt static JSON index',
-  'massimo-uberti': 'Artist portfolio with virtualised full-bleed lightbox, keyboard navigation, zero jank',
-  'miriam-mora': 'Editorial grid portfolio, hover previews warmed on pointer intent, CLS pinned at zero',
-  'momento-golf': 'Golf gear shop, optimistic variant cart, checkout handoff measured under 200ms',
-  'music-mascots-archive': 'Archive of thousands of band mascots, decade filters instant on a virtualised grid',
-  'omb-saleri': 'Industrial catalogue with structured product database, CAD previews, bilingual content model',
-  'origami-project': 'Studio site with WebGL paper-fold hero and CDN-edge instruction PDFs',
-  pasolini: 'Cultural archive with deep-zoom scans, timeline state encoded in the URL',
-  'studio-psicologia-doria': 'Clinic site, double-validated booking form, consent-gated analytics, zero third-party trackers',
-  'the-big-archive': 'Web design archive, infinite grid over edge-cached API pages, instant tag filters',
-};
-
-const clientProjects = (await getCollection('projects'))
-  .filter((project) => project.data.category === 'client-work' && (project.data.slug ?? project.id) in projectSummaries)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .map((project) => {
-    const slug = project.data.slug ?? project.id;
-    return { slug, title: project.data.title, summary: projectSummaries[slug], dateLabel: projectDateLabel(project.data.date) };
-  });
+const clientProjects = (await getProjects()).map((project) => ({
+  slug: project.slug,
+  title: project.title,
+  summary: project.summary,
+  dateLabel: projectDateLabel(project.date),
+}));
 
 const isHome = Astro.url.pathname === '/';
 ---
@@ -351,6 +328,8 @@ const isHome = Astro.url.pathname === '/';
   .rail-projects__link[aria-current="page"] { color: var(--accent); background: var(--fill-2); border-color: color-mix(in srgb, var(--accent) 24%, var(--glass-edge)); }
   @media (hover: hover) { .rail-projects__link:hover { color: var(--accent); background: var(--fill-2); border-color: color-mix(in srgb, var(--accent) 24%, var(--glass-edge)); } }
 
+  /* Balance elevation: the .card glass shadow reads heavy in light mode and vanishes in dark — keep rail cards shadowless in both. */
+  .card.rail-group, .card.rail-home { box-shadow: none; }
   .rail-group { order: 5; display: grid; gap: var(--s3); padding: var(--s3); }
   .rail-group__section { display: grid; gap: var(--s1); }
   .rail-group__label { padding-inline: var(--s2); color: var(--ink-3); font-size: var(--f-label); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
@@ -368,7 +347,7 @@ const isHome = Astro.url.pathname === '/';
   .rail-app-card__icon { width: 40px; height: 40px; flex: 0 0 auto; display: grid; place-items: center; overflow: hidden; border-radius: 10px; background: var(--fill); }
   .rail-app-card__icon img { width: 100%; height: 100%; object-fit: contain; }
   .rail-app-card__icon--app { background: none; border-radius: 0; overflow: visible; }
-  .rail-app-card__placeholder { width: 40px; height: 40px; flex: 0 0 auto; border-radius: 10px; background: var(--fill-2); }
+  .rail-app-card__placeholder { width: 40px; height: 40px; flex: 0 0 auto; border-radius: 10px; background: var(--ink); }
   .rail-app-card__icon--projects :global(.stroke-icon) { width: 21px; height: 21px; }
   .rail-app-card__body { min-width: 0; flex: 1; display: grid; gap: 2px; }
   .rail-app-card__body strong { font-weight: 600; }

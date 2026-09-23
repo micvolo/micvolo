@@ -2,8 +2,8 @@
 /table-games/chameleon/*  /table-games/camaleonte/:splat  301
 /table-games/teamword  /table-games/reazione-a-catena  301
 /table-games/teamword/*  /table-games/reazione-a-catena/:splat  301
-/projects/chameleon  /projects/camaleonte  301
-/projects/teamword  /projects/reazione-a-catena  301
+/projects/chameleon  /table-games/camaleonte  301
+/projects/teamword  /table-games/reazione-a-catena  301
 /projects/origami  /projects/origami-project  301
 /projects/stra-type  /projects/letter-flow  301
 /lab  /graphic-experiments  301

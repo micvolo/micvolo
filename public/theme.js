@@ -20,9 +20,26 @@
     return storedPalette() || 'accent';
   }
 
+  // Browser chrome tint per palette state. Brand-derived: greyscale matches the UI
+  // background (--bg), accent matches the ambient shader base (cream day / notte night).
+  var THEME_COLORS = {
+    greyscale: { light: '#f7f7f5', dark: '#1e1e1e' },
+    accent: { light: '#ffffe5', dark: '#0a0c1c' },
+  };
+
+  function applyThemeColors(target, palette) {
+    if (!target) return;
+    var colors = THEME_COLORS[palette] || THEME_COLORS.greyscale;
+    var light = target.querySelector('#theme-color-light');
+    var dark = target.querySelector('#theme-color-dark');
+    if (light) light.setAttribute('content', colors.light);
+    if (dark) dark.setAttribute('content', colors.dark);
+  }
+
   function applyPaletteToDocument(target, palette) {
     if (!target) return;
     target.documentElement.dataset.palette = palette;
+    applyThemeColors(target, palette);
   }
 
   function syncPaletteControls() {

@@ -4,7 +4,7 @@ A minimal Astro portfolio and private collaboration ledger running on Cloudflare
 
 ## Product surface
 
-- Static public portfolio with the existing copy and 25 project records.
+- Static public portfolio with the existing copy and 20 project records.
 - Passwordless client portal scoped to one project per client.
 - Separate, allowlisted admin backoffice for projects, work logs, timeline updates, invoices, payments and PDFs.
 - D1 for relational data, private R2 for documents, and Cloudflare Email Service for one-time access codes.
