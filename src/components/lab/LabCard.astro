@@ -1,0 +1,96 @@
+---
+import type { Project } from '@/lib/lab/projects';
+import StrokeIcon from '@/components/StrokeIcon.astro';
+interface Props {
+  project: Project;
+  previous: Project | undefined;
+  next: Project | undefined;
+}
+const { project, previous, next } = Astro.props;
+---
+
+<section class="lab-card" aria-label={project.title} data-lab-card>
+  <header class="lab-card__header">
+    <h1 class="lab-card__title">{project.title}</h1>
+    <p class="lab-card__description">{project.description}</p>
+    <div class="lab-card__params" data-lab-params></div>
+    <nav class="lab-card__nav" aria-label="Experiment navigation">
+      <a href={`/graphic-experiments/${previous?.id}`} aria-label={`Previous experiment: ${previous?.title}`}><StrokeIcon name="arrow-left" /></a>
+      <a href={`/graphic-experiments/${next?.id}`} aria-label={`Next experiment: ${next?.title}`}><StrokeIcon name="arrow-right" /></a>
+    </nav>
+  </header>
+  <div class="lab-card__stage" data-lab-stage data-experiment={project.id} aria-live="polite">
+    <div class="lab-card__loading">Loading experiment…</div>
+  </div>
+  <noscript>
+    <p class="lab-card__fallback">This experiment needs JavaScript to run. Try the <a href="/graphic-experiments">Graphic experiments index</a>.</p>
+  </noscript>
+</section>
+
+<script>
+  import { mountExperiment } from '@/components/lab/experiments/index';
+
+  function initLabCard() {
+    document.querySelectorAll<HTMLElement>('[data-lab-stage]').forEach((stage) => {
+      if (stage.dataset.experimentBound) return;
+      stage.dataset.experimentBound = 'true';
+
+      const id = stage.dataset.experiment;
+      const params = stage.closest('[data-lab-card]')?.querySelector<HTMLElement>('[data-lab-params]');
+      if (!id || !params) return;
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const dispose = mountExperiment(id, stage, { reducedMotion: reduced, params });
+
+      document.addEventListener('astro:before-swap', () => {
+        dispose();
+        delete stage.dataset.experimentBound;
+      }, { once: true });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initLabCard);
+  if (document.readyState !== 'loading') initLabCard();
+</script>
+
+<style is:global>
+  /* In-flow column layout: header at top, stage fills the remaining .stream column height. */
+  .lab-card { display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: calc(100dvh - max(var(--s2), env(safe-area-inset-top)) - max(var(--s2), env(safe-area-inset-bottom))); }
+  /* Header rows: title, description, params, nav — hairline separators only. */
+  .lab-card__header {
+    display: grid;
+    padding: clamp(var(--s4), 4vw, var(--s7));
+    padding-bottom: 0;
+  }
+  .lab-card__header > * { margin: 0; min-width: 0; padding-block: var(--s3); }
+  .lab-card__header > * + * { border-top: 1px solid color-mix(in srgb, var(--ink-3) 24%, transparent); }
+  .lab-card__title { font-size: var(--f-lead); font-weight: 500; }
+  .lab-card__description { max-width: 56ch; color: var(--ink-2); line-height: 1.45; }
+  .lab-card__params:empty { display: none; }
+  .lab-card__nav { display: flex; justify-content: flex-end; gap: var(--s1); }
+  .lab-card__nav a {
+    width: var(--ctl); height: var(--ctl); display: grid; place-items: center;
+    color: var(--ink-2); border-radius: var(--pill);
+  }
+  .lab-card__nav a:hover { color: var(--accent); background: var(--fill-2); }
+  .lab-card__nav .stroke-icon { width: 1em; height: 1em; }
+  .lab-card__stage {
+    position: relative; min-height: 320px; overflow: auto;
+    margin-inline: clamp(var(--s4), 4vw, var(--s7));
+    margin-bottom: clamp(var(--s4), 4vw, var(--s7));
+    background: #0a0a0a; overscroll-behavior: contain;
+  }
+  .lab-card__stage canvas, .lab-p5, .lab-webgl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .lab-card__stage video, .lab-video-source, .lab-image-source { display: none; }
+  .lab-camera { position: absolute; inset: 0; display: grid; place-items: center; gap: var(--s3); padding: var(--s4); }
+  .lab-camera__output { z-index: 1; }
+  .lab-camera__start, .lab-camera__status { position: relative; z-index: 2; }
+  .lab-camera__status { max-width: 32ch; color: rgba(255, 255, 255, .85); text-align: center; }
+  .lab-card__loading, .lab-card__fallback {
+    position: absolute; inset: 0; display: grid; place-items: center; padding: var(--s4);
+    color: rgba(255, 255, 255, .85); text-align: center;
+  }
+  .lab-card__fallback { z-index: 12; background: rgba(10, 10, 10, .86); }
+  noscript .lab-card__fallback { z-index: 1; }
+  .lab-card__fallback a { color: #fff; text-decoration: underline; }
+</style>

@@ -1,0 +1,57 @@
+/* a15 — Pulse poem (ported from lab/src/components/A15.astro:143-198).
+   Display type is the project standard "SF Pro Text" instead of Pressio, so the
+   words band is sized 26cqw (vs the original 48vw Pressio, a condensed face) to keep
+   the same huge cropped uppercase phrase. cq units carry the original vw/vh
+   proportions relative to the scrollable stage instead of the window. */
+.lab-a15 {
+  position: absolute;
+  inset: 0;
+  container-type: size;
+}
+.lab-words {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  font-size: 26cqw;
+  font-family: "SF Pro Text", sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: pre;
+  overflow: hidden;
+  line-height: 80%;
+  color: red;
+  mix-blend-mode: difference;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+.lab-words span {
+  transform: translateY(100%);
+}
+/* white-space: normal + real spaces between word boxes wrap long lines within the
+   stage width, so any font metrics can never overflow the page. */
+.lab-poem-text {
+  margin-top: 100cqh;
+  white-space: normal;
+  font-size: 5cqw;
+  font-family: "SF Pro Text", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.5cqw;
+  color: red;
+  mix-blend-mode: difference;
+  display: flex;
+  flex-wrap: wrap;
+}
+.lab-poem-text [data-p] {
+  overflow: hidden;
+}
+.lab-poem-text [data-p] > * {
+  display: inline-block;
+  transform: translateY(100%);
+}
+.lab-poem-paragraph {
+  margin-bottom: 4rem;
+}

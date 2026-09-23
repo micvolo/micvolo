@@ -1,0 +1,159 @@
+/* Shared inline parameter fields for experiment description areas
+   (src/lib/params/params.ts). Theme-adaptive chips: --ctl height, --r-2 radius,
+   --fill-2 surface -> --fill-3 on hover/focus, hairline separators for groups. */
+
+.params { display: grid; justify-items: start; gap: var(--s3); }
+.params__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2) var(--s3);
+}
+
+/* Pill buttons (brand: --ctl height, --fill-2 -> --fill-3 hover). */
+.params__toggle, .params__button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: var(--ctl);
+  padding: 0 var(--s4);
+  border: 0;
+  border-radius: var(--pill);
+  background: var(--fill-2);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--f-small);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--t-color) var(--ease);
+}
+
+@media (hover: hover) {
+  .params__toggle:hover, .params__button:hover { background: var(--fill-3); }
+}
+
+.params__toggle:focus-visible, .params__button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Chevron: points up while collapsed, down while expanded. */
+.params__toggle::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  margin: 0 1px 3px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-135deg);
+  transition: transform var(--t-color) var(--ease);
+}
+
+.params__toggle[aria-expanded='true']::after { transform: rotate(45deg); }
+
+/* Field chips: label + control in one compact themed control. */
+.params__field {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: var(--ctl);
+  padding-right: var(--s3);
+  border-radius: var(--r-2);
+  background: var(--fill-2);
+  transition: background-color var(--t-color) var(--ease);
+}
+
+.params__field:hover, .params__field:focus-within { background: var(--fill-3); }
+
+.params__label {
+  padding-left: var(--s3);
+  color: var(--ink-2);
+  font-size: var(--f-label);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.params__input {
+  min-height: calc(var(--ctl) - var(--s1));
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--f-small);
+  font-variant-numeric: tabular-nums;
+}
+
+.params__input--number { width: 4.5rem; }
+.params__input--text { width: 10rem; }
+
+textarea.params__input--text {
+  width: min(20rem, 100%);
+  padding: var(--s2) 0;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.params__input--color {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+
+.params__input--color::-webkit-color-swatch-wrapper { padding: 0; }
+.params__input--color::-webkit-color-swatch { border: 0; border-radius: 6px; }
+.params__input--color::-moz-color-swatch { border: 0; border-radius: 6px; }
+
+.params__field--check { padding-right: var(--s3); }
+.params__check {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.params__field--monitor .params__input { color: var(--ink-2); }
+
+/* Groups: hairline separators only, no nested card surfaces. */
+.params__group {
+  flex: 1 0 100%;
+  display: grid;
+  gap: var(--s2);
+  padding-top: var(--s2);
+  border-top: 1px solid color-mix(in srgb, var(--ink-3) 24%, transparent);
+}
+
+.params__group-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: var(--ctl);
+  color: var(--ink);
+  font-size: var(--f-small);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.params__group-title::-webkit-details-marker { display: none; }
+.params__group-title:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.params__group-title::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  margin: 0 1px 3px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--t-color) var(--ease);
+}
+
+.params__group[open] > .params__group-title::after { transform: rotate(225deg); }

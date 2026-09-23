@@ -1,0 +1,27 @@
+---
+import PublicLayout from '@/layouts/PublicLayout.astro';
+import SiteRail from '@/components/public/SiteRail.astro';
+import LabCard from '@/components/lab/LabCard.astro';
+import { projects, projectById } from '@/lib/lab/projects';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({ params: { slug: project.id } }));
+}
+
+const { slug } = Astro.params;
+const project = projectById(slug ?? '');
+if (!project) {
+  return Astro.redirect('/graphic-experiments');
+}
+
+const currentIndex = projects.findIndex((p) => p.id === project.id);
+const previous = projects[currentIndex > 0 ? currentIndex - 1 : projects.length - 1];
+const next = projects[(currentIndex + 1) % projects.length];
+---
+
+<PublicLayout title={`${project.title} — Graphic experiments`} description={project.description}>
+  <SiteRail />
+  <main id="main" class="stream">
+    <LabCard project={project} previous={previous} next={next} />
+  </main>
+</PublicLayout>

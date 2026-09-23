@@ -1,0 +1,59 @@
+---
+---
+
+<section class="letter-flow-wrap" aria-label="Letter Flow interactive type experiment" data-letter-flow-card>
+  <div class="letter-flow__params" data-letter-flow-params></div>
+  <div class="letter-flow-frame" role="application" aria-label="Interactive vector type canvas. Drag to distort the letters." tabindex="0" data-letter-flow-frame>
+    <div class="letter-flow-canvas"></div>
+  </div>
+</section>
+
+<script>
+  import { initLetterFlow } from '@/components/letter-flow/letter-flow';
+
+  function setup() {
+    document.querySelectorAll<HTMLElement>('[data-letter-flow-card]').forEach((card) => {
+      if (card.dataset.letterFlowBound) return;
+      const frame = card.querySelector<HTMLElement>('[data-letter-flow-frame]');
+      const params = card.querySelector<HTMLElement>('[data-letter-flow-params]');
+      if (!frame || !params) return;
+      try {
+        card.dataset.letterFlowBound = 'true';
+        const dispose = initLetterFlow(frame, params);
+        document.addEventListener('astro:before-swap', () => {
+          dispose();
+          delete card.dataset.letterFlowBound;
+        }, { once: true });
+      } catch (error) {
+        delete card.dataset.letterFlowBound;
+        console.error('Letter Flow initialization failed:', error);
+        frame.insertAdjacentHTML('beforeend', '<p class="letter-flow-error" role="status">Letter Flow could not start. Reload the page to try again.</p>');
+      }
+    });
+  }
+  document.addEventListener('astro:page-load', setup);
+  if (document.readyState !== 'loading') setup();
+</script>
+
+<style is:global>
+  /* In-flow column layout: the frame fills the remaining .stream column height below the intro. */
+  .letter-flow-wrap { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+  .letter-flow-frame {
+    position: relative; overflow: hidden;
+    flex: 1 1 auto; min-height: 320px; touch-action: none;
+    margin-inline: clamp(var(--s4), 4vw, var(--s7));
+    margin-bottom: clamp(var(--s4), 4vw, var(--s7));
+  }
+  /* Params row in the intro area above the frame (mirrors LabCard's header row). */
+  .letter-flow__params {
+    padding: var(--s3) clamp(var(--s4), 4vw, var(--s7));
+    border-bottom: 1px solid color-mix(in srgb, var(--ink-3) 24%, transparent);
+  }
+  .letter-flow__params:empty { display: none; }
+  .letter-flow-frame canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+  .letter-flow-error {
+    /* Top-right within the frame; parameter fields live in the header row. */
+    position: absolute; z-index: 11; right: var(--s3); top: var(--s3); max-width: 32ch; margin: 0;
+    padding: var(--s3); color: var(--ink); background: var(--fill);
+  }
+</style>
