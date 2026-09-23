@@ -9,8 +9,8 @@ export const GET: APIRoute = async ({ params, locals }) => {
   const principal = locals.principal;
   if (!principal) return new Response('Unauthorized', { status: 401 });
   const db = cloudflareEnv.DB;
-  const document = await db.prepare('SELECT id, project_id, original_filename, r2_key, mime_type, size_bytes FROM documents WHERE id = ?1 LIMIT 1')
-    .bind(params.id).first<StoredDocument>();
+  const document = await db.prepare('SELECT id, project_id, original_filename, r2_key, mime_type, size_bytes FROM documents WHERE r2_key = ?1 LIMIT 1')
+    .bind(params.key).first<StoredDocument>();
   if (!document || !(await canAccessProject(db, principal, document.project_id))) return new Response('Not found', { status: 404 });
   const object = await cloudflareEnv.DOCUMENTS.get(document.r2_key);
   if (!object) return new Response('Not found', { status: 404 });

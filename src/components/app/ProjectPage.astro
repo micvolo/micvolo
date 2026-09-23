@@ -26,6 +26,9 @@ const percent = estimated > 0 ? Math.min(100, Math.round((worked / estimated) * 
 const progressText = `${formatNumber(worked)} di ${formatNumber(estimated)} ore stimate lavorate`;
 const entries = sortByDate(project.entries, 'desc');
 const estimates = estimateRows(project);
+const documents = project.documents;
+/** unix seconds -> ISO date for the row <time> */
+const documentDate = (createdAt: number) => new Date(createdAt * 1000).toISOString().slice(0, 10);
 ---
 <article class="project-page" aria-labelledby="project-title">
   <header class="project-head">
@@ -84,22 +87,43 @@ const estimates = estimateRows(project);
       <p class="empty-state">Nessun preventivo allegato.</p>
     )}
   </section>
+
+  <section class="project-section" aria-labelledby="documents-title">
+    <h2 id="documents-title">Documenti</h2>
+    {documents.length ? (
+      <ol class="row-list">
+        {documents.map((doc) => (
+          <li>
+            <time datetime={documentDate(doc.createdAt)}>{italianDate(documentDate(doc.createdAt))}</time>
+            <span class="row-sep" aria-hidden="true">·</span>
+            <span class="row-note">{doc.name}</span>
+            <a class="text-link link-with-arrow row-link" href={`/documents/${doc.r2Key}`} target="_blank" rel="noopener noreferrer">
+              Apri<span class="visually-hidden"> — {doc.name} (si apre in una nuova scheda)</span>
+              <ArrowIcon direction="external" />
+            </a>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <p class="empty-state">Nessun documento.</p>
+    )}
+  </section>
 </article>
 
 <style>
-  .project-page { padding-bottom: var(--s8); }
+  .project-page { display: grid; gap: var(--s5); }
   .project-head h1 { margin: 0; font-size: 22px; font-weight: 650; line-height: 1.2; letter-spacing: -.02em; }
   .project-head p { margin: var(--s2) 0 0; max-width: 62ch; }
 
-  .project-stats { margin-top: var(--s5); padding-top: var(--s4); border-top: 1px solid var(--glass-edge); }
+  .project-stats { padding-top: var(--s5); border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); }
   .progress-label { margin: 0; font-size: var(--f-lead); font-variant-numeric: tabular-nums; }
   .progress-track { margin-top: var(--s3); }
   .estimate-line { margin: var(--s3) 0 0; font-variant-numeric: tabular-nums; }
   .estimate-rate { margin: var(--s1) 0 0; color: var(--ink-3); font-size: var(--f-small); }
   .worked-line { margin: var(--s3) 0 0; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 
-  .project-section { margin-top: var(--s6); }
-  .project-section h2 { margin: 0 0 var(--s2); font-size: var(--f-lead); font-weight: 600; letter-spacing: -.01em; }
+  .project-section { padding-top: var(--s5); border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); }
+  .project-section h2 { margin: 0 0 var(--s4); font-size: var(--f-lead); font-weight: 600; letter-spacing: -.01em; }
 
   .row-list { list-style: none; margin: 0; padding: 0; }
   .row-list li {
@@ -108,14 +132,24 @@ const estimates = estimateRows(project);
     align-items: baseline;
     gap: var(--s2);
     padding: var(--s3) 0;
-    border-top: 1px solid var(--glass-edge);
     font-size: var(--f-small);
     line-height: 1.45;
   }
+  .row-list li + li { border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); }
   .row-list time, .row-hours { color: var(--ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .row-note { flex: 1 1 24ch; min-width: 0; }
   .row-sep { color: var(--ink-3); }
   .row-link { margin-left: auto; white-space: nowrap; }
+
+  .empty-state {
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 
   .visually-hidden {
     position: absolute;

@@ -27,7 +27,16 @@ const { title, subtitle, back } = Astro.props;
 </main>
 
 <style>
-  .app-topbar { align-items: center; }
+  /* Standard site content rhythm (clamp padding like .lab-index/.game-stream), safe-area aware. */
+  .app-main {
+    min-width: 0;
+    padding: clamp(var(--s4), 4vw, var(--s7));
+    padding-top: max(clamp(var(--s4), 4vw, var(--s7)), env(safe-area-inset-top));
+    padding-right: max(clamp(var(--s4), 4vw, var(--s7)), env(safe-area-inset-right));
+    padding-bottom: max(clamp(var(--s4), 4vw, var(--s7)), env(safe-area-inset-bottom));
+    padding-left: max(clamp(var(--s4), 4vw, var(--s7)), env(safe-area-inset-left));
+  }
+  .app-topbar { align-items: center; margin-bottom: var(--s5); }
   .app-topbar-text { min-width: 0; }
   .app-back { font-size: var(--f-small); }
   .app-signout { margin-left: auto; }

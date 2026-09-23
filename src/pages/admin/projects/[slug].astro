@@ -1,5 +1,6 @@
 ---
 export const prerender = false;
+import { env as cloudflareEnv } from 'cloudflare:workers';
 import PublicLayout from '@/layouts/PublicLayout.astro';
 import SiteRail from '@/components/public/SiteRail.astro';
 import AppShell from '@/components/app/AppShell.astro';
@@ -10,7 +11,7 @@ import type { AdminProject } from '@/components/app/project-view';
 const principal = Astro.locals.principal;
 if (!principal) return Astro.redirect('/admin/login');
 if (principal.role !== 'admin') return Astro.redirect('/portal');
-const projects: AdminProject[] = await getProjects();
+const projects: AdminProject[] = await getProjects(cloudflareEnv.DB);
 const project = projects.find((item) => item.slug === Astro.params.slug);
 if (!project) return new Response('Progetto non trovato', { status: 404 });
 ---

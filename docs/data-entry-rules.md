@@ -1,87 +1,146 @@
-# Data entry rules (AI writer)
+# Data entry rules (AI writer) — everything is in the DB
 
-Standing rules for the AI assistant when the user asks to log work, quote work, or change project data. The admin forms are gone — **the AI is the only writer**. Never create payment, billing or invoice data: hours and estimates only.
+Standing rules for the AI assistant when the user asks to log work, quote work, change a rate, or attach a file. The admin data lives in D1 — there is no TS store any more and no admin forms: **the AI is the only writer**, through SQL or the authenticated CRUD API. Never create payment, billing or invoice data: hours and estimates only.
 
 ## Where data lives
 
-| File | Role |
+| Thing | Role |
 | --- | --- |
-| `src/lib/admin-data/data.ts` | the store ("the database"): three row arrays — `projects`, `estimates`, `timeEntries` |
-| `src/lib/admin-data/index.ts` | schema (`AdminProject`, `EstimateDoc`, `TimeEntry`) + `getProjects()` read facade + `DEFAULT_RATE_EUR` |
-| `public/preventivi/<slug>/<estimate-id>.pdf` | one preventivo PDF per estimate row |
-| `src/lib/admin-data/pdf.mjs` | regenerates the preventivi PDFs |
-| `src/lib/admin-data/check.mjs` | validates all invariants, exits non-zero on problems |
+| `tracking_projects` (D1) | one row per client project: `slug, title, description, rate, sort_order` |
+| `estimate_docs` (D1) | preventivi: `id, slug, date, hours, amount, note, pdf_url` |
+| `time_entries` (D1) | work log: `id, slug, date, hours, note` |
+| `tracking_documents` (D1) | "documenti" attachments: `id, slug, name, r2_key, created_at` — **may be empty**, zero per project is completely valid |
+| `public/preventivi/<slug>/<file>.pdf` | the preventivo PDFs, uploaded by the user |
+| DOCUMENTS (R2) | the "documenti" files, served through `/documents/<key>` |
+| `migrations/`, `seeds/` | schema + the 20/26/161 seed rows |
 
-This is a build-time TS store: the sync `getProjects(): AdminProject[]` contract cannot read D1, and a later D1 migration can keep the same facade. `migrations/` and `seeds/demo.sql` belong to the portal D1 demo data — do not touch them for this dataset.
+Derived numbers are never stored: `estimatedHours` = Σ estimate `hours`, `workedHours` = Σ entry `hours`, monthly earnings = monthly hours × the project's own `rate`.
 
-## Schema (rows in `data.ts`)
+## Cookbook (one shot each)
 
-```ts
-// projects — one per client project, newest first by the date in src/data/projects/<slug>.md
-{ slug: 'abitare-in-legno', title: 'Abitare in Legno', description: 'Sito immobiliare X-Lam — ...', rate: 40 } // rate optional, default 40
+AUTH for every curl: the same admin session as `/admin` — send the session cookie with `-b` (dev name `micvolo_session`, production `__Host-micvolo_session`, get it from the admin login flow). Run against `http://localhost:4321` in dev. SQL goes through `wrangler d1 execute micvolo --local --command "…"`.
 
-// estimates — one base preventivo per project, plus 1-2 extensions when needed
-{ id: 'est_abitare-in-legno_02', slug: 'abitare-in-legno', date: '2026-04-20', hours: 10, amount: 400, note: 'il cliente aggiunge la fase di nuovi appartamenti — stimo 10 ore a 400 euro', pdfUrl: '/preventivi/abitare-in-legno/est_abitare-in-legno_02.pdf' }
-
-// timeEntries — logged work sessions
-{ id: 'log_abitare-in-legno_12', slug: 'abitare-in-legno', date: '2026-09-08', hours: 5, note: 'passata performance sulle gallerie e budget immagini' }
-```
-
-IDs are `est_<slug>_<NN>` / `log_<slug>_<NN>`, zero-padded in chronological order. `date` is ISO `YYYY-MM-DD`. The UI renders an entry as `24 settembre 2025 · 2 ore · cosa fatta` and derives `estimatedHours = sum(estimates.hours)`, `workedHours = sum(entries.hours)`, monthly earnings = monthly hours × the project's own `rate`.
-
-## Recipes
-
-### Add a work entry (the "4 ottobre, 3 ore, fix del carrello" request)
-
-Append a row in the project's block of `timeEntries`, in date order, then run the checker:
-
-```ts
-{ id: 'log_abitare-in-legno_13', slug: 'abitare-in-legno', date: '2026-09-22', hours: 3, note: 'pulizia finale delle schede appartamento' },
-```
+### Aggiungi una giornata di lavoro ("4 ottobre, 3 ore, fix del carrello")
 
 ```sh
-node src/lib/admin-data/check.mjs
+curl -s -X POST http://localhost:4321/api/admin/entries -H 'Content-Type: application/json' -b "micvolo_session=$TOKEN" \
+  -d '{"slug":"abitare-in-legno","date":"2026-09-22","hours":3,"note":"pulizia finale delle schede appartamento"}'
 ```
 
-### Add an estimate extension ("servono altre 20 ore")
-
-Real workflow: the worked hours approach or cross the total estimate (e.g. 40/40), the client asks for more, and the quote is "ok stimo 20 ore a 800 euro" — the total becomes 60. Add the estimate row **and** its PDF:
-
-```ts
-// 1. row in estimates (amount = hours × project rate, keep the project's rate)
-{ id: 'est_abitare-in-legno_04', slug: 'abitare-in-legno', date: '2026-10-05', hours: 20, amount: 800, note: 'il cliente chiede le pagine cantieri — stimo 20 ore a 800 euro', pdfUrl: '/preventivi/abitare-in-legno/est_abitare-in-legno_04.pdf' },
+```sql
+INSERT INTO time_entries (id, slug, date, hours, note)
+VALUES ('log_abitare-in-legno_13', 'abitare-in-legno', '2026-09-22', 3, 'pulizia finale delle schede appartamento');
 ```
+
+`hours` is an integer 1-8 per session; the API mints the `log_<slug>_<NN>` id if you omit it.
+
+### Aggiungi una proroga ("servono altre 20 ore")
+
+**I PDF li carica l'utente.** The AI never generates or edits a PDF — it only writes the `estimate_docs` row whose `pdfUrl` points at `public/preventivi/<slug>/<file>.pdf` (the files already there are placeholders until the user replaces them). So: the user drops the proroga PDF in `public/preventivi/<slug>/`, then the AI writes the row:
 
 ```sh
-node src/lib/admin-data/pdf.mjs --all    # writes public/preventivi/<slug>/<id>.pdf
-node src/lib/admin-data/check.mjs
+curl -s -X POST http://localhost:4321/api/admin/estimates -H 'Content-Type: application/json' -b "micvolo_session=$TOKEN" \
+  -d '{"slug":"abitare-in-legno","date":"2026-10-05","hours":20,"note":"il cliente chiede le pagine cantieri — stimo 20 ore a 800 euro","pdfUrl":"/preventivi/abitare-in-legno/est_abitare-in-legno_04.pdf"}'
 ```
 
-A single PDF can also be written by hand: `node src/lib/admin-data/pdf.mjs /preventivi/<slug>/<id>.pdf "Proroga preventivo" "Progetto" "5 ottobre 2026" "stimo 20 ore a 800 euro" "" "20 ore × 40 EUR/h" "Totale 800 EUR"`.
-
-### Create a project
-
-Add a `projects` row (slug = the `src/data/projects/<slug>.md` slug), one base estimate row dated before the first entry, and its PDF (`pdf.mjs --all`), then log entries as they happen. Base estimates are sized to the project: small site 20-30h, medium 40-80h, big or ongoing 100-160h.
-
-```ts
-{ slug: 'nuovo-cliente', title: 'Nuovo Cliente', description: 'Sito istituzionale — pagine e CMS', rate: 40 },
-{ id: 'est_nuovo-cliente_01', slug: 'nuovo-cliente', date: '2026-10-01', hours: 40, amount: 1600, note: 'stimo 40 ore a 1600 euro per il sito', pdfUrl: '/preventivi/nuovo-cliente/est_nuovo-cliente_01.pdf' },
+```sql
+INSERT INTO estimate_docs (id, slug, date, hours, amount, note, pdf_url)
+VALUES ('est_abitare-in-legno_04', 'abitare-in-legno', '2026-10-05', 20, 800, 'il cliente chiede le pagine cantieri — stimo 20 ore a 800 euro', '/preventivi/abitare-in-legno/est_abitare-in-legno_04.pdf');
 ```
 
-### Set or change the project rate
+`amount` is derived (`hours × rate`, 800 = 20 × 40): omit it in curl and the API fills it, or pass it and the API checks it.
 
-Edit `rate` on the `projects` row (omit it for the default 40). Historical projects carry historical rates (20-30 EUR/h), recent ones 40. Existing `amount` values are snapshots of the quote at the time: **never recompute them**. New estimates use the current rate, extensions keep the project's rate.
+### Carica un documento ("documenti")
 
-## Invariants (`check.mjs` enforces most)
+```sh
+curl -s -X POST http://localhost:4321/api/admin/documenti -b "micvolo_session=$TOKEN" -F slug=bloem -F name=contratto.pdf -F file=@contratto.pdf
+```
 
-- `amount = hours × project rate`, EUR; rate in EUR/h, default 40
-- ISO dates; the base estimate predates the first entry; rows stay ascending by date within each project block
-- entry `hours`: integers 1-8 per session; project totals realistically 25-120h (ongoing ones more); `workedHours` should read meaningfully against the estimates (e.g. 12/40) — add an extension when it approaches or crosses them
-- entry notes: Italian log voice, lowercase, one short concrete task line (what was done), **no final period**, direct and concrete like `docs/brand-guidelines.md` — no marketing tone
-- estimate notes: first person `"stimo N ore a M euro"`, lowercase, no final period; an extension may add a short reason before the dash
-- one PDF per estimate at `public/preventivi/<slug>/<id>.pdf`
-- never: payments, invoices, billing data, or hour edits that change what was billed
+PDF only (≤ 10 MB). Base64 JSON works too: `-H 'Content-Type: application/json' -d '{"slug":"bloem","name":"contratto.pdf","data":"<base64>"}'`. The file lands in the DOCUMENTS R2 bucket and shows up as an open/download link under **Documenti** on the project page. Zero documents on a project is a valid state — leave it alone. To remove one: `curl -s -X DELETE -b "micvolo_session=$TOKEN" "http://localhost:4321/api/admin/documenti?id=doc_bloem_01"`.
 
-## Apply and verify in dev
+### Cambia tariffa
 
-Data is build-time: there is nothing to apply — `npm run dev` hot-reloads and `npm run build` bakes the rows in. After any edit run `node src/lib/admin-data/check.mjs`; after any estimate edit run `node src/lib/admin-data/pdf.mjs --all` first.
+```sh
+curl -s -X PUT http://localhost:4321/api/admin/tracking-projects -H 'Content-Type: application/json' -b "micvolo_session=$TOKEN" -d '{"slug":"bloem","rate":25}'
+```
+
+```sql
+UPDATE tracking_projects SET rate = 25 WHERE slug = 'bloem';
+```
+
+Existing `amount` values are snapshots of their quote — **never recompute them**. New estimates use the current rate.
+
+### Aggiungi un progetto
+
+```sh
+curl -s -X POST http://localhost:4321/api/admin/tracking-projects -H 'Content-Type: application/json' -b "micvolo_session=$TOKEN" \
+  -d '{"slug":"nuovo-cliente","title":"Nuovo Cliente","description":"Sito istituzionale — pagine e CMS","rate":40}'
+```
+
+Then one base preventivo row (see recipe above) dated before the first entry — sized to the project: small site 20-30h, medium 40-80h, big or ongoing 100-160h — and work entries as they happen. `slug` is the `src/data/projects/<slug>.json` slug.
+
+## CRUD API at a glance
+
+Same four verbs on `/api/admin/entries`, `/api/admin/estimates`, `/api/admin/tracking-projects`, `/api/admin/documenti`. JSON in/out, admin session only (role `admin`, resolved by the existing session middleware). Bodies mirror the row shapes (`pdfUrl` ↔ `pdf_url`):
+
+| Call | Body / params |
+| --- | --- |
+| `POST /api/admin/entries` | `{slug, date, hours, note}` (optional `id`) |
+| `PUT /api/admin/entries` | `{id, date?, hours?, note?}` |
+| `DELETE /api/admin/entries?id=log_<slug>_01` | |
+| `POST /api/admin/estimates` | `{slug, date, hours, note, pdfUrl}` (optional `id`, `amount`) |
+| `PUT /api/admin/estimates` | `{id, date?, hours?, note?, pdfUrl?}` |
+| `DELETE /api/admin/estimates?id=est_<slug>_01` | |
+| `GET/POST /api/admin/tracking-projects` | `{slug, title, description?, rate?}` |
+| `PUT /api/admin/tracking-projects` | `{slug, title?, description?, rate?}` |
+| `DELETE /api/admin/tracking-projects?slug=<slug>` | cascades its rows, removes its R2 files |
+| `GET/POST/DELETE /api/admin/documenti` | upload body above, `?id=` for delete |
+
+`GET` on any of them (optional `?slug=`) returns the rows as JSON — use it to verify an edit. The pages stay read-only display.
+
+## Invariants
+
+- `amount = hours × rate` (EUR; rate is EUR/h, default 40) for every estimate written; historical amounts stay frozen snapshots
+- dates are ISO `YYYY-MM-DD`, the base preventivo predates the first entry, entry `hours` are integers 1-8
+- note voice: entry notes are lowercase Italian log lines — one short concrete task, **no final period** (`passata performance sulle gallerie e budget immagini`); estimate notes are first person `"stimo N ore a M euro"`, lowercase, no final period, a short reason may come before the dash
+
+The API and the SQLite CHECKs enforce these — there is no separate checker script. Quick sanity pass any time:
+
+```sh
+wrangler d1 execute micvolo --local --command "SELECT slug, (SELECT SUM(hours) FROM time_entries t WHERE t.slug = p.slug) AS worked, (SELECT SUM(hours) FROM estimate_docs e WHERE e.slug = p.slug) AS estimated FROM tracking_projects p ORDER BY sort_order"
+```
+
+## Apply migrations and seeds locally
+
+```sh
+wrangler d1 execute micvolo --local --file=./migrations/0001_foundation.sql
+wrangler d1 execute micvolo --local --file=./migrations/0002_admin_tracking.sql
+wrangler d1 execute micvolo --local --file=./seeds/admin-tracking.sql
+```
+
+`seeds/` is **local development only** (20 projects · 26 estimates · 161 entries; `seeds/demo.sql` is the portal demo) — never apply seeds to production. Migrations to production use `--remote`. After schema/seed changes, `npm run dev` picks the data up on the next request — no build step involved.
+
+## Graphic experiments (lab projects)
+
+Unchanged content-collection world, one JSON file per experiment: `src/data/lab-projects/<key>.json` (key = route). Five required string fields: `title`, `year`, `medium`, `description`, `hue` (`rose | gold | lime | blue | violet | cyan`). No `id` in the data — it derives from the filename. Adding an experiment also needs a mount entry in `src/components/lab/experiments/index.ts`.
+
+## Project pages (case studies) — composition recipe
+
+One JSON per case at `src/data/projects/<slug>.json`, images co-located at `src/data/projects/<slug>/`: `cover.webp` plus `screen-*.webp` (convention: `screen-desktop-NN.webp` / `screen-mobile-NN.webp`). The slug is the filename and never appears in the data. Schema: `src/content.config.ts`. After any edit run `node scripts/validate-projects.mjs` — it checks shape, filename↔slug consistency and that every file in the folder is referenced.
+
+A case reads top to bottom as alternating notes and screenshot blocks:
+
+1. The header composes itself from the data: iOS-style app icon (or the rail placeholder), `title`, and `date` as a bare year or `Current` — nothing to write there.
+2. `notes[0]` is the opening note; the optional `url` renders the "Visit site" pill button right after the first note.
+3. Then every screen slot is preceded by its note: `screens[i]` renders under `notes[i]`. Extra trailing notes (`notes` past `screens.length`) close the page. `notes.length >= screens.length` is mandatory — every screen slot needs a note above it.
+4. A note is a plain string, or `{ lead, items: string[] }` for a lead line plus a dash list (case-note voice: rules in `docs/brand-guidelines.md`, no final periods).
+
+Three slot shapes (image proportions per block follow the imagery rules in `docs/brand-guidelines.md`):
+
+| Slot | Shape |
+| --- | --- |
+| single landscape | `{ file, width: full\|half, alt }` — never below half width |
+| row | `{ layout: grid\|pair\|quad, width: full\|half\|quarter, row: [{ file, alt }, …] }` — `grid` = 2 landscapes, `pair` = 2 portraits, `quad` = 4 portraits |
+| split | `{ layout: "split", width, file, alt, aside }` — one landscape with its note beside it (below when narrow); `aside` is a note |
+
+Approved block compositions: 4 mobile shots together, 2 landscape, 2 mobile, or 1 landscape plus text. Top-level fields: `title`, `date`, `tags`, `url` (optional), `description`, `summary`, `cover`, `notes`, `screens` — nothing else.

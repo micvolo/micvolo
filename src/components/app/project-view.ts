@@ -19,6 +19,18 @@ export interface TimeEntry {
   note: string;
 }
 
+/** a "documenti" attachment row; the file lives in the DOCUMENTS R2 bucket */
+export interface ProjectDocument {
+  id: string;
+  slug: string;
+  /** display name, the link label */
+  name: string;
+  /** unix seconds */
+  createdAt: number;
+  /** R2 object key, served through /documents/<key> */
+  r2Key: string;
+}
+
 export interface AdminProject {
   slug: string;
   title: string;
@@ -27,10 +39,12 @@ export interface AdminProject {
   rate: number;
   estimates: EstimateDoc[];
   entries: TimeEntry[];
+  /** "documenti" attachments, newest first; an empty list is a completely valid state */
+  documents: ProjectDocument[];
 }
 
 /** Default hourly rate; projects without one fall back to this. */
-export const RATE_EUR = 40;
+const RATE_EUR = 40;
 
 export function projectRate(project: AdminProject): number {
   return project.rate > 0 ? project.rate : RATE_EUR;
@@ -66,7 +80,7 @@ export function italianDate(isoDate: string): string {
   return `${day} ${ITALIAN_MONTHS[month - 1]} ${year}`;
 }
 
-export function monthLabel(monthKey: string): string {
+function monthLabel(monthKey: string): string {
   const [year, month] = monthKey.split('-').map(Number);
   return `${ITALIAN_MONTHS[month - 1]} ${year}`;
 }
