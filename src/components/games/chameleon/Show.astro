@@ -1,0 +1,13 @@
+---
+import StrokeIcon from '@/components/StrokeIcon.astro';
+---
+
+<div class="show">
+  <p class="pass-label">Pass the phone to</p>
+  <div class="playerName" aria-live="polite"></div>
+  <p class="reveal-hint">Tap below to see your role. Only you should look. Tap again to hide it, then pass the phone to the next player.</p>
+  <div class="show-widget">
+    <button type="button" class="primary-action game-action game-action--primary" aria-pressed="false"><StrokeIcon name="eye" /><span>Show my role</span></button>
+    <p class="chameleon" role="status" aria-live="polite" hidden></p>
+  </div>
+</div>

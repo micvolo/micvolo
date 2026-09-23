@@ -1,0 +1,57 @@
+---
+import StrokeIcon from '@/components/StrokeIcon.astro';
+---
+
+<div class="round-end">
+  <dl class="round-reveal" aria-live="polite">
+    <dt>Camaleonte</dt><dd data-round-chameleon>—</dd>
+    <dt>Secret word</dt><dd data-round-word>—</dd>
+  </dl>
+  <div class="next-topic">
+    <label class="section-label" for="next-topic-select">Next topic</label>
+    <select id="next-topic-select" data-next-topic></select>
+  </div>
+  <button type="button" class="play-again primary-action game-action game-action--primary"><StrokeIcon name="rotate-ccw" /><span>Start round</span></button>
+</div>
+<script>
+  // The word card stays consultable all round: on the reveal screens light up the secret word.
+  // Only runs where the round word is public, so the card never leaks the secret mid-round.
+  function markRevealedWord() {
+    const reveal = document.querySelector('[data-round-word]');
+    const secret = reveal?.textContent?.trim();
+    const grid = document.querySelector('.topicCard .grid');
+    if (!reveal || !grid || !secret || secret === '—') return;
+    for (const el of grid.querySelectorAll<HTMLElement>('[data-word]')) {
+      el.classList.toggle('selected', el.dataset.word === secret);
+    }
+  }
+
+  // Next-topic picker: "Random" keeps the current behaviour, a title pins the next round's topic.
+  // Topics come from the game state chameleon.ts keeps in sessionStorage (built-in + custom).
+  function fillNextTopicPicker() {
+    const select = document.querySelector<HTMLSelectElement>('[data-next-topic]');
+    if (!select || select.options.length) return;
+    let topics: { title: string }[] = [];
+    try {
+      const state = JSON.parse(sessionStorage.getItem('chameleon-game') || '{}');
+      if (Array.isArray(state.topics)) topics = state.topics;
+    } catch {}
+    const random = document.createElement('option');
+    random.value = '';
+    random.textContent = 'Random';
+    select.appendChild(random);
+    for (const [i, topic] of topics.entries()) {
+      const el = document.createElement('option');
+      el.value = String(i);
+      el.textContent = topic.title;
+      select.appendChild(el);
+    }
+  }
+
+  function initRoundEndExtras() {
+    markRevealedWord();
+    fillNextTopicPicker();
+  }
+  document.addEventListener('astro:page-load', initRoundEndExtras);
+  if (document.readyState !== 'loading') initRoundEndExtras();
+</script>

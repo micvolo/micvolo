@@ -1,0 +1,9 @@
+---
+const topicModules = import.meta.glob<{ default: { title: string; words: string[] } }>('/src/data/topics/*.json', { eager: true });
+const topics = Object.values(topicModules).map((m) => m.default);
+---
+
+<div class="topics" data-topics={JSON.stringify(topics)}>
+  <label for="topic-select" class="section-label">Choose a topic</label>
+  <select id="topic-select" name="topics"></select>
+</div>

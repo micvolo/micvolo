@@ -1,0 +1,26 @@
+---
+import PublicLayout from '@/layouts/PublicLayout.astro';
+import ChameleonWrapper from '@/components/games/chameleon/ChameleonWrapper.astro';
+import Topics from '@/components/games/chameleon/Topics.astro';
+import Players from '@/components/games/chameleon/Players.astro';
+---
+
+<PublicLayout title="Camaleonte" description="A bluffing word game for groups. One player does not know the secret word.">
+  <ChameleonWrapper title="Camaleonte" description="A phone, at least three people, and a few minutes. One player is the Camaleonte and does not know the secret word.">
+    <div slot="intro" class="game-rules">
+      <p>Choose a topic and add the players, then pass the phone around.</p>
+      <p>— Everyone sees the same 16 words.</p>
+      <p>— All but the Camaleonte also see the secret word.</p>
+      <p>— Give one clue each, discuss, then vote out loud.</p>
+    </div>
+    <div class="game-setup">
+      <Topics />
+      <Players />
+    </div>
+  </ChameleonWrapper>
+</PublicLayout>
+
+<style>
+  .game-rules { display: grid; gap: var(--s1); color: var(--ink-2); line-height: 1.5; }
+  .game-setup { display: grid; gap: var(--s5); }
+</style>

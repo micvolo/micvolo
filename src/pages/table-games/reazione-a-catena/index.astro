@@ -1,0 +1,21 @@
+---
+import PublicLayout from '@/layouts/PublicLayout.astro';
+import GameShell from '@/components/games/GameShell.astro';
+import Teamword from '@/components/games/teamword/Teamword.astro';
+---
+
+<PublicLayout title="Reazione a catena" description="A fast word-guessing game for teams.">
+  <GameShell gameClass="game-teamword" title="Reazione a catena" description="One player explains, the team shouts the word. Sixty seconds, three skips, no turns to track.">
+    <p slot="status" class="teamword__status" role="status" aria-live="polite"></p>
+    <div slot="intro" class="game-rules">
+      <p>Pick a word list and start the round.</p>
+      <p>— Describe the word without saying it.</p>
+      <p>— Guessed: next word. Missed: next word. Skip: only 3 per round.</p>
+    </div>
+    <Teamword />
+  </GameShell>
+</PublicLayout>
+
+<style>
+  .game-rules { display: grid; gap: var(--s1); color: var(--ink-2); line-height: 1.5; }
+</style>

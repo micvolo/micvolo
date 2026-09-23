@@ -1,0 +1,91 @@
+---
+import GameShell from '@/components/games/GameShell.astro';
+interface Props { title?: string; description?: string; }
+const { title, description } = Astro.props;
+---
+
+<GameShell gameClass="game-chameleon" title={title} description={description}>
+  <slot name="intro" slot="intro" />
+  <slot />
+</GameShell>
+<script src="@/scripts/chameleon.ts"></script>
+
+<style is:global>
+  .game-chameleon .game-content { width: 100%; }
+  .game-chameleon .players, .game-chameleon .topics, .game-chameleon .newtopic, .game-chameleon .show, .game-chameleon .topicCard, .game-chameleon .round-end { width: 100%; display: grid; gap: var(--s3); }
+  .game-chameleon .game-setup, .game-chameleon .show, .game-chameleon .round-end { max-width: 38rem; }
+  .game-chameleon .center-phone { max-width: 42rem; }
+  .game-chameleon fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+  .game-chameleon .section-label { display: block; margin-bottom: var(--s2); color: var(--ink-2); font-weight: 500; }
+  .game-chameleon .players .list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); }
+  .game-chameleon .player-field { display: block; }
+  .game-chameleon .add-player { display: grid; grid-template-columns: 1fr auto; gap: var(--s2); }
+  .game-chameleon .done, .game-chameleon .primary-action { justify-self: start; }
+  .game-chameleon a.primary-action { width: fit-content; }
+  .game-chameleon .show { justify-items: start; padding-block: var(--s5); text-align: left; }
+  .game-chameleon .show-widget { width: 100%; display: grid; gap: var(--s3); justify-items: start; }
+  .game-chameleon .playerName { font-size: clamp(1.5rem, 6vw, 2.4rem); font-weight: 500; letter-spacing: -.02em; }
+  .game-chameleon .reveal-hint, .game-chameleon .pass-label, .game-chameleon .instruction { max-width: 44ch; color: var(--ink-2); line-height: 1.5; }
+  .game-chameleon .chameleon { max-width: 34rem; padding: var(--s3) 0; color: var(--accent); font-weight: 500; }
+  .game-chameleon .center-phone { display: grid; gap: var(--s4); padding-block: var(--s4); }
+  .game-chameleon .center-phone p { color: var(--ink-2); line-height: 1.5; }
+  .game-chameleon .center-phone strong { color: var(--ink); }
+  .game-chameleon .topicCard { width: min(100%, 50vw); }
+  .game-chameleon .topicTitle { margin: 0; min-height: 1lh; font-size: var(--f-lead); }
+  /* Plain ruled word grid, first in the game flow on every step: thin hairline separators only —
+     no card, no panel, no background behind it. The hairline derives from --ink so it adapts to dark/light.
+     Rows are fixed at --s8 and the 4x4 space is reserved before words render, so nothing ever jumps. */
+  .game-chameleon .topicCard .grid {
+    --hairline: color-mix(in srgb, var(--ink) 14%, transparent);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: var(--s8);
+    min-height: calc(var(--s8) * 4);
+  }
+  .game-chameleon .topicCard .grid [data-word] {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: var(--s2) var(--s3);
+    border-right: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+  .game-chameleon .topicCard .grid [data-word]:nth-child(4n) { border-right: 0; }
+  .game-chameleon .topicCard .grid [data-word]:nth-last-child(-n + 4) { border-bottom: 0; }
+  .game-chameleon .topicCard .grid [data-word].selected { color: var(--accent); background: var(--accent-wash); font-weight: 500; }
+
+  /* Word reveal: the secret word lights up when shown, and dims back when hidden. */
+  .game-chameleon .topicCard .grid [data-word] { transition: background-color var(--t-color) var(--ease), color var(--t-color) var(--ease); }
+  .game-chameleon .topicCard .grid [data-word].selected { animation: word-illuminate .55s var(--ease); }
+  @keyframes word-illuminate {
+    0% { box-shadow: 0 0 0 0 var(--accent-wash); }
+    45% { box-shadow: 0 0 16px 2px var(--accent-wash); }
+    100% { box-shadow: 0 0 0 0 var(--accent-wash); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .game-chameleon .topicCard .grid [data-word] { transition: none; }
+    .game-chameleon .topicCard .grid [data-word].selected { animation: none; }
+  }
+  .game-chameleon .round-end { gap: var(--s4); }
+  .game-chameleon .next-topic { display: grid; gap: var(--s2); width: min(100%, 20rem); }
+  .game-chameleon .next-topic .section-label { margin-bottom: 0; }
+  .game-chameleon .round-reveal { display: grid; grid-template-columns: auto 1fr; gap: var(--s2) var(--s4); padding-block: var(--s3); }
+  .game-chameleon .round-reveal dt { color: var(--ink-3); }
+  .game-chameleon .round-reveal dd { color: var(--ink); font-size: var(--f-lead); font-weight: 500; }
+  .game-chameleon .newtopic { gap: var(--s5); }
+  .game-chameleon .newtopic .words { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s2); }
+  @media (max-width: 900px) { .game-chameleon .topicCard { width: 100%; } }
+  @media (max-width: 560px) {
+    .game-chameleon .players .list, .game-chameleon .add-player { grid-template-columns: 1fr; }
+    .game-chameleon .topicCard .grid, .game-chameleon .newtopic .words { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .game-chameleon .topicCard .grid { min-height: calc(var(--s8) * 8); }
+    .game-chameleon .topicCard .grid [data-word] { font-size: var(--f-small); }
+    .game-chameleon .topicCard .grid [data-word]:nth-child(4n) { border-right: 1px solid var(--hairline); }
+    .game-chameleon .topicCard .grid [data-word]:nth-child(2n) { border-right: 0; }
+    .game-chameleon .topicCard .grid [data-word]:nth-last-child(-n + 4) { border-bottom: 1px solid var(--hairline); }
+    .game-chameleon .topicCard .grid [data-word]:nth-last-child(-n + 2) { border-bottom: 0; }
+    .game-chameleon .done, .game-chameleon .primary-action { width: 100%; }
+  }
+</style>

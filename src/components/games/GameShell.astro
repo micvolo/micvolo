@@ -1,0 +1,93 @@
+---
+import SiteRail from '@/components/public/SiteRail.astro';
+interface Props { title?: string; description?: string; gameClass?: string; }
+const { title, description, gameClass } = Astro.props;
+---
+
+<SiteRail />
+<main id="main" class:list={['stream', 'game-stream', gameClass]}>
+  <header class="game-intro">
+    {title && <h1>{title}</h1>}
+    <slot name="status" />
+    {description && <p>{description}</p>}
+    <slot name="intro" />
+  </header>
+  <section class="game-stage" aria-label={title}>
+    <div class="game-content"><slot /></div>
+  </section>
+</main>
+
+<style>
+  .game-stream { align-content: start; padding: clamp(var(--s4), 4vw, var(--s7)); }
+  .game-intro { width: min(100%, 44rem); display: grid; gap: var(--s2); }
+  .game-intro h1 { margin: 0; font-size: var(--f-lead); font-weight: 600; letter-spacing: -.01em; }
+  .game-intro p { max-width: 58ch; color: var(--ink-2); font-size: var(--f-body); line-height: 1.5; }
+  .game-stage { min-width: 0; display: grid; justify-items: start; padding-block: clamp(var(--s5), 5vw, var(--s8)); }
+  .game-content { width: 100%; display: grid; gap: var(--s5); }
+
+  /* Shared game controls: one button style and one field style for all table games.
+     Buttons read as flat action pills; fields read as editable text areas (8px radius). */
+  :global(.game-stream .game-action) {
+    min-height: var(--ctl);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s2);
+    padding: 0 var(--s4);
+    color: var(--ink);
+    background: var(--fill-2);
+    border: 0;
+    border-radius: var(--pill);
+    font-weight: 500;
+    text-decoration: none;
+    transition: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  :global(.game-stream .game-action:hover:not([disabled])) { background: var(--fill-3); }
+  :global(.game-stream .game-action:active:not([disabled])) { filter: brightness(.96); }
+  :global(.game-stream .game-action--primary) { color: var(--accent-ink); background: var(--accent); }
+  :global(.game-stream .game-action--primary:hover:not([disabled])) { background: var(--accent); filter: brightness(1.06); }
+  :global(.game-stream .game-action--primary:active:not([disabled])) { transform: scale(.975); }
+  :global(.game-stream .game-action[disabled]) { color: var(--ink-3); background: var(--fill-2); opacity: .55; cursor: not-allowed; }
+  /* Icon-only variant: perfect --ctl circle, square undistorted icon, same shape in every state. */
+  :global(.game-stream .game-action--icon) {
+    width: var(--ctl);
+    height: var(--ctl);
+    min-width: var(--ctl);
+    aspect-ratio: 1;
+    align-self: center;
+    flex: 0 0 auto;
+    padding: 0;
+    border-radius: 50%;
+  }
+
+  :global(.game-stream input[type='text']),
+  :global(.game-stream select) {
+    min-height: var(--ctl);
+    padding-inline: var(--s3);
+    border: 0;
+    border-radius: var(--r-2);
+    background-color: var(--fill-2);
+    transition: background-color var(--t-color);
+  }
+  :global(.game-stream input[type='text']:hover),
+  :global(.game-stream select:hover),
+  :global(.game-stream input[type='text']:focus),
+  :global(.game-stream select:focus) { background-color: var(--fill-3); }
+  :global(.game-stream select) {
+    appearance: none;
+    padding-right: 34px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none' stroke='%23777773' stroke-width='1.25'%3E%3Cpath d='m4 5.5 3 3 3-3'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+
+  @media (max-width: 560px) {
+    .game-stream { padding: var(--s4) var(--s3) var(--s7); }
+    .game-stage { padding-block: var(--s6); }
+    .game-content { gap: var(--s4); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.game-stream .game-action:active:not([disabled])) { transform: none; }
+  }
+</style>

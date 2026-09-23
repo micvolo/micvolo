@@ -1,0 +1,13 @@
+---
+import PublicLayout from '@/layouts/PublicLayout.astro';
+import ChameleonWrapper from '@/components/games/chameleon/ChameleonWrapper.astro';
+import Show from '@/components/games/chameleon/Show.astro';
+import TopicCard from '@/components/games/chameleon/TopicCard.astro';
+---
+
+<PublicLayout title="Camaleonte — Show" description="Reveal your role in Camaleonte.">
+  <ChameleonWrapper title="Reveal your role">
+    <TopicCard />
+    <Show />
+  </ChameleonWrapper>
+</PublicLayout>

@@ -1,0 +1,13 @@
+---
+import PublicLayout from '@/layouts/PublicLayout.astro';
+import ChameleonWrapper from '@/components/games/chameleon/ChameleonWrapper.astro';
+import TopicCard from '@/components/games/chameleon/TopicCard.astro';
+import RoundEnd from '@/components/games/chameleon/RoundEnd.astro';
+---
+
+<PublicLayout title="Camaleonte — Reveal" description="Reveal the Camaleonte and the secret word.">
+  <ChameleonWrapper title="Round reveal" description="Compare the result with your group vote. There are no points to keep — start another round when you are ready.">
+    <TopicCard />
+    <RoundEnd />
+  </ChameleonWrapper>
+</PublicLayout>

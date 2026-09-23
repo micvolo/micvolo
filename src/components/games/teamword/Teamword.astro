@@ -1,0 +1,162 @@
+---
+import StrokeIcon from '@/components/StrokeIcon.astro';
+const lists = [
+  { name: 'Italiano', url: '/words/it-chain.txt' },
+  { name: 'English', url: '/words/en-chain.txt' },
+];
+---
+
+<div class="teamword">
+  <fieldset class="teamword__list">
+    <legend class="section-label">Word list</legend>
+    <div class="teamword__list-row">
+      <label class="sr-only" for="teamword-list-select">Word list</label>
+      <select class="list" id="teamword-list-select">{lists.map((l) => <option value={l.url}>{l.name}</option>)}</select>
+      <button class="reset game-action game-action--icon" type="button" aria-label="Reset round" disabled><StrokeIcon name="rotate-ccw" /></button>
+    </div>
+  </fieldset>
+
+  <dl class="teamword__board" aria-label="Round status">
+    <div class="teamword__stat">
+      <dt class="section-label">Time</dt>
+      <dd class="n timer" role="timer" aria-label="60 seconds remaining">60</dd>
+    </div>
+    <div class="teamword__stat">
+      <dt class="section-label">Score</dt>
+      <dd class="n point">0</dd>
+    </div>
+  </dl>
+
+  <h2 class="n word" id="teamword-current-word">????????</h2>
+
+  <fieldset class="teamword__actions">
+    <legend class="section-label">Actions</legend>
+
+    <button class="play game-action game-action--primary" type="button" disabled>
+      <StrokeIcon name="play" /><span>Start round</span>
+    </button>
+
+    <button class="skip game-action" type="button" disabled>
+      <StrokeIcon name="arrow-right" /><span>Skip</span><span class="skip-count" data-skip-count>···</span>
+    </button>
+
+    <div class="teamword__round-actions">
+      <button class="wrong game-action" type="button" disabled>
+        <StrokeIcon name="x" /><span>Missed</span>
+      </button>
+      <button class="right game-action" type="button" disabled>
+        <StrokeIcon name="check" /><span>Guessed</span>
+      </button>
+    </div>
+  </fieldset>
+</div>
+<script src="@/scripts/teamword.ts"></script>
+
+<style is:global>
+  .game-teamword .game-content { width: 100%; }
+  .game-teamword .teamword {
+    width: min(100%, 38rem);
+    display: grid;
+    gap: var(--s5);
+    justify-items: stretch;
+  }
+  .game-teamword .teamword fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+  .game-teamword .section-label { display: block; color: var(--ink-2); font-weight: 500; }
+
+  .game-teamword .teamword__list,
+  .game-teamword .teamword__actions { width: 100%; display: grid; gap: var(--s3); }
+  .game-teamword .teamword__list .section-label,
+  .game-teamword .teamword__actions .section-label { margin-bottom: var(--s2); }
+  .game-teamword .teamword__list-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s2); align-items: stretch; }
+
+  .game-teamword select { min-width: 0; }
+
+  .game-teamword .teamword__board {
+    --hairline: color-mix(in srgb, var(--ink) 14%, transparent);
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .game-teamword .teamword__stat {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: var(--s3);
+    padding-block: var(--s3);
+  }
+  .game-teamword .teamword__stat + .teamword__stat { border-left: 1px solid var(--hairline); padding-left: var(--s4); }
+  .game-teamword .teamword__stat:first-child { padding-right: var(--s4); }
+  .game-teamword .teamword__stat .section-label { margin: 0; }
+  .game-teamword .teamword__stat .n {
+    margin: 0;
+    font-size: var(--f-lead);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .game-teamword .teamword__status {
+    min-height: 1.25em;
+    margin: 0;
+    color: var(--ink-2);
+    font-size: var(--f-small);
+  }
+
+  .game-teamword .word {
+    width: 100%;
+    margin: 0;
+    padding-block: var(--s5);
+    text-align: left;
+    text-transform: uppercase;
+    font-size: clamp(2.75rem, 11vw, 5.25rem);
+    font-weight: 500;
+    letter-spacing: -.03em;
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+  }
+
+  .game-teamword .play { justify-self: start; }
+
+  .game-teamword .skip {
+    justify-self: start;
+    min-width: 8.5rem;
+  }
+  .game-teamword .skip-count {
+    margin-left: var(--s2);
+    display: inline-block;
+    min-width: 3ch;
+    color: var(--accent);
+    letter-spacing: 3px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-align: left;
+  }
+  .game-teamword .skip[disabled] .skip-count { color: var(--ink-3); }
+
+  .game-teamword .teamword__round-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s2);
+  }
+
+  @media (max-width: 900px) {
+    .game-teamword .teamword { width: 100%; }
+  }
+  /* Desktop hierarchy: primary "Start round" owns a full-width accent row; secondary actions stay
+     quiet fill pills — Skip on its own row, the Missed/Guessed verdicts paired at equal widths. */
+  @media (min-width: 561px) {
+    .game-teamword .play, .game-teamword .skip { width: 100%; justify-self: stretch; min-width: 0; }
+    .game-teamword .teamword__round-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s2); }
+  }
+  @media (max-width: 560px) {
+    .game-teamword .teamword { gap: var(--s4); }
+    .game-teamword .teamword__board { grid-template-columns: 1fr 1fr; }
+    .game-teamword .teamword__round-actions { grid-template-columns: 1fr 1fr; }
+    .game-teamword .play { width: 100%; }
+    .game-teamword .skip { width: 100%; justify-self: stretch; min-width: 0; }
+    .game-teamword .word { font-size: clamp(2.5rem, 14vw, 4rem); padding-block: var(--s4); }
+  }
+</style>

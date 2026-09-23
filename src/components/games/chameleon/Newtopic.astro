@@ -1,0 +1,20 @@
+---
+import StrokeIcon from '@/components/StrokeIcon.astro';
+---
+
+<form class="newtopic">
+  <p class="form-error" role="alert" hidden></p>
+  <div class="field">
+    <label for="topic-title">Topic title</label>
+    <input type="text" id="topic-title" placeholder="e.g. Cities" required name="title" autocomplete="off" />
+  </div>
+  <fieldset>
+    <legend class="section-label">Words <span>(16 required)</span></legend>
+    <div class="words">
+      {Array(16).fill(0).map((_, i) => (
+        <label><span class="sr-only">Word {i + 1}</span><input type="text" placeholder={`Word ${i + 1}`} required name={`word-${i}`} autocomplete="off" /></label>
+      ))}
+    </div>
+  </fieldset>
+  <button type="submit" class="primary-action game-action game-action--primary"><StrokeIcon name="plus" /><span>Add topic</span></button>
+</form>

@@ -1,0 +1,18 @@
+---
+import PublicLayout from '@/layouts/PublicLayout.astro';
+import ChameleonWrapper from '@/components/games/chameleon/ChameleonWrapper.astro';
+import TopicCard from '@/components/games/chameleon/TopicCard.astro';
+import StrokeIcon from '@/components/StrokeIcon.astro';
+---
+
+<PublicLayout title="Camaleonte — Play" description="Give clues, discuss, and vote together.">
+  <ChameleonWrapper title="Clues and vote" description="Put the phone where everyone can see the topic and its 16 words.">
+    <TopicCard />
+    <div class="center-phone">
+      <p><strong>Give one clue each.</strong> Start with a random player and continue around the group. Your clue should prove that you know the word without giving it away.</p>
+      <p><strong>Then discuss and vote out loud.</strong> Point to one player at the same time. If there is a tie, talk for another minute and vote again.</p>
+      <p>If the group finds the Camaleonte, let them guess the secret word once before you reveal it.</p>
+    </div>
+    <a href="/table-games/camaleonte/game" class="button primary-action game-action game-action--primary"><StrokeIcon name="eye" /><span>Reveal the round</span></a>
+  </ChameleonWrapper>
+</PublicLayout>
