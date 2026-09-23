@@ -1,0 +1,54 @@
+import type { ProjectCase } from '../cases';
+
+export default {
+  slug: 'momento-golf',
+  description:
+    'Case notes on the Momento Golf storefront — lookbook-grade catalogue, custom Shopify theme layer and a burnt-mark identity built print-first',
+  notes: [
+    'Art direction comes from the studio’s poster campaign — cream ground, one black ink and the burnt-wood MOMENTO mark as the only ornament, carried over from the silkscreens as three custom properties and nothing else',
+    'The catalogue is the lookbook — product plates on one grid at a fixed 3:4 ratio with the sale badge set in the same face at 10px, so twenty items read as one printed spread instead of twenty separate cards',
+    'On phones the shop keeps its spread feel — two plates per row at native ratio, price and discount on one tabular-figure line, and the sticky buy row reserving its space from the first paint so nothing jumps while plates decode',
+    'Product pages run the Shopify theme layer with the variant picker rebuilt as native buttons — one grid repaint switches colour and size, no form round-trip and zero layout shift under the buy row, cart state syncing through the storefront API',
+    'The philosophy page reuses the studio’s poster plates as layered SVG — three campaign compositions relaid on the web grid with the same 8px rhythm standing in for their 4mm print unit',
+    {
+      lead: 'Studio handover, dropped into the theme unchanged',
+      items: [
+        'burnt-mark logo as one layered SVG with the char texture as a mask',
+        'the Brand New Classics poster plates in three crops',
+        'product photography on a written cream-to-white background spec',
+      ],
+    },
+    'Design reviews ran against a staging storefront on the Shopify theme layer — two structured rounds with the studio, art direction notes resolved per template and the approved state frozen before the catalogue import',
+    'Client signed off the first end-to-end walkthrough and answers merchandising questions the same day — daily product work since runs through the Shopify admin with zero design escalations and the poster language still intact',
+  ],
+  screens: [
+    { file: 'desktop-01.webp', width: 'full', alt: 'Momento Golf desktop home — lookbook grid of the collection' },
+    {
+      layout: 'grid',
+      width: 'full',
+      row: [
+        { file: 'desktop-02.webp', alt: 'Momento Golf desktop — collection grid with sale badges on the plates' },
+        { file: 'desktop-03.webp', alt: 'Momento Golf desktop — collection grid rows above the footer' },
+      ],
+    },
+    {
+      layout: 'quad',
+      width: 'full',
+      row: [
+        { file: 'mobile-01.webp', alt: 'Momento Golf mobile — lookbook plates with prices and discounts' },
+        { file: 'mobile-02.webp', alt: 'Momento Golf mobile — accessories plates above the MOMENTO wordmark' },
+        { file: 'mobile-03.webp', alt: 'Momento Golf mobile — philosophy page with the brand photo and burnt mark' },
+        { file: 'mobile-04.webp', alt: 'Momento Golf mobile — Club Addict Hoodie page with size picker and add to cart' },
+      ],
+    },
+    {
+      layout: 'split',
+      width: 'half',
+      file: 'desktop-04.webp',
+      alt: 'Momento Golf desktop — Club Addict Hoodie page with variants and specs',
+      aside:
+        'Display type is their poster cut self-hosted as a two-axis variable file — width 90→110 and −2% tracking from 56px up, so MOMENTO® holds the exact proportions of the printed poster at every size',
+    },
+    { file: 'desktop-05.webp', width: 'half', alt: 'Momento Golf desktop — Brand New Classics poster plates on the philosophy page' },
+  ],
+} satisfies ProjectCase;

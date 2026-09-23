@@ -13,10 +13,13 @@ interface Props {
 }
 export async function getStaticPaths() {
   const casesBySlug = new Map(projectCases.map((projectCase) => [projectCase.slug, projectCase]));
-  const projects = await getCollection('projects', (entry) => casesBySlug.has(entry.data.slug ?? ''));
+  // collection slug → case/asset folder slug where they differ
+  const caseSlugAliases: Record<string, string> = { 'origami-project': 'origami' };
+  const caseSlug = (slug: string) => casesBySlug.has(slug) ? slug : caseSlugAliases[slug] ?? slug;
+  const projects = await getCollection('projects', (entry) => casesBySlug.has(caseSlug(entry.data.slug ?? '')));
   return projects.map((entry) => ({
     params: { slug: entry.data.slug },
-    props: { entry, projectCase: casesBySlug.get(entry.data.slug as string) },
+    props: { entry, projectCase: casesBySlug.get(caseSlug(entry.data.slug as string)) },
   }));
 }
 

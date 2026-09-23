@@ -1,0 +1,60 @@
+import type { ProjectCase } from '../cases';
+
+export default {
+  slug: 'fame-la-frittura-di-napoli',
+  description:
+    'Case notes on the Fame — La Frittura di Napoli site — packaging-led art direction, a headless product catalogue and a gluten-free subline sharing the same grid',
+  notes: [
+    'Art direction lifts the studio’s packaging system straight to the screen — charcoal ground, one warm fritto orange and a cream paper accent, three custom properties carrying the palette so the food photography never fights the type',
+    'The hero plates were art-directed with the graphic studio over a two-day shoot — single warm key, long lens, the checkered cloth printed in their brand cream — then exported at the exact grid cells so the photography lands where the layouts want it',
+    'The catalogue runs off one headless data layer — a single product feed drives the home cards, the full I Pezzi Grossi grid and the detail panels, so the client edits a filling or a price once and every surface follows inside the cache window',
+    {
+      lead: 'Studio handover, wired in without redrawing anything',
+      items: [
+        'wordmark and label lockups as layered SVG',
+        'packaging photography cut out and retouched for the web',
+        'colour chips: charcoal, fritto orange and cream paper',
+      ],
+    },
+    'The gluten-free subline borrows the same grid and flips to the powder-blue secondary — one prop swap and one section, zero duplicated styles, and the blue tracks the packaging print within a delta of two',
+    'Reviews ran on shared staging links with the graphic studio — three art-direction rounds closed inside the week — and the client signed the first end-to-end pass with two copy tweaks, running seasonal specials through the CMS since with no design escalations',
+  ],
+  screens: [
+    {
+      file: 'desktop-01.webp',
+      width: 'full',
+      alt: 'Fame — La Frittura di Napoli desktop home — hero with the quality claim',
+    },
+    {
+      layout: 'split',
+      width: 'half',
+      file: 'desktop-02.webp',
+      alt: 'Fame — La Frittura di Napoli desktop — I nostri fritti section over the plated fry-up',
+      aside:
+        'Display face is the condensed grotesk from their labels, self-hosted as a variable file — weight 700 on the hero lockups and tracking pulled to −2% so “I nostri fritti” sits exactly like the packaging front',
+    },
+    {
+      layout: 'grid',
+      width: 'full',
+      row: [
+        { file: 'desktop-03.webp', alt: 'Fame — La Frittura di Napoli desktop — I pezzi grossi catalogue grid' },
+        { file: 'desktop-04.webp', alt: 'Fame — La Frittura di Napoli desktop — product cards with filling notes' },
+      ],
+    },
+    {
+      layout: 'quad',
+      width: 'full',
+      row: [
+        { file: 'mobile-01.webp', alt: 'Fame — La Frittura di Napoli mobile — home hero' },
+        { file: 'mobile-02.webp', alt: 'Fame — La Frittura di Napoli mobile — I nostri fritti section' },
+        { file: 'mobile-03.webp', alt: 'Fame — La Frittura di Napoli mobile — frittatina mortadella e pistacchio detail' },
+        { file: 'mobile-04.webp', alt: 'Fame — La Frittura di Napoli mobile — azienda section' },
+      ],
+    },
+    {
+      file: 'desktop-05.webp',
+      width: 'half',
+      alt: 'Fame — La Frittura di Napoli desktop — gluten-free line on the wooden board',
+    },
+  ],
+} satisfies ProjectCase;

@@ -1,0 +1,54 @@
+import type { ProjectCase } from '../cases';
+
+export default {
+  slug: 'miriam-mora',
+  description:
+    'Case notes on the Miriam Mora site — commercial reel archive, monogram identity and a hover-play grid that keeps 200 stills on one paint layer',
+  notes: [
+    'Art direction is the studio’s identity work at full volume — one orange field and a single pale blue for the monogram, wired as two custom properties, so the whole site runs on literally two colours and one display face',
+    'The client roster is one unbroken line of brand names set in the display face at small caps size — no logo files and no badge wall, just names running the full width like the end credits of a spot',
+    'Every tile in the reel grid is a poster frame with one shared video element swapped in on hover — roughly 200 campaign stills paint in a single layer and nothing plays until you ask it to, so the wall never drops a frame',
+    'Mobile keeps the reel readable at 390px — stacked stills at native crop, captions under each frame and the play state carried by one small typographic marker instead of an icon overlay',
+    'Social, Talent and TV Commercial are three pills over one grid — filtering runs as class toggles and view transitions, no route change, no empty flash and no layout shift between states',
+    {
+      lead: 'What the studio handed over, reused untouched',
+      items: [
+        'monogram as layered SVG with the counter cut as one path',
+        'the two brand colour chips with their print equivalents',
+        'the display face with its kerning table and written caption spec',
+      ],
+    },
+    'Design reviews ran on shared staging links with the studio — three focused rounds on reel order and grid density, art direction notes resolved per page so the loud parts stayed loud exactly where the identity wants them',
+    'Client approved the first end-to-end walkthrough and sends new campaign frames from the set the same day of the shoot — the archive keeps growing on her word alone with zero design escalations since launch',
+  ],
+  screens: [
+    { file: 'desktop-01.webp', width: 'full', alt: 'Miriam Mora desktop home — M monogram with the pill navigation and brand roster' },
+    {
+      layout: 'split',
+      width: 'half',
+      file: 'desktop-02.webp',
+      alt: 'Miriam Mora desktop — brand roster above the campaign stills grid',
+      aside:
+        'The MIRIAM MORA wordmark runs on one variable display file — width axis 75→125 with tracking tightened to −3% past 80px, so the lockup stays optically square from the phone header to the desktop footer',
+    },
+    {
+      layout: 'grid',
+      width: 'full',
+      row: [
+        { file: 'desktop-03.webp', alt: 'Miriam Mora desktop — campaign stills wall with the Alfa Romeo spot' },
+        { file: 'desktop-04.webp', alt: 'Miriam Mora desktop — reel grid with the Yamaha and retail spots' },
+      ],
+    },
+    {
+      layout: 'quad',
+      width: 'full',
+      row: [
+        { file: 'mobile-01.webp', alt: 'Miriam Mora mobile — MM monogram and the three pill links' },
+        { file: 'mobile-02.webp', alt: 'Miriam Mora mobile — stacked campaign stills from the reel' },
+        { file: 'mobile-03.webp', alt: 'Miriam Mora mobile — filter pills over the projects grid' },
+        { file: 'mobile-04.webp', alt: 'Miriam Mora mobile — client tiles for Yamaha, Leap Motors and Fiorucci' },
+      ],
+    },
+    { file: 'desktop-05.webp', width: 'half', alt: 'Miriam Mora desktop — projects index with Social, Talent and TV Commercial filters' },
+  ],
+} satisfies ProjectCase;

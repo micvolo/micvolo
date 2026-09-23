@@ -1,0 +1,53 @@
+import type { ProjectCase } from '../cases';
+
+export default {
+  slug: 'the-big-archive',
+  description:
+    'Case notes on The Big Archive — a white-on-black ledger of design links with micro-typographic columns, curation dots and a random-link button',
+  notes: [
+    'Art direction is deliberately austere — pure black page, white type, the studio’s mona grotesk self-hosted in two widths with Inter as the network fallback, and hover is opacity 0,6→1 over 500ms so a whole column of links can flash without a single pixel of movement',
+    'The archive ships as one static HTML payload — over five hundred links in real text, grouped under six flex categories with uppercase 0,7rem labels, no client framework and in-page find doing the search work for free',
+    'Click here for a random link is exactly three lines of script — one querySelectorAll over the main anchors, a Math.random pick and a synthetic click, the smallest possible way to make a five-hundred-link archive fun to browse',
+    'Each category is a flex:1 column with its subgroups stacked inside, so the ledger rewraps from six columns to two to one on its own — the entire responsive story is one wrap rule and the label rhythm holds at every width',
+    {
+      lead: 'Curation marks were specced with the studio and survive every reflow',
+      items: [
+        'yellow dot SVGs sit inline after the picks worth shouting about',
+        'link rows keep their uppercase micro-caps at 0,7rem on every screen',
+        'group headings stay lowercase display type so the eye scans column by column',
+      ],
+    },
+    'Typography and dot colour came locked from the studio’s specimen sheet — one afternoon of tuning tracking at label size saved a whole class of optical bugs at 0,7rem',
+    'The client adds links straight into the content collection every week and the archive still builds to one page — an ongoing project with a maintenance load close to zero and a very happy curator behind it',
+  ],
+  screens: [
+    { file: 'desktop-01.webp', width: 'full', alt: 'The Big Archive desktop home — random link button above the six link columns' },
+    {
+      layout: 'split',
+      width: 'half',
+      file: 'desktop-02.webp',
+      alt: 'The Big Archive desktop — inspiration and research links at mid-column depth',
+      aside:
+        'Label typography is the studio’s micro-caps spec — 0,7rem uppercase on 0,4rem cell padding and a 4px rhythm, tracking opened to +2% so twenty rows read as one clean block',
+    },
+    { file: 'desktop-03.webp', width: 'half', alt: 'The Big Archive desktop — design studios and people listings' },
+    {
+      layout: 'grid',
+      width: 'full',
+      row: [
+        { file: 'desktop-04.webp', alt: 'The Big Archive desktop — branding style guides and websites groups' },
+        { file: 'desktop-05.webp', alt: 'The Big Archive desktop — photography and people link groups' },
+      ],
+    },
+    {
+      layout: 'quad',
+      width: 'full',
+      row: [
+        { file: 'mobile-01.webp', alt: 'The Big Archive mobile — title, random link and stacked category heads' },
+        { file: 'mobile-02.webp', alt: 'The Big Archive mobile — people and photography links' },
+        { file: 'mobile-03.webp', alt: 'The Big Archive mobile — bookshops tail and free stuff links' },
+        { file: 'mobile-04.webp', alt: 'The Big Archive mobile — mockups and plus groups with curation dots' },
+      ],
+    },
+  ],
+} satisfies ProjectCase;
