@@ -1,38 +1,386 @@
 ---
-import { getEntry } from 'astro:content';
-import ThemeToggle from '@/components/ThemeToggle.astro';
+import { getCollection, getEntry } from 'astro:content';
+import PaletteToggle from '@/components/PaletteToggle.astro';
 import ArrowIcon from '@/components/ArrowIcon.astro';
+import StrokeIcon from '@/components/StrokeIcon.astro';
+import { appIcon } from '@/lib/project-page/app-icons';
+import { projectDateLabel } from '@/lib/project-page/project-date';
 
 const settings = await getEntry('settings', 'settings');
 if (!settings) throw new Error('Site settings are missing');
+
+const projectSummaries: Record<string, string> = {
+  'abitare-in-legno': 'Timber-home showcase, self-hosted variable fonts, lazy galleries holding LCP under 900ms',
+  'apr-instruments': 'Instrument shop with faceted catalogue search, headless cart, sub-200ms filtered queries',
+  bloem: 'Longform editorial engine, scroll-linked chapter typography, zero cumulative layout shift',
+  'davide-derocchi': 'Photographer portfolio with masked view transitions and per-route subsetted variable fonts',
+  'ea-kahane': 'Minimal portfolio, art-directed image pipeline, contact form fenced against scripted spam',
+  'fame-la-frittura-di-napoli': 'Fritteria site with structured-data menu, deferred map embed, offline-tolerant opening hours',
+  'flavio-nani': 'Illustrator site, SVG-heavy archive with lazy thumbnails and a sticky index',
+  'francesco-bellisario': 'Scroll-scrubbed hero, breakpoint-level art direction, media preloaded on pointer intent',
+  'gastronomia-lanzani': 'Restaurant site, daily menu rendered from headless CMS, cache-tag invalidation on publish',
+  'laura-baresi': 'E-commerce with product configurator, locally persisted cart, AVIF-first responsive images',
+  lorem: 'Parts catalogue with instant client-side search over a prebuilt static JSON index',
+  'massimo-uberti': 'Artist portfolio with virtualised full-bleed lightbox, keyboard navigation, zero jank',
+  'miriam-mora': 'Editorial grid portfolio, hover previews warmed on pointer intent, CLS pinned at zero',
+  'momento-golf': 'Golf gear shop, optimistic variant cart, checkout handoff measured under 200ms',
+  'music-mascots-archive': 'Archive of thousands of band mascots, decade filters instant on a virtualised grid',
+  'omb-saleri': 'Industrial catalogue with structured product database, CAD previews, bilingual content model',
+  'origami-project': 'Studio site with WebGL paper-fold hero and CDN-edge instruction PDFs',
+  pasolini: 'Cultural archive with deep-zoom scans, timeline state encoded in the URL',
+  'studio-psicologia-doria': 'Clinic site, double-validated booking form, consent-gated analytics, zero third-party trackers',
+  'the-big-archive': 'Web design archive, infinite grid over edge-cached API pages, instant tag filters',
+};
+
+const clientProjects = (await getCollection('projects'))
+  .filter((project) => project.data.category === 'client-work' && (project.data.slug ?? project.id) in projectSummaries)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .map((project) => {
+    const slug = project.data.slug ?? project.id;
+    return { slug, title: project.data.title, summary: projectSummaries[slug], dateLabel: projectDateLabel(project.data.date) };
+  });
+
+const isHome = Astro.url.pathname === '/';
 ---
-<aside class="rail" aria-label="Site information" data-lenis-prevent>
+<aside class="rail" aria-label="Site information" transition:persist="site-rail" data-compact={isHome ? undefined : ''}>
+  <div class="rail__content" data-rail-content>
+  {/* Mobile, off-homepage: the whole rail column collapses to this sticky home card. */}
+  <section class="card rail-home" data-rail-home-card hidden={isHome || undefined}>
+    <a class="rail-home__link" href="/">
+      <ArrowIcon direction="left" />
+      <span>Return to homepage</span>
+    </a>
+  </section>
+
   <section class="card rail-identity">
     <div class="rail-headline">
-      <h1>{settings.data.title}</h1>
+      <h1><a href="/">{settings.data.title}</a></h1>
       <p class="rail-lede">{settings.data.lede}</p>
     </div>
-    <p class="rail-where">Brescia, Italy → working worldwide</p>
+    <p class="rail-where">Brescia, Italy → working remotely worldwide</p>
   </section>
 
   <section class="card rail-services" aria-label="Services">
     <p class="hero-copy">{settings.data.hero}</p>
   </section>
 
-  <nav class="card rail-nav" aria-label="Main navigation">
-    <a class="nav-pill nav-pill--primary" href="/portal/login">Client access</a>
-    <ThemeToggle />
+  <nav class="rail-actions" aria-label="Main navigation">
+    <a class="nav-pill nav-pill--primary" href="/portal/login" aria-current={Astro.url.pathname.startsWith('/portal/login') || Astro.url.pathname.startsWith('/admin/login') ? 'page' : undefined}>Client access</a>
+    <PaletteToggle />
   </nav>
 
   <section class="card rail-info" aria-label="Working model and contact">
-    <p class="rail-info__title">Independent setup. Product mindset.</p>
-    <p class="rail-info__copy">Direct collaboration, short feedback loops and production-ready delivery—from first scope to launch.</p>
+    <p class="rail-info__title">Good work starts with good collaboration</p>
+    <p class="rail-info__copy">Clear ideas<br />
+      Direct communication</p>
     <dl class="rail-info__stats">
       <div><dt>Rate</dt><dd>€40 / hour</dd></div>
-      <div><dt>Billing</dt><dd>Monthly, on hours worked</dd></div>
+      <div><dt>Billing</dt><dd>Monthly on hours worked</dd></div>
       <div><dt>Reporting</dt><dd>Live project timeline</dd></div>
     </dl>
-    <div class="rail-info__contact" set:html={settings.data.description}></div>
-    <a class="rail-egg link-with-arrow" href="https://lab.micvolo.com" target="_blank" rel="noreferrer">Laboratory<ArrowIcon direction="external" /></a>
+    <p class="rail-info__contact-intro">Have a project in mind<br />Let’s talk about it</p>
+    <ul class="rail-info__contact" aria-label="Contact details">
+      <li>
+        <button class="contact-row" type="button" data-copy="michele.volonghi@gmail.com" aria-label="Copy email address">
+          <span class="contact-row__primary">Email</span>
+          <span class="contact-row__secondary" data-copy-label aria-live="polite">michele.volonghi@gmail.com</span>
+          <ArrowIcon direction="right" />
+        </button>
+      </li>
+      <li>
+        <a class="contact-row" href="https://wa.me/393317043898" target="_blank" rel="noreferrer">
+          <span class="contact-row__primary">WhatsApp</span>
+          <span class="contact-row__secondary">+39 331 704 3898</span>
+          <ArrowIcon direction="external" />
+        </a>
+      </li>
+      <li>
+        <a class="contact-row" href="https://cal.com/micvolo" target="_blank" rel="noreferrer">
+          <span class="contact-row__primary">Book a call</span>
+          <span class="contact-row__secondary">Cal.com</span>
+          <ArrowIcon direction="external" />
+        </a>
+      </li>
+    </ul>
   </section>
+
+  <nav class="card rail-group" aria-label="Work">
+    <div class="rail-group__section" data-group="work">
+      <span class="rail-group__label">Work</span>
+      <p class="rail-group__blurb">Client builds measured against rendering budgets and shipped through an edge cache</p>
+      <a class="rail-app-card" href="/projects" data-projects-link aria-current={Astro.url.pathname === '/projects' ? 'page' : undefined}>
+        <span class="rail-app-card__icon rail-app-card__icon--projects" aria-hidden="true"><StrokeIcon name="briefcase" /></span>
+        <span class="rail-app-card__body">
+          <strong>Projects</strong>
+          <small>Selected client work and builds</small>
+        </span>
+        <ArrowIcon direction="right" />
+      </a>
+      <ul class="rail-projects" aria-label="Client projects">
+        {clientProjects.map((project) => {
+          const icon = appIcon(project.slug);
+          return (
+          <li>
+            <a
+              class="rail-projects__link"
+              href={`/projects/${project.slug}`}
+              data-rail-project-link
+              aria-current={Astro.url.pathname === `/projects/${project.slug}` ? 'page' : undefined}
+            >
+              {icon
+                ? <span class="rail-app-card__icon rail-app-card__icon--app" aria-hidden="true"><img src={icon} width="40" height="40" alt="" /></span>
+                : <span class="rail-app-card__placeholder" aria-hidden="true"></span>}
+              <span class="rail-projects__body">
+                <strong>{project.title}</strong>
+                <small>{project.summary}</small>
+              </span>
+              <span class="rail-projects__year">{project.dateLabel}</span>
+            </a>
+          </li>
+          );
+        })}
+      </ul>
+    </div>
+  </nav>
+  <nav class="card rail-group" aria-label="Experiments">
+    <div class="rail-group__section" data-group="experiments">
+      <span class="rail-group__label">Experiments</span>
+      <p class="rail-group__blurb">Interaction and type studies kept dependency-free with every frame budgeted at 16ms</p>
+      <a class="rail-app-card" href="/graphic-experiments" data-lab-link aria-current={Astro.url.pathname.startsWith('/graphic-experiments') ? 'page' : undefined}>
+        <span class="rail-app-card__placeholder" aria-hidden="true"></span>
+        <span class="rail-app-card__body">
+          <strong>Graphic experiments</strong>
+          <small>Code, motion and interaction studies</small>
+        </span>
+        <ArrowIcon direction="right" />
+      </a>
+      <a class="rail-app-card" href="/projects/letter-flow" data-letter-flow-link aria-current={Astro.url.pathname === '/projects/letter-flow' ? 'page' : undefined}>
+        <span class="rail-app-card__placeholder" aria-hidden="true"></span>
+        <span class="rail-app-card__body">
+          <strong>Letter Flow</strong>
+          <small>Interactive vector type playground</small>
+        </span>
+        <ArrowIcon direction="right" />
+      </a>
+    </div>
+  </nav>
+  <nav class="card rail-group" aria-label="Table games">
+    <div class="rail-group__section" data-group="games">
+      <span class="rail-group__label">Table games</span>
+      <p class="rail-group__blurb">Print-and-play decks with the rules engine running in the browser</p>
+      <a class="rail-app-card" href="/table-games/camaleonte" data-chameleon-link aria-current={Astro.url.pathname.startsWith('/table-games/camaleonte') ? 'page' : undefined}>
+        <span class="rail-app-card__placeholder" aria-hidden="true"></span>
+        <span class="rail-app-card__body">
+          <strong>Camaleonte</strong>
+          <small>Bluffing party game for groups</small>
+        </span>
+        <ArrowIcon direction="right" />
+      </a>
+      <a class="rail-app-card" href="/table-games/reazione-a-catena" data-teamword-link aria-current={Astro.url.pathname === '/table-games/reazione-a-catena' ? 'page' : undefined}>
+        <span class="rail-app-card__placeholder" aria-hidden="true"></span>
+        <span class="rail-app-card__body">
+          <strong>Reazione a catena</strong>
+          <small>Fast word-guessing for teams</small>
+        </span>
+        <ArrowIcon direction="right" />
+      </a>
+    </div>
+  </nav>
+  </div>
 </aside>
+
+<script>
+  function bindCopyButtons() {
+    document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((button) => {
+      if (button.dataset.copyBound) return;
+      button.dataset.copyBound = 'true';
+      button.addEventListener('click', async () => {
+        const value = button.dataset.copy ?? '';
+        const label = button.querySelector<HTMLElement>('[data-copy-label]');
+        try {
+          if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(value);
+          else {
+            const field = document.createElement('textarea');
+            field.value = value;
+            field.style.position = 'fixed';
+            field.style.opacity = '0';
+            document.body.append(field);
+            field.select();
+            document.execCommand('copy');
+            field.remove();
+          }
+          const original = value;
+          if (label) label.textContent = 'Copied';
+          window.setTimeout(() => { if (label) label.textContent = original; }, 1600);
+        } catch { if (label) label.textContent = 'Copy failed'; }
+      });
+    });
+  }
+
+  function setCurrent(linkSelector: string, predicate: () => boolean) {
+    const link = document.querySelector<HTMLElement>(linkSelector);
+    if (!link) return;
+    if (predicate()) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  }
+
+  function syncRailState() {
+    const pathname = window.location.pathname;
+    const isHome = pathname === '/';
+    const rail = document.querySelector<HTMLElement>('.rail');
+    if (rail) rail.toggleAttribute('data-compact', !isHome);
+    setCurrent('[data-projects-link]', () => pathname === '/projects');
+    setCurrent('[data-lab-link]', () => pathname.startsWith('/graphic-experiments'));
+    setCurrent('[data-letter-flow-link]', () => pathname === '/projects/letter-flow');
+    setCurrent('[data-chameleon-link]', () => pathname.startsWith('/table-games/camaleonte'));
+    setCurrent('[data-teamword-link]', () => pathname === '/table-games/reazione-a-catena');
+
+    const homeCard = document.querySelector<HTMLElement>('[data-rail-home-card]');
+    if (homeCard) homeCard.hidden = isHome;
+
+    document.querySelectorAll<HTMLElement>('[data-rail-project-link]').forEach((link) => {
+      const href = link.getAttribute('href');
+      const active = href !== null && (pathname === href || pathname === `${href}/`);
+      if (active) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
+  }
+
+  function initRail() {
+    bindCopyButtons();
+    syncRailState();
+  }
+
+  // Single init entry (idempotent: bindCopyButtons guards per button). Scroll
+  // persistence and restore live in /nav-boot.js (pre-paint, CSP-safe). The rail is
+  // persisted, so its visible state is also synced on astro:after-swap (pre-paint) —
+  // astro:page-load alone runs after the new page is shown.
+  document.addEventListener('astro:page-load', initRail);
+  document.addEventListener('astro:after-swap', syncRailState);
+  // On first load astro:page-load fires only at window "load"; boot early instead.
+  initRail();
+</script>
+
+<style>
+  .rail-identity, .rail-services, .rail-info { padding: var(--s4); }
+  .rail-identity { display: grid; gap: var(--s4); }
+  .rail-where { color: var(--ink-3); font-size: var(--f-small); }
+  .rail-identity h1 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 650;
+    line-height: 1.2;
+    letter-spacing: -.01em;
+  }
+  .rail-headline { display: grid; gap: var(--s3); }
+  .rail-lede { max-width: 30ch; color: var(--ink-2); line-height: 1.45; }
+  .rail-actions { display: flex; align-items: center; gap: var(--s2); }
+  .rail-actions .nav-pill { flex: 1; min-width: 0; padding-inline: var(--s3); }
+  .rail-actions [aria-current="page"] { background: var(--fill-3); }
+
+  .rail-info { display: grid; gap: var(--s3); }
+  .rail-info__title { max-width: 24ch; font-weight: 600; line-height: 1.35; }
+  .rail-info__copy { color: var(--ink-2); line-height: 1.45; }
+  .rail-info__stats { display: grid; gap: var(--s2); padding: var(--s2) 0; font-variant-numeric: tabular-nums; }
+  .rail-info__stats div { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); font-size: var(--f-small); text-align: left; }
+  .rail-info__contact-intro { color: var(--ink-2); line-height: 1.45; }
+  .rail-info__contact { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+  .contact-row {
+    width: 100%; min-width: 0; min-height: 32px;
+    display: grid; grid-template-columns: 1fr 1fr 12px; align-items: center; gap: var(--s2);
+    padding: 0; color: var(--ink); background: transparent; border: 0; border-radius: 0;
+    font-size: var(--f-small); font-weight: 400; line-height: 1.25; text-align: left;
+  }
+  .contact-row__primary { white-space: nowrap; }
+  .contact-row__secondary { color: var(--ink-3); overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+  .contact-row :global(.arrow-icon) { width: .8em; height: .8em; color: var(--ink-3); }
+  @media (hover: hover) {
+    .contact-row:hover { color: var(--accent); }
+    .contact-row:hover .contact-row__secondary, .contact-row:hover :global(.arrow-icon) { color: currentColor; }
+    .contact-row:hover :global(.arrow-icon--external) { transform: none; }
+  }
+
+
+  /* Mobile, off-homepage: the whole rail column collapses to this one sticky card. */
+  .rail-home { display: none; }
+  .rail-home__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s2);
+    min-height: 40px;
+    color: var(--ink);
+    font-size: var(--f-small);
+    font-weight: 500;
+  }
+  .rail-home__link :global(.arrow-icon) { width: .85em; height: .85em; color: var(--ink-3); }
+  @media (hover: hover) {
+    .rail-home__link:hover { color: var(--accent); }
+    .rail-home__link:hover :global(.arrow-icon) { color: currentColor; transform: none; }
+  }
+  @media (max-width: 900px) {
+    .rail-home:not([hidden]) {
+      order: 0;
+      position: sticky;
+      top: max(var(--s2), env(safe-area-inset-top));
+      z-index: 30;
+      display: grid;
+      padding: var(--s1) var(--s3);
+    }
+    .rail[data-compact] .rail-identity,
+    .rail[data-compact] .rail-services,
+    .rail[data-compact] .rail-actions,
+    .rail[data-compact] .rail-info,
+    .rail[data-compact] .rail-group { display: none; }
+  }
+
+  .rail-projects { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s1); }
+  .rail-projects__link {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--s3);
+    padding: var(--s2) var(--s3);
+    border: 1px solid transparent;
+    border-radius: var(--r-2);
+    transition: background-color var(--t-color) var(--ease), border-color var(--t-color) var(--ease), color var(--t-color) var(--ease);
+  }
+  .rail-projects__body { min-width: 0; display: grid; gap: 2px; }
+  .rail-projects__year { color: var(--ink-3); font-size: var(--f-small); font-variant-numeric: tabular-nums; }
+  .rail-projects__link strong { font-weight: 600; }
+  .rail-projects__link small { color: var(--ink-3); font-size: var(--f-small); line-height: 1.35; }
+  .rail-projects__link[aria-current="page"] { color: var(--accent); background: var(--fill-2); border-color: color-mix(in srgb, var(--accent) 24%, var(--glass-edge)); }
+  @media (hover: hover) { .rail-projects__link:hover { color: var(--accent); background: var(--fill-2); border-color: color-mix(in srgb, var(--accent) 24%, var(--glass-edge)); } }
+
+  .rail-group { order: 5; display: grid; gap: var(--s3); padding: var(--s3); }
+  .rail-group__section { display: grid; gap: var(--s1); }
+  .rail-group__label { padding-inline: var(--s2); color: var(--ink-3); font-size: var(--f-label); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+  .rail-group__blurb { padding-inline: var(--s2); color: var(--ink-3); font-size: var(--f-small); line-height: 1.35; }
+  .rail-app-card {
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+    min-height: 64px;
+    padding: var(--s2) var(--s3);
+    border: 1px solid transparent;
+    border-radius: var(--r-2);
+    transition: background-color var(--t-color) var(--ease), border-color var(--t-color) var(--ease), color var(--t-color) var(--ease);
+  }
+  .rail-app-card__icon { width: 40px; height: 40px; flex: 0 0 auto; display: grid; place-items: center; overflow: hidden; border-radius: 10px; background: var(--fill); }
+  .rail-app-card__icon img { width: 100%; height: 100%; object-fit: contain; }
+  .rail-app-card__icon--app { background: none; border-radius: 0; overflow: visible; }
+  .rail-app-card__placeholder { width: 40px; height: 40px; flex: 0 0 auto; border-radius: 10px; background: var(--fill-2); }
+  .rail-app-card__icon--projects :global(.stroke-icon) { width: 21px; height: 21px; }
+  .rail-app-card__body { min-width: 0; flex: 1; display: grid; gap: 2px; }
+  .rail-app-card__body strong { font-weight: 600; }
+  .rail-app-card__body small { color: var(--ink-3); font-size: var(--f-small); line-height: 1.35; }
+  .rail-app-card :global(.arrow-icon) { flex: 0 0 auto; color: var(--ink-3); }
+  .rail-app-card[aria-current="page"] { color: var(--accent); background: var(--fill-2); border-color: color-mix(in srgb, var(--accent) 24%, var(--glass-edge)); }
+  @media (hover: hover) { .rail-app-card:hover { color: var(--accent); background: var(--fill-2); border-color: color-mix(in srgb, var(--accent) 24%, var(--glass-edge)); } }
+  /* no hover arrow motion — state changes are fill and color only */
+  @media (hover: hover) { .rail-app-card:hover :global(.arrow-icon) { transform: none; } }
+
+  @media (min-width: 901px) {
+    .rail-identity { gap: var(--s5); }
+    .rail-group { order: initial; }
+  }
+</style>

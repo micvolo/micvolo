@@ -1,0 +1,26 @@
+---
+import PublicLayout from '@/layouts/PublicLayout.astro';
+import SiteRail from '@/components/public/SiteRail.astro';
+import LetterFlowCard from '@/components/letter-flow/LetterFlowCard.astro';
+---
+
+<PublicLayout title="Letter Flow" description="Interactive vector type experiment. Drag to distort glyph vertices and watch them return to form.">
+  <SiteRail />
+  <main id="main" class="stream letter-flow-page">
+    <header class="letter-flow-intro">
+      <h1>Letter Flow</h1>
+      <p>A vector type playground. Drag any letter to bend it, release and watch it snap back.</p>
+    </header>
+    <LetterFlowCard />
+  </main>
+</PublicLayout>
+
+<style>
+  .letter-flow-page {
+    display: flex; flex-direction: column;
+    min-height: calc(100dvh - max(var(--s2), env(safe-area-inset-top)) - max(var(--s2), env(safe-area-inset-bottom)));
+  }
+  .letter-flow-intro { display: grid; gap: var(--s2); max-width: 44rem; padding: clamp(var(--s4), 4vw, var(--s7)); padding-bottom: var(--s4); }
+  .letter-flow-intro h1 { margin: 0; font-size: var(--f-lead); font-weight: 600; letter-spacing: -.01em; }
+  .letter-flow-intro p { max-width: 52ch; color: var(--ink-2); font-size: var(--f-body); line-height: 1.5; }
+</style>

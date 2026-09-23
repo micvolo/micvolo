@@ -1,0 +1,54 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata | undefined;
+  alt: string;
+  sizes: string;
+  /** shared aspect-ratio so side-by-side rows keep equal heights; defaults to the image's own */
+  aspect?: string;
+  loading?: 'lazy' | 'eager';
+}
+const { src, alt, sizes, aspect, loading = 'lazy' } = Astro.props;
+const ratio = aspect ?? (src ? `${src.width} / ${src.height}` : '16 / 10');
+---
+<span class="case-frame" style={`aspect-ratio: ${ratio}`}>
+  <span class="case-liquid" aria-hidden="true"></span>
+  {src && (
+    <Image src={src} alt={alt} widths={[320, 640, 1200, 1680]} sizes={sizes} format="webp" quality={100} loading={loading} />
+  )}
+</span>
+
+<style>
+  .case-frame {
+    position: relative;
+    display: block;
+    overflow: hidden;
+  }
+  .case-frame :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+  .case-liquid {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(60% 90% at 28% 30%, var(--fill-3), transparent 72%),
+      radial-gradient(70% 100% at 78% 70%, var(--fill-2), transparent 66%),
+      var(--fill);
+    background-size: 190% 190%, 230% 230%, 100% 100%;
+    animation: case-liquid 7s var(--ease) infinite alternate;
+  }
+  @keyframes case-liquid {
+    from { background-position: 0% 30%, 85% 70%, 0 0; }
+    to { background-position: 65% 65%, 15% 25%, 0 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .case-liquid { animation: none; }
+  }
+</style>

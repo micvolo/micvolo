@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" fill="none">
+  <g clip-path="url(#a)">
+    <mask id="b" width="724" height="1020" x="138" y="-10" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+      <path fill="#fff" d="M148 0c152 0 678 33 678 285v25c0 85-33 139-83 173 64 35 109 95 109 196v26c0 260-187 295-346 295H148V0Zm365 595H391v195h122c39 0 93-14 93-93v-10c0-78-54-92-93-92Zm-17-385H391v175h105c36 0 85-11 85-80v-15c0-69-49-80-85-80Z"/>
+      <path fill="#fff" d="M148 0h627v210H391v175h320v210H391v405H148V0Z"/>
+      <path stroke="#000" stroke-width="20" d="M148 0c152 0 678 33 678 285v25c0 85-33 139-83 173 64 35 109 95 109 196v26c0 260-187 295-346 295H148M148 0v1000M148 0h627v210H391m-243 790h243V595m0 0h122c39 0 93 14 93 92v10c0 79-54 93-93 93H391V595Zm0 0h320V385H391m0-175h105c36 0 85 11 85 80v15c0 69-49 80-85 80H391m0-175v175"/>
+    </mask>
+    <g fill="#fff" class="g" mask="url(#b)">
+      <path d="M148 0c152 0 678 33 678 285v25c0 85-33 139-83 173 64 35 109 95 109 196v26c0 260-187 295-346 295H148V0Zm365 595H391v195h122c39 0 93-14 93-93v-10c0-78-54-92-93-92Zm-17-385H391v175h105c36 0 85-11 85-80v-15c0-69-49-80-85-80Z"/>
+      <path d="M148 0h627v210H391v175h320v210H391v405H148V0Z"/>
+    </g>
+  </g>
+  <defs>
+    <clipPath id="a">
+      <path fill="#fff" d="M0 0h1000v1000H0z"/>
+    </clipPath>
+  </defs>
+  <style>
+    .g {
+        fill: black;
+    }
+    @media (prefers-color-scheme: dark) {
+        .g { fill: white; }
+    }
+  </style>
+</svg>

@@ -1,0 +1,188 @@
+---
+import type { ImageMetadata } from 'astro';
+import ArrowIcon from '@/components/ArrowIcon.astro';
+import CaseFrame from '@/components/project-page/CaseFrame.astro';
+import CaseNote from '@/components/project-page/CaseNote.astro';
+import type { ProjectCase, ScreenWidth } from '@/lib/project-page/cases';
+import { isRowSlot, isSplitSlot } from '@/lib/project-page/cases';
+import { appIcon } from '@/lib/project-page/app-icons';
+import { projectDateLabel } from '@/lib/project-page/project-date';
+
+interface Props {
+  title: string;
+  date: Date;
+  url?: string;
+  projectCase: ProjectCase;
+}
+const { title, date, url, projectCase } = Astro.props;
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/project-screens/**/*.webp',
+  { eager: true }
+);
+const imageFor = (slug: string, file: string) => images[`/src/assets/project-screens/${slug}/${file}`]?.default;
+
+const vwFor: Record<ScreenWidth, number> = { full: 60, half: 30, quarter: 15 };
+
+const slots = projectCase.screens.map((slot) => {
+  if (isRowSlot(slot)) {
+    const items = slot.row.map((item) => ({ ...item, meta: imageFor(projectCase.slug, item.file) }));
+    const first = items[0]?.meta;
+    return {
+      slot,
+      items,
+      sizes: `(max-width: 900px) calc(100vw - 32px), ${vwFor[slot.width] / slot.row.length}vw`,
+      aspect: first ? `${first.width} / ${first.height}` : undefined,
+    };
+  }
+  const file = isSplitSlot(slot) ? slot.file : slot.file;
+  const alt = isSplitSlot(slot) ? slot.alt : slot.alt;
+  const meta = imageFor(projectCase.slug, file);
+  return {
+    slot,
+    items: [{ file, alt, meta }],
+    sizes: isSplitSlot(slot)
+      ? '(max-width: 900px) calc(100vw - 32px), 30vw'
+      : `(max-width: 900px) calc(100vw - 32px), ${vwFor[slot.width]}vw`,
+    aspect: undefined,
+  };
+});
+
+const closingNotes = projectCase.notes.slice(projectCase.screens.length);
+const icon = appIcon(projectCase.slug);
+const dateLabel = projectDateLabel(date);
+---
+
+<header class="case-head">
+  <div class="case-heading">
+    {icon
+      ? <span class="case-icon" aria-hidden="true"><img src={icon} width="40" height="40" alt="" /></span>
+      : <span class="case-icon case-icon--placeholder" aria-hidden="true"></span>}
+    <h1 class="case-title">{title}</h1>
+    <span class="case-year">{dateLabel}</span>
+  </div>
+</header>
+<div class="case-flow">
+  {slots.map(({ slot, items, sizes, aspect }, index) => (
+    <>
+      <CaseNote note={projectCase.notes[index]} />
+      {index === 0 && url && (
+        <a class="case-visit" href={url} target="_blank" rel="noreferrer">
+          Visit site<ArrowIcon direction="external" />
+        </a>
+      )}
+      {isRowSlot(slot) ? (
+        <div
+          class:list={['case-row', `case-row--${slot.layout}`, `case-shot--${slot.width}`]}
+          style={`--case-cols: ${items.length}`}
+        >
+          {items.map((item) => (
+            <CaseFrame src={item.meta} alt={item.alt} sizes={sizes} aspect={aspect} />
+          ))}
+        </div>
+      ) : isSplitSlot(slot) ? (
+        <div class="case-split">
+          <figure class:list={['case-split__media', `case-shot--${slot.width}`]}>
+            <CaseFrame src={items[0].meta} alt={items[0].alt} sizes={sizes} />
+          </figure>
+          <CaseNote note={slot.aside} />
+        </div>
+      ) : (
+        <figure class:list={['case-shot', `case-shot--${slot.width}`]}>
+          <CaseFrame src={items[0].meta} alt={items[0].alt} sizes={sizes} />
+        </figure>
+      )}
+    </>
+  ))}
+  {closingNotes.map((note) => <CaseNote note={note} />)}
+</div>
+
+<style>
+  .case-head {
+    display: grid;
+    gap: var(--s2);
+    max-width: 44rem;
+    padding: clamp(var(--s4), 4vw, var(--s7));
+    padding-bottom: var(--s4);
+  }
+  .case-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+  }
+  .case-icon {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+  }
+  .case-icon img { width: 100%; height: 100%; object-fit: contain; }
+  /* icon slot keeps the rail's placeholder pattern */
+  .case-icon--placeholder {
+    background: var(--fill-2);
+    border-radius: 10px;
+  }
+  .case-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--f-lead);
+    font-weight: 650;
+    letter-spacing: -.015em;
+  }
+  .case-year {
+    color: var(--ink-3);
+    font-size: var(--f-small);
+    font-variant-numeric: tabular-nums;
+  }
+  .case-flow {
+    display: grid;
+    gap: var(--s6);
+    justify-items: start;
+    padding: 0 clamp(var(--s4), 4vw, var(--s7)) var(--s8);
+  }
+  a.case-visit {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s2);
+    width: fit-content;
+    min-height: var(--ctl);
+    padding: 0 var(--s4);
+    border: 0;
+    border-radius: var(--pill);
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: var(--f-body);
+    font-weight: 600;
+    transition: background-color var(--t-color) var(--ease), filter var(--t-color) var(--ease);
+  }
+  /* primary call to action: fill change only, the arrow stays put */
+  a.case-visit:hover { background: var(--accent); color: var(--accent-ink); filter: brightness(1.07); }
+  .case-visit :global(.arrow-icon) { width: .85em; height: .85em; }
+  @media (hover: hover) {
+    a.case-visit:hover :global(.arrow-icon) { transform: none; }
+  }
+  .case-shot { margin: 0; display: block; }
+  .case-shot--full { width: 100%; }
+  .case-shot--half { width: 50%; }
+  .case-shot--quarter { width: 25%; }
+  .case-row {
+    display: grid;
+    grid-template-columns: repeat(var(--case-cols), minmax(0, 1fr));
+    gap: var(--s4);
+  }
+  /* text never sits beside an image — stacked block, image first with its note below */
+  .case-split {
+    width: 100%;
+    display: grid;
+    gap: var(--s5);
+    justify-items: start;
+  }
+  .case-split__media { margin: 0; }
+  @media (max-width: 720px) {
+    .case-shot--half, .case-shot--quarter { width: 100%; }
+    /* landscapes stack full width, portrait rows go 2-up / 2×2 — never a lone tall column */
+    .case-row--grid { --case-cols: 1; }
+    .case-row--pair, .case-row--quad { --case-cols: 2; }
+  }
+</style>

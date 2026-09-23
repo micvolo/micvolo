@@ -1,0 +1,56 @@
+---
+import type { NoteText } from '@/lib/project-page/cases';
+
+interface Props {
+  note: NoteText;
+}
+const { note } = Astro.props;
+---
+{typeof note === 'string' ? (
+  <p class="case-note">{note}</p>
+) : (
+  <div class="case-note">
+    <p>{note.lead}</p>
+    <ul class="case-dash">
+      {note.items.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+)}
+
+<style>
+  .case-note {
+    max-width: 54ch;
+    display: grid;
+    gap: var(--s2);
+    color: var(--ink-2);
+    font-size: var(--f-body);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+  .case-note p { margin: 0; }
+  .case-dash {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s1);
+  }
+  .case-dash li {
+    position: relative;
+    padding-left: var(--s4);
+  }
+  .case-dash li::before {
+    content: "–";
+    position: absolute;
+    left: 0;
+    color: var(--ink-3);
+  }
+  /* natural mobile translation: comfortable measure, slightly larger text */
+  @media (max-width: 720px) {
+    .case-note {
+      max-width: none;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+  }
+</style>
