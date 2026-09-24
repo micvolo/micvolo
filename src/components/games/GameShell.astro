@@ -18,15 +18,15 @@ const { title, description, gameClass } = Astro.props;
 </main>
 
 <style>
-  .game-stream { align-content: start; padding: clamp(var(--s4), 4vw, var(--s7)); }
+  .game-stream { align-content: start; padding: var(--gutter); }
   .game-intro { width: min(100%, 44rem); display: grid; gap: var(--s2); }
   .game-intro h1 { margin: 0; font-size: var(--f-lead); font-weight: 600; letter-spacing: -.01em; }
   .game-intro p { max-width: 58ch; color: var(--ink-2); font-size: var(--f-body); line-height: 1.5; }
   .game-stage { min-width: 0; display: grid; justify-items: start; padding-block: clamp(var(--s5), 5vw, var(--s8)); }
   .game-content { width: 100%; display: grid; gap: var(--s5); }
 
-  /* Shared game controls: one button style and one field style for all table games.
-     Buttons read as flat action pills; fields read as editable text areas (8px radius). */
+  /* Shared game controls: one button style for all table games.
+     Buttons read as flat action pills; fields use the global input style from site.css. */
   :global(.game-stream .game-action) {
     min-height: var(--ctl);
     display: inline-flex;
@@ -61,19 +61,7 @@ const { title, description, gameClass } = Astro.props;
     border-radius: 50%;
   }
 
-  :global(.game-stream input[type='text']),
-  :global(.game-stream select) {
-    min-height: var(--ctl);
-    padding-inline: var(--s3);
-    border: 0;
-    border-radius: var(--r-2);
-    background-color: var(--fill-2);
-    transition: background-color var(--t-color);
-  }
-  :global(.game-stream input[type='text']:hover),
-  :global(.game-stream select:hover),
-  :global(.game-stream input[type='text']:focus),
-  :global(.game-stream select:focus) { background-color: var(--fill-3); }
+  /* Select keeps its own chevron; the base field look is the global input style. */
   :global(.game-stream select) {
     appearance: none;
     padding-right: 34px;

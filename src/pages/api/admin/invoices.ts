@@ -1,6 +1,7 @@
 import { env as cloudflareEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import { requireAdminRequest, validDate } from '@/lib/admin';
+import { requireAdminRequest } from '@/lib/admin/guards';
+import { validDate } from '@/lib/admin/validate';
 import { randomId } from '@/lib/auth';
 
 export const prerender = false;

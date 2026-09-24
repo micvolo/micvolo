@@ -4,7 +4,7 @@
 
 Astro renders `/`, `/projects`, `/projects/letter-flow`, `/graphic-experiments`, `/graphic-experiments/*`, `/table-games`, `/table-games/camaleonte/*` and `/table-games/reazione-a-catena` at build time. Auth, portal, admin, API and private document routes opt into on-demand rendering. No client framework, ORM, UI kit or charting package is used.
 
-Native experiences (Lab, Letter Flow, Chameleon, Teamword) are implemented as in-repo Astro pages and client scripts. They render inside the existing `.card`/window surfaces and reuse the persistent `SiteRail`; no cross-origin iframe is used. Dynamic experiment modules in Lab are lazy-loaded on the client.
+Native experiences (Lab, Letter Flow, Chameleon, Teamword) are implemented as in-repo Astro pages and client scripts. They render inline in the site shell and reuse the persistent `SiteRail`; no cross-origin iframe is used. Dynamic experiment modules in Lab are lazy-loaded on the client.
 
 - **D1 (`DB`)** stores identities, one-project client ownership, OTP challenges, revocable sessions, time, timeline, invoice and payment records.
 - **R2 (`DOCUMENTS`)** stores private PDFs under random object keys. Keys are never authorization credentials or exposed as public URLs.
@@ -32,7 +32,7 @@ Admin uploads are restricted to non-empty PDF files of at most 10 MiB. The handl
 
 Before production: verify Email Service sender DNS, replace the recreated D1 id in Wrangler, apply migrations, add the admin identity, configure `OTP_SECRET` and `ADMIN_EMAIL`, test OTP delivery, and confirm the R2 bucket has no public access.
 
-Deploy only with `npm run deploy` (production) or `npm run deploy:dev` (`dev-micvolo`): both build and deploy the generated SSR entry (`dist/server/wrangler.json`, assets `dist/client`), so `/api/*` is wired; deploying the bare root `wrangler.jsonc` serves the static build only and 404s every API route. Secrets are not deployed with the code — after creating each Worker, set them once with `wrangler secret put OTP_SECRET --name <worker>` (missing `OTP_SECRET` makes `/api/auth/request-code` throw a 500 in `otpHmac`). The dev-only OTP preview stays compiled out of every build (`import.meta.env.DEV`).
+Deploy only with `npm run deploy`: it builds and deploys the generated SSR entry (`dist/server/wrangler.json`, assets `dist/client`), so `/api/*` is wired; deploying the bare root `wrangler.jsonc` serves the static build only and 404s every API route. Secrets are not deployed with the code — after creating the Worker, set them once with `wrangler secret put OTP_SECRET` (missing `OTP_SECRET` makes `/api/auth/request-code` throw a 500 in `otpHmac`). The dev-only OTP preview stays compiled out of every build (`import.meta.env.DEV`).
 
 ## Intentionally deferred
 

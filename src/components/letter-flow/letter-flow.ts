@@ -1,18 +1,11 @@
-import { DEFAULT_FONT } from './default-font';
-import { getParsedTexts, type TextParams, type ParsedText } from './text-parsing';
+import { getParsedTexts, type ParsedText } from './text-parsing';
 import { drawText, calcReturnAnimation, calcMousePressed } from './text-drawing';
-import { clearSavedParams, loadParams, saveCurrent, setupControlPanel } from './control-panel';
+import { clearSavedParams, clone, loadParams, saveCurrent, setupControlPanel, type LetterFlowParams } from './control-panel';
 import { loadP5 } from '../lab/experiments/shared';
 import type { ParamsApi } from '@/lib/params/params';
 
-type LetterFlowParams = {
-  texts: TextParams[];
-  mouseSize: number;
-  selectCurves: boolean;
-  export: { withBackground: boolean };
-};
-
-const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value));
+/** the brand SF Pro Text single face the canvas typography draws with */
+const DEFAULT_FONT = '/fonts/sf-pro.ttf';
 
 export function initLetterFlow(frame: HTMLElement, paramsRoot: HTMLElement) {
   let disposed = false;

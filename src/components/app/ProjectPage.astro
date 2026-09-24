@@ -1,6 +1,6 @@
 ---
 // The single project page, identical for the studio and for the client.
-import ArrowIcon from '@/components/ArrowIcon.astro';
+import ArrowIcon from '@/components/icons/ArrowIcon.astro';
 import {
   estimateRows,
   estimatedHours,
@@ -13,7 +13,7 @@ import {
   projectRate,
   workedLabel,
   type AdminProject,
-} from './project-view';
+} from '@/lib/admin/view';
 
 interface Props {
   project: AdminProject;
@@ -59,7 +59,7 @@ const documentDate = (createdAt: number) => new Date(createdAt * 1000).toISOStri
         ))}
       </ol>
     ) : (
-      <p class="empty-state">Nessun lavoro registrato.</p>
+      <p class="empty-state bare">Nessun lavoro registrato.</p>
     )}
   </section>
 
@@ -77,14 +77,14 @@ const documentDate = (createdAt: number) => new Date(createdAt * 1000).toISOStri
             <span class="row-sep" aria-hidden="true">·</span>
             <span class="row-hours">totale {formatOre(estimate.cumulativeHours)}</span>
             <a class="text-link link-with-arrow row-link" href={estimate.pdfUrl} target="_blank" rel="noopener noreferrer">
-              Apri il PDF<span class="visually-hidden"> (si apre in una nuova scheda)</span>
+              Apri il PDF<span class="sr-only"> (si apre in una nuova scheda)</span>
               <ArrowIcon direction="external" />
             </a>
           </li>
         ))}
       </ol>
     ) : (
-      <p class="empty-state">Nessun preventivo allegato.</p>
+      <p class="empty-state bare">Nessun preventivo allegato.</p>
     )}
   </section>
 
@@ -98,14 +98,14 @@ const documentDate = (createdAt: number) => new Date(createdAt * 1000).toISOStri
             <span class="row-sep" aria-hidden="true">·</span>
             <span class="row-note">{doc.name}</span>
             <a class="text-link link-with-arrow row-link" href={`/documents/${doc.r2Key}`} target="_blank" rel="noopener noreferrer">
-              Apri<span class="visually-hidden"> — {doc.name} (si apre in una nuova scheda)</span>
+              Apri<span class="sr-only"> — {doc.name} (si apre in una nuova scheda)</span>
               <ArrowIcon direction="external" />
             </a>
           </li>
         ))}
       </ol>
     ) : (
-      <p class="empty-state">Nessun documento.</p>
+      <p class="empty-state bare">Nessun documento.</p>
     )}
   </section>
 </article>
@@ -115,14 +115,14 @@ const documentDate = (createdAt: number) => new Date(createdAt * 1000).toISOStri
   .project-head h1 { margin: 0; font-size: 22px; font-weight: 650; line-height: 1.2; letter-spacing: -.02em; }
   .project-head p { margin: var(--s2) 0 0; max-width: 62ch; }
 
-  .project-stats { padding-top: var(--s5); border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); }
+  .project-stats { padding-top: var(--s5); border-top: 1px solid var(--hairline); }
   .progress-label { margin: 0; font-size: var(--f-lead); font-variant-numeric: tabular-nums; }
   .progress-track { margin-top: var(--s3); }
   .estimate-line { margin: var(--s3) 0 0; font-variant-numeric: tabular-nums; }
   .estimate-rate { margin: var(--s1) 0 0; color: var(--ink-3); font-size: var(--f-small); }
   .worked-line { margin: var(--s3) 0 0; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 
-  .project-section { padding-top: var(--s5); border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); }
+  .project-section { padding-top: var(--s5); border-top: 1px solid var(--hairline); }
   .project-section h2 { margin: 0 0 var(--s4); font-size: var(--f-lead); font-weight: 600; letter-spacing: -.01em; }
 
   .row-list { list-style: none; margin: 0; padding: 0; }
@@ -135,31 +135,9 @@ const documentDate = (createdAt: number) => new Date(createdAt * 1000).toISOStri
     font-size: var(--f-small);
     line-height: 1.45;
   }
-  .row-list li + li { border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); }
+  .row-list li + li { border-top: 1px solid var(--hairline); }
   .row-list time, .row-hours { color: var(--ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .row-note { flex: 1 1 24ch; min-width: 0; }
   .row-sep { color: var(--ink-3); }
   .row-link { margin-left: auto; white-space: nowrap; }
-
-  .empty-state {
-    padding: 0;
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-    border: 0;
-  }
 </style>

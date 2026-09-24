@@ -4,10 +4,9 @@
 // Example: POST /api/admin/estimates {"slug":"abitare-in-legno","date":"2026-10-05","hours":20,"note":"il cliente chiede le pagine cantieri — stimo 20 ore a 800 euro","pdfUrl":"/preventivi/abitare-in-legno/est_abitare-in-legno_04.pdf"}
 import { env as cloudflareEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import {
-  isIsoDate, isNoteLine, isPositiveNumber, isSlug, json, jsonError, nextRowId,
-  projectExists, readJsonObject, requireAdminApi,
-} from '@/lib/admin-data/api';
+import { json, jsonError, nextRowId, readJsonObject, trackingProjectExists } from '@/lib/admin/api';
+import { requireAdminApi } from '@/lib/admin/guards';
+import { isIsoDate, isNoteLine, isPositiveNumber, isSlug } from '@/lib/admin/validate';
 
 export const prerender = false;
 
@@ -52,7 +51,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   if (!body) return jsonError(400, 'invalid-json');
   const { slug, date, hours, note, pdfUrl } = body;
   const db = cloudflareEnv.DB;
-  if (!isSlug(slug) || !(await projectExists(db, slug))) return jsonError(400, 'unknown-slug');
+  if (!isSlug(slug) || !(await trackingProjectExists(db, slug))) return jsonError(400, 'unknown-slug');
   if (!isIsoDate(date)) return jsonError(400, 'invalid-date');
   if (!isPositiveNumber(hours)) return jsonError(400, 'invalid-hours');
   if (!isNoteLine(note) || !ESTIMATE_NOTE.test(note)) return jsonError(400, 'invalid-note');

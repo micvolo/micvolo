@@ -5,8 +5,7 @@ import PublicLayout from '@/layouts/PublicLayout.astro';
 import SiteRail from '@/components/public/SiteRail.astro';
 import AppShell from '@/components/app/AppShell.astro';
 import ProjectPage from '@/components/app/ProjectPage.astro';
-import { getProjects } from '@/lib/admin-data';
-import type { AdminProject } from '@/components/app/project-view';
+import { getProjects, type AdminProject } from '@/lib/admin/store';
 
 const principal = Astro.locals.principal;
 if (!principal) return Astro.redirect('/portal/login');
@@ -23,20 +22,7 @@ const project = projects.find((item) => item.slug === link?.slug);
   <SiteRail />
   <AppShell subtitle={principal.email}>
     <div class="workspace">
-      {project ? <ProjectPage {project} /> : <p class="empty-state">Nessun progetto è collegato a questo account.</p>}
+      {project ? <ProjectPage {project} /> : <p class="empty-state bare">Nessun progetto è collegato a questo account.</p>}
     </div>
   </AppShell>
 </PublicLayout>
-
-<style>
-  /* The empty notice reads as text on the background, not a card. */
-  .empty-state {
-    padding: 0;
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-</style>

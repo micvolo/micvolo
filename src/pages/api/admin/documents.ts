@@ -1,6 +1,7 @@
 import { env as cloudflareEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import { projectExists, requireAdminRequest } from '@/lib/admin';
+import { clientProjectExists } from '@/lib/admin/api';
+import { requireAdminRequest } from '@/lib/admin/guards';
 import { randomId } from '@/lib/auth';
 
 export const prerender = false;
@@ -16,7 +17,7 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
   const periodInput = String(form.get('period') ?? '');
   const period = /^\d{4}-\d{2}$/.test(periodInput) ? periodInput : null;
   const file = form.get('file');
-  if (!(await projectExists(cloudflareEnv.DB, projectId)) || !title || !['contract', 'invoice', 'proposal', 'other'].includes(kind) || !(file instanceof File) || file.size <= 0 || file.size > MAX_PDF_BYTES || file.type !== 'application/pdf' || !file.name.toLowerCase().endsWith('.pdf')) {
+  if (!(await clientProjectExists(cloudflareEnv.DB, projectId)) || !title || !['contract', 'invoice', 'proposal', 'other'].includes(kind) || !(file instanceof File) || file.size <= 0 || file.size > MAX_PDF_BYTES || file.type !== 'application/pdf' || !file.name.toLowerCase().endsWith('.pdf')) {
     return redirect(`/admin/projects/${encodeURIComponent(projectId)}?error=document`, 303);
   }
   const bytes = await file.arrayBuffer();

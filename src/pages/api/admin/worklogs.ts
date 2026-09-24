@@ -1,6 +1,8 @@
 import { env as cloudflareEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import { projectExists, requireAdminRequest, validDate } from '@/lib/admin';
+import { clientProjectExists } from '@/lib/admin/api';
+import { requireAdminRequest } from '@/lib/admin/guards';
+import { validDate } from '@/lib/admin/validate';
 import { randomId } from '@/lib/auth';
 
 export const prerender = false;
@@ -15,7 +17,7 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
   const publicNote = String(form.get('public_note') ?? '').trim();
   const privateNote = String(form.get('private_note') ?? '').trim();
   const minutes = Math.round(hours * 60);
-  if (!(await projectExists(cloudflareEnv.DB, projectId)) || !validDate(workedOn) || !Number.isFinite(hours) || minutes < 15 || minutes > 1440 || !['strategy', 'design', 'development', 'meeting', 'content', 'maintenance'].includes(category) || !publicNote) {
+  if (!(await clientProjectExists(cloudflareEnv.DB, projectId)) || !validDate(workedOn) || !Number.isFinite(hours) || minutes < 15 || minutes > 1440 || !['strategy', 'design', 'development', 'meeting', 'content', 'maintenance'].includes(category) || !publicNote) {
     return redirect(`/admin/projects/${encodeURIComponent(projectId)}?error=worklog`, 303);
   }
   await cloudflareEnv.DB.prepare(`INSERT INTO worklogs

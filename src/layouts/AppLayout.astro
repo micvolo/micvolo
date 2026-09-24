@@ -1,8 +1,8 @@
 ---
 import '@/styles/site.css';
 import { ClientRouter, fade } from 'astro:transitions';
-import InteractionRuntime from '@/components/InteractionRuntime.astro';
-import AmbientShader from '@/components/AmbientShader.astro';
+import InteractionRuntime from '@/components/shell/InteractionRuntime.astro';
+import AmbientShader from '@/components/shell/AmbientShader.astro';
 interface Props { title: string; }
 const { title } = Astro.props;
 ---

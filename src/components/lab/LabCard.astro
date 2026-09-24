@@ -1,6 +1,6 @@
 ---
 import type { Project } from '@/lib/lab/projects';
-import StrokeIcon from '@/components/StrokeIcon.astro';
+import StrokeIcon from '@/components/icons/StrokeIcon.astro';
 interface Props {
   project: Project;
   previous: Project | undefined;
@@ -57,7 +57,7 @@ const { project, previous, next } = Astro.props;
 
 <style is:global>
   /* In-flow column layout: header at top, stage fills the remaining .stream column height. */
-  .lab-card { display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: calc(100dvh - max(var(--s2), env(safe-area-inset-top)) - max(var(--s2), env(safe-area-inset-bottom))); }
+  .lab-card { display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: calc(100dvh - var(--safe-top) - var(--safe-bottom)); }
   /* One tight inline row: title, description, params toggle — nav arrows beside
      the header at the right. No bar, no separators. */
   .lab-card__header {
@@ -65,7 +65,7 @@ const { project, previous, next } = Astro.props;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--s2) var(--s3);
-    padding: clamp(var(--s4), 4vw, var(--s7));
+    padding: var(--gutter);
     padding-bottom: var(--s3);
   }
   .lab-card__header > * { margin: 0; min-width: 0; }
@@ -81,8 +81,8 @@ const { project, previous, next } = Astro.props;
   .lab-card__nav .stroke-icon { width: 1em; height: 1em; }
   .lab-card__stage {
     position: relative; min-height: 320px; overflow: auto;
-    margin-inline: clamp(var(--s4), 4vw, var(--s7));
-    margin-bottom: clamp(var(--s4), 4vw, var(--s7));
+    margin-inline: var(--gutter);
+    margin-bottom: var(--gutter);
     background: #0a0a0a; overscroll-behavior: contain;
   }
   .lab-card__stage canvas, .lab-p5, .lab-webgl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }

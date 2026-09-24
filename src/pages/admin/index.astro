@@ -4,30 +4,22 @@ import { env as cloudflareEnv } from 'cloudflare:workers';
 import PublicLayout from '@/layouts/PublicLayout.astro';
 import SiteRail from '@/components/public/SiteRail.astro';
 import AppShell from '@/components/app/AppShell.astro';
-import ArrowIcon from '@/components/ArrowIcon.astro';
-import { getProjects } from '@/lib/admin-data';
-import {
-  formatEuro,
-  formatOre,
-  monthlyTotals,
-  projectRate,
-  workedHours,
-  workedLabel,
-  type AdminProject,
-} from '@/components/app/project-view';
+import ArrowIcon from '@/components/icons/ArrowIcon.astro';
+import { DEFAULT_RATE_EUR, getProjects, type AdminProject } from '@/lib/admin/store';
+import { formatEuro, formatOre, monthlyTotals, projectRate, workedHours, workedLabel } from '@/lib/admin/view';
 
 const principal = Astro.locals.principal;
 if (!principal) return Astro.redirect('/admin/login');
 if (principal.role !== 'admin') return Astro.redirect('/portal');
 const projects: AdminProject[] = await getProjects(cloudflareEnv.DB);
 const months = monthlyTotals(projects);
-const rateNote = projects.some((project) => projectRate(project) !== 40) ? 'ore lavorate × tariffa' : 'ore lavorate × 40 €/ora';
+const rateNote = projects.some((project) => projectRate(project) !== DEFAULT_RATE_EUR) ? 'ore lavorate × tariffa' : `ore lavorate × ${DEFAULT_RATE_EUR} €/ora`;
 ---
 <PublicLayout title="Tutti i progetti">
   <SiteRail />
   <AppShell title="Tutti i progetti" subtitle={`${projects.length} progetti · ${principal.email}`}>
     <div class="workspace">
-      <section class="app-section">
+      <section class="app-section bare">
         <div class="app-section-header"><h2>Progetti</h2><p>Ore lavorate per progetto</p></div>
         {projects.length ? (
           <ol class="project-rows">
@@ -44,11 +36,11 @@ const rateNote = projects.some((project) => projectRate(project) !== 40) ? 'ore 
             ))}
           </ol>
         ) : (
-          <p class="empty-state">Nessun progetto da mostrare.</p>
+          <p class="empty-state bare">Nessun progetto da mostrare.</p>
         )}
       </section>
 
-      <section class="app-section">
+      <section class="app-section bare">
         <div class="app-section-header"><h2>Andamento mensile</h2><p>{rateNote}</p></div>
         {months.length ? (
           <table class="ledger-table">
@@ -64,7 +56,7 @@ const rateNote = projects.some((project) => projectRate(project) !== 40) ? 'ore 
             </tbody>
           </table>
         ) : (
-          <p class="empty-state">Nessuna ora lavorata finora.</p>
+          <p class="empty-state bare">Nessuna ora lavorata finora.</p>
         )}
       </section>
     </div>
@@ -72,34 +64,15 @@ const rateNote = projects.some((project) => projectRate(project) !== 40) ? 'ore 
 </PublicLayout>
 
 <style>
-  /* Sections sit directly on the page background; games-grid hairlines separate blocks. */
-  .app-section {
-    margin: 0;
-    padding: 0;
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
+  /* Sections sit directly on the page background; hairline separators divide the blocks. */
   .app-section + .app-section {
     margin-top: var(--s5);
     padding-top: var(--s5);
-    border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
-  }
-  .empty-state {
-    padding: 0;
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    border-top: 1px solid var(--hairline);
   }
   .ledger-table td {
     background: transparent;
-    border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    border-top: 1px solid var(--hairline);
   }
   .project-rows { list-style: none; margin: 0; padding: 0; }
   .project-rows li {
@@ -108,7 +81,7 @@ const rateNote = projects.some((project) => projectRate(project) !== 40) ? 'ore 
     gap: var(--s3);
     align-items: baseline;
     padding: var(--s3) 0;
-    border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    border-top: 1px solid var(--hairline);
   }
   .project-rows li:first-child { border-top: 0; }
   .project-row-index { color: var(--ink-3); font-size: var(--f-label); font-variant-numeric: tabular-nums; }

@@ -1,53 +1,12 @@
-// View models and formatting for the read-only project pages. The shapes mirror
-// the `src/lib/admin-data` contract (AdminProject / EstimateDoc / TimeEntry).
+// View models and formatting for the read-only project pages (admin, portal).
+// Row types come from the src/lib/admin/store contract; this module only
+// derives what the pages render.
+import { DEFAULT_RATE_EUR, type AdminProject, type EstimateDoc } from './store';
 
-export interface EstimateDoc {
-  id: string;
-  slug: string;
-  date: string;
-  hours: number;
-  amount: number;
-  note: string;
-  pdfUrl: string;
-}
-
-export interface TimeEntry {
-  id: string;
-  slug: string;
-  date: string;
-  hours: number;
-  note: string;
-}
-
-/** a "documenti" attachment row; the file lives in the DOCUMENTS R2 bucket */
-export interface ProjectDocument {
-  id: string;
-  slug: string;
-  /** display name, the link label */
-  name: string;
-  /** unix seconds */
-  createdAt: number;
-  /** R2 object key, served through /documents/<key> */
-  r2Key: string;
-}
-
-export interface AdminProject {
-  slug: string;
-  title: string;
-  description: string;
-  /** Hourly rate in EUR for this project; historical projects may run 20-30. */
-  rate: number;
-  estimates: EstimateDoc[];
-  entries: TimeEntry[];
-  /** "documenti" attachments, newest first; an empty list is a completely valid state */
-  documents: ProjectDocument[];
-}
-
-/** Default hourly rate; projects without one fall back to this. */
-const RATE_EUR = 40;
+export type { AdminProject, EstimateDoc, ProjectDocument, TimeEntry } from './store';
 
 export function projectRate(project: AdminProject): number {
-  return project.rate > 0 ? project.rate : RATE_EUR;
+  return project.rate > 0 ? project.rate : DEFAULT_RATE_EUR;
 }
 
 const ITALIAN_MONTHS = [

@@ -1,6 +1,8 @@
 import { env as cloudflareEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import { projectExists, requireAdminRequest, validDate } from '@/lib/admin';
+import { clientProjectExists } from '@/lib/admin/api';
+import { requireAdminRequest } from '@/lib/admin/guards';
+import { validDate } from '@/lib/admin/validate';
 import { randomId } from '@/lib/auth';
 
 export const prerender = false;
@@ -18,7 +20,7 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
   const invoice = invoiceId
     ? await cloudflareEnv.DB.prepare("SELECT id FROM invoices WHERE id = ?1 AND project_id = ?2 AND status != 'void' LIMIT 1").bind(invoiceId, projectId).first()
     : true;
-  if (!(await projectExists(cloudflareEnv.DB, projectId)) || !invoice || !Number.isFinite(amount) || amountCents <= 0 || !validDate(paidOn) || !method) {
+  if (!(await clientProjectExists(cloudflareEnv.DB, projectId)) || !invoice || !Number.isFinite(amount) || amountCents <= 0 || !validDate(paidOn) || !method) {
     return redirect(`/admin/projects/${encodeURIComponent(projectId)}?error=payment`, 303);
   }
   const statements = [cloudflareEnv.DB.prepare(`INSERT INTO payments

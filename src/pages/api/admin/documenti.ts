@@ -4,9 +4,9 @@
 // Example: curl -b cookies.txt -F slug=bloem -F name=contratto.pdf -F file=@contratto.pdf /api/admin/documenti
 import { env as cloudflareEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import {
-  isSlug, json, jsonError, nextRowId, projectExists, readJsonObject, requireAdminApi,
-} from '@/lib/admin-data/api';
+import { json, jsonError, nextRowId, readJsonObject, trackingProjectExists } from '@/lib/admin/api';
+import { requireAdminApi } from '@/lib/admin/guards';
+import { isSlug } from '@/lib/admin/validate';
 
 export const prerender = false;
 
@@ -77,7 +77,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return jsonError(415, 'unsupported-content-type');
   }
   const db = cloudflareEnv.DB;
-  if (!isSlug(slug) || !(await projectExists(db, slug))) return jsonError(400, 'unknown-slug');
+  if (!isSlug(slug) || !(await trackingProjectExists(db, slug))) return jsonError(400, 'unknown-slug');
   if (!isDocumentName(name)) return jsonError(400, 'invalid-name');
   if (!isPdfBytes(bytes)) return jsonError(400, 'invalid-pdf');
   const id = await nextRowId(db, 'tracking_documents', 'doc', slug);

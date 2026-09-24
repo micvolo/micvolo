@@ -1,6 +1,7 @@
 import { env as cloudflareEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import { requireAdminRequest } from '@/lib/admin';
+import { requireAdminRequest } from '@/lib/admin/guards';
+import { isSlug } from '@/lib/admin/validate';
 import { isEmail, normalizeEmail, randomId } from '@/lib/auth';
 
 export const prerender = false;
@@ -15,7 +16,7 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
   const description = String(form.get('description') ?? '').trim();
   const status = String(form.get('status') ?? 'planning');
   const estimatedHours = Number(form.get('estimated_hours'));
-  if (!clientName || !isEmail(clientEmail) || !name || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || !['planning', 'active', 'paused', 'complete'].includes(status) || !Number.isFinite(estimatedHours) || estimatedHours < 0) {
+  if (!clientName || !isEmail(clientEmail) || !name || !isSlug(slug) || !['planning', 'active', 'paused', 'complete'].includes(status) || !Number.isFinite(estimatedHours) || estimatedHours < 0) {
     return redirect('/admin?error=validation', 303);
   }
   const userId = randomId();

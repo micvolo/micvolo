@@ -2,7 +2,7 @@
 // Thin main column for the reserved area: it sits next to the site rail inside
 // the standard shell-layout, so the rail stays visible exactly like the rest of
 // the site. Sign-in data is read-only here; the only control is signing out.
-import ArrowIcon from '@/components/ArrowIcon.astro';
+import ArrowIcon from '@/components/icons/ArrowIcon.astro';
 
 interface Props {
   title?: string;
@@ -27,14 +27,14 @@ const { title, subtitle, back } = Astro.props;
 </main>
 
 <style>
-  /* Standard site content rhythm (clamp padding like .lab-index/.game-stream), safe-area aware. */
+  /* Standard site content rhythm (--gutter), safe-area aware. */
   .app-main {
     min-width: 0;
-    padding: clamp(var(--s4), 4vw, var(--s7));
-    padding-top: max(clamp(var(--s4), 4vw, var(--s7)), env(safe-area-inset-top));
-    padding-right: max(clamp(var(--s4), 4vw, var(--s7)), env(safe-area-inset-right));
-    padding-bottom: max(clamp(var(--s4), 4vw, var(--s7)), env(safe-area-inset-bottom));
-    padding-left: max(clamp(var(--s4), 4vw, var(--s7)), env(safe-area-inset-left));
+    padding: var(--gutter);
+    padding-top: max(var(--gutter), env(safe-area-inset-top));
+    padding-right: max(var(--gutter), env(safe-area-inset-right));
+    padding-bottom: max(var(--gutter), env(safe-area-inset-bottom));
+    padding-left: max(var(--gutter), env(safe-area-inset-left));
   }
   .app-topbar { align-items: center; margin-bottom: var(--s5); }
   .app-topbar-text { min-width: 0; }

@@ -1,5 +1,5 @@
 ---
-import StrokeIcon from '@/components/StrokeIcon.astro';
+import StrokeIcon from '@/components/icons/StrokeIcon.astro';
 const lists = [
   { name: 'Italiano', url: '/words/it-chain.txt' },
   { name: 'English', url: '/words/en-chain.txt' },
@@ -72,7 +72,6 @@ const lists = [
   .game-teamword select { min-width: 0; }
 
   .game-teamword .teamword__board {
-    --hairline: color-mix(in srgb, var(--ink) 14%, transparent);
     width: 100%;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

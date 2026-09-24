@@ -1,5 +1,5 @@
 ---
-import StrokeIcon from '@/components/StrokeIcon.astro';
+import StrokeIcon from '@/components/icons/StrokeIcon.astro';
 ---
 
 <div class="round-end">
@@ -14,6 +14,7 @@ import StrokeIcon from '@/components/StrokeIcon.astro';
   <button type="button" class="play-again primary-action game-action game-action--primary"><StrokeIcon name="rotate-ccw" /><span>Start round</span></button>
 </div>
 <script>
+  import { loadJson, STORAGE_KEYS } from '@/lib/storage';
   // The word card stays consultable all round: on the reveal screens light up the secret word.
   // Only runs where the round word is public, so the card never leaks the secret mid-round.
   function markRevealedWord() {
@@ -31,11 +32,8 @@ import StrokeIcon from '@/components/StrokeIcon.astro';
   function fillNextTopicPicker() {
     const select = document.querySelector<HTMLSelectElement>('[data-next-topic]');
     if (!select || select.options.length) return;
-    let topics: { title: string }[] = [];
-    try {
-      const state = JSON.parse(sessionStorage.getItem('chameleon-game') || '{}');
-      if (Array.isArray(state.topics)) topics = state.topics;
-    } catch {}
+    const state = loadJson(sessionStorage, STORAGE_KEYS.chameleonGame) as { topics?: unknown } | undefined;
+    const topics = state && Array.isArray(state.topics) ? state.topics as { title: string }[] : [];
     const random = document.createElement('option');
     random.value = '';
     random.textContent = 'Random';

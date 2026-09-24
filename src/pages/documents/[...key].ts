@@ -1,6 +1,6 @@
 import { env as cloudflareEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import { canAccessProject } from '@/lib/authorize';
+import { canAccessProject } from '@/lib/admin/guards';
 
 export const prerender = false;
 interface StoredDocument { id: string; project_id: string; original_filename: string; r2_key: string; mime_type: string; size_bytes: number; }

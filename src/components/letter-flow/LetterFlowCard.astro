@@ -43,13 +43,13 @@
   .letter-flow-frame {
     position: relative; overflow: hidden;
     flex: 1 1 auto; min-height: 320px; touch-action: none;
-    margin-inline: clamp(var(--s4), 4vw, var(--s7));
-    margin-bottom: clamp(var(--s4), 4vw, var(--s7));
+    margin-inline: var(--gutter);
+    margin-bottom: var(--gutter);
   }
   /* Compact params row above the frame: just the Parameters toggle, no bar. */
   .letter-flow__params {
     display: flex;
-    padding: 0 clamp(var(--s4), 4vw, var(--s7)) var(--s3);
+    padding: 0 var(--gutter) var(--s3);
   }
   .letter-flow__params:empty { display: none; }
   .letter-flow-frame canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }

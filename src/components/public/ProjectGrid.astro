@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import ArrowIcon from '@/components/ArrowIcon.astro';
+import ArrowIcon from '@/components/icons/ArrowIcon.astro';
 import { getProjects } from '@/lib/projects';
 interface Props { limit?: number; }
 const { limit } = Astro.props;
@@ -10,7 +10,7 @@ const visible = typeof limit === 'number' ? projects.slice(0, limit) : projects;
 <ol class="project-list">
   {visible.map((project, index) => (
     <li>
-      <a href={`/projects/${project.slug}`} class="work-card" aria-label={`${project.title} — ${project.tags}`}>
+      <a href={`/projects/${project.slug}`} class="card work-card" aria-label={`${project.title} — ${project.tags}`}>
         <figure class="work-card__media">
           <Image src={project.cover} alt="" widths={[480, 800, 1200]} sizes="(max-width: 720px) calc(100vw - 32px), 50vw" format="webp" quality={82} loading={index < 2 ? 'eager' : 'lazy'} />
         </figure>
@@ -32,18 +32,12 @@ const visible = typeof limit === 'number' ? projects.slice(0, limit) : projects;
     margin: 0;
     padding: 0;
   }
+  /* The glass panel treatment is the shared .card; work-card adds the media card rhythm. */
   .work-card {
     display: block;
     height: 100%;
     overflow: hidden;
-    background: var(--glass-surface);
-    border: 1px solid var(--glass-edge);
-    border-radius: var(--r-1);
-    box-shadow: var(--glass-shadow);
     transition: background-color var(--t-color) var(--ease), border-color var(--t-color) var(--ease), box-shadow .3s var(--ease), transform .3s var(--ease);
-  }
-  @supports (backdrop-filter: blur(1px)) {
-    .work-card { backdrop-filter: blur(28px) saturate(114%); -webkit-backdrop-filter: blur(28px) saturate(114%); }
   }
   .work-card__media { aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--r-1) var(--r-1) 0 0; }
   .work-card__media img { width: 100%; height: 100%; object-fit: cover; }

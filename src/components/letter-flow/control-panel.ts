@@ -1,16 +1,15 @@
 import { createParams, type FieldsApi, type ParamsApi } from '@/lib/params/params';
+import { loadJson, removeJson, saveJson, STORAGE_KEYS } from '@/lib/storage';
 import type { TextParams } from './text-parsing';
 
-const STORAGE_KEY = 'micvolo-letter-flow-params';
-
-type LetterFlowParams = {
+export type LetterFlowParams = {
   texts: TextParams[];
   mouseSize: number;
   selectCurves: boolean;
   export: { withBackground: boolean };
 };
 
-const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value));
+export const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 const finite = (value: unknown, fallback: number) => typeof value === 'number' && Number.isFinite(value) ? value : fallback;
 const color = (value: unknown, fallback: string) => typeof value === 'string' && /^#[\da-f]{6}$/i.test(value) ? value : fallback;
 
@@ -67,19 +66,17 @@ export function setupControlPanel(
 }
 
 export function saveCurrent(params: LetterFlowParams) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(params)); } catch { /* Storage may be unavailable. */ }
+  saveJson(localStorage, STORAGE_KEYS.letterFlowParams, params);
 }
 
 export function clearSavedParams() {
-  try { localStorage.removeItem(STORAGE_KEY); } catch { /* Storage may be unavailable. */ }
+  removeJson(localStorage, STORAGE_KEYS.letterFlowParams);
 }
 
 export function loadParams(defaultParams: LetterFlowParams): LetterFlowParams {
   const fallback = clone(defaultParams);
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return fallback;
-    const candidate = JSON.parse(stored) as Partial<LetterFlowParams>;
+    const candidate = loadJson(localStorage, STORAGE_KEYS.letterFlowParams) as Partial<LetterFlowParams> | undefined;
     if (!candidate || !Array.isArray(candidate.texts) || candidate.texts.length === 0) throw new Error('Invalid Letter Flow preset');
     const texts = candidate.texts.map((text) => validText(text, fallback.texts[0]));
     if (texts.some((text) => !text)) throw new Error('Invalid Letter Flow text');

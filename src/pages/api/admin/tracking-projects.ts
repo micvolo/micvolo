@@ -3,8 +3,10 @@
 // Example: PUT /api/admin/tracking-projects {"slug":"bloem","rate":25}
 import { env as cloudflareEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import { DEFAULT_RATE_EUR } from '@/lib/admin-data';
-import { isPositiveNumber, isSlug, json, jsonError, readJsonObject, requireAdminApi } from '@/lib/admin-data/api';
+import { json, jsonError, readJsonObject } from '@/lib/admin/api';
+import { requireAdminApi } from '@/lib/admin/guards';
+import { DEFAULT_RATE_EUR } from '@/lib/admin/store';
+import { isPositiveNumber, isSlug } from '@/lib/admin/validate';
 
 export const prerender = false;
 

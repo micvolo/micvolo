@@ -2,10 +2,9 @@
 // Example: POST /api/admin/entries {"slug":"abitare-in-legno","date":"2026-09-22","hours":3,"note":"pulizia finale delle schede appartamento"}
 import { env as cloudflareEnv } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import {
-  isIsoDate, isNoteLine, isSlug, json, jsonError, nextRowId,
-  projectExists, readJsonObject, requireAdminApi,
-} from '@/lib/admin-data/api';
+import { json, jsonError, nextRowId, readJsonObject, trackingProjectExists } from '@/lib/admin/api';
+import { requireAdminApi } from '@/lib/admin/guards';
+import { isIsoDate, isNoteLine, isSlug } from '@/lib/admin/validate';
 
 export const prerender = false;
 
@@ -36,7 +35,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const body = await readJsonObject(request);
   if (!body) return jsonError(400, 'invalid-json');
   const { slug, date, hours, note } = body;
-  if (!isSlug(slug) || !(await projectExists(cloudflareEnv.DB, slug))) return jsonError(400, 'unknown-slug');
+  if (!isSlug(slug) || !(await trackingProjectExists(cloudflareEnv.DB, slug))) return jsonError(400, 'unknown-slug');
   if (!isIsoDate(date)) return jsonError(400, 'invalid-date');
   if (!Number.isInteger(hours) || (hours as number) < 1 || (hours as number) > 8) return jsonError(400, 'invalid-hours');
   if (!isNoteLine(note)) return jsonError(400, 'invalid-note');

@@ -1,4 +1,5 @@
 import { navigate } from 'astro:transitions/client';
+import { loadJson, saveJson, STORAGE_KEYS } from '@/lib/storage';
 
 const BASE = '/table-games/camaleonte';
 
@@ -20,23 +21,21 @@ interface GameState {
   isNavigating: boolean;
 }
 
-const STORAGE_KEY = 'chameleon-game';
+const emptyState = (): GameState => ({ players: [], topics: [], currentTopic: 0, wordNumber: 0, isNavigating: false });
 
 function loadState(): GameState {
-  try {
-    const stored = sessionStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed.players) && Array.isArray(parsed.topics)) return parsed as GameState;
-    }
-  } catch {}
-  return { players: [], topics: [], currentTopic: 0, wordNumber: 0, isNavigating: false };
+  const stored = loadJson(sessionStorage, STORAGE_KEYS.chameleonGame) as Partial<GameState> | undefined;
+  return stored && Array.isArray(stored.players) && Array.isArray(stored.topics) ? stored as GameState : emptyState();
 }
 
 function saveState(state: GameState) {
-  try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch {}
+  saveJson(sessionStorage, STORAGE_KEYS.chameleonGame, state);
+}
+
+/** custom topics the players saved from the New topic form */
+function loadCustomTopics(): Topic[] {
+  const stored = loadJson(localStorage, STORAGE_KEYS.chameleonTopics);
+  return Array.isArray(stored) ? stored as Topic[] : [];
 }
 
 const game: GameState = loadState();
@@ -62,10 +61,7 @@ async function initChameleon() {
   const topicsHost = document.querySelector('.topics') as HTMLElement | null;
   if (!game.topics.length && topicsHost?.dataset.topics) {
     const builtIn: Topic[] = JSON.parse(topicsHost.dataset.topics);
-    let custom: Topic[] = [];
-    try {
-      custom = JSON.parse(localStorage.getItem('customTopics') || '[]');
-    } catch {}
+    const custom = loadCustomTopics();
     game.topics = [...builtIn, ...custom];
     game.currentTopic = Math.floor(Math.random() * game.topics.length);
     saveState(game);
@@ -264,14 +260,9 @@ async function initChameleon() {
         }
         return;
       }
-      let custom: Topic[] = [];
-      try {
-        custom = JSON.parse(localStorage.getItem('customTopics') || '[]');
-      } catch {}
+      const custom = loadCustomTopics();
       custom.push(topic);
-      try {
-        localStorage.setItem('customTopics', JSON.stringify(custom));
-      } catch {}
+      saveJson(localStorage, STORAGE_KEYS.chameleonTopics, custom);
       game.topics.push(topic);
       saveState(game);
       window.history.back();

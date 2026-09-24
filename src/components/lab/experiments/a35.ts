@@ -1,7 +1,7 @@
 import type { MountFn } from './index';
 import { fitStage, watchSize, pointerRelative, waitForMedia } from './shared';
 import fragment from '@/components/lab/shaders/a35-frag.glsl?raw';
-import { mountRecorder } from '../scripts/recorder';
+import { mountRecorder } from './recorder';
 
 const a35: MountFn = async (stage, opts) => {
   const { Renderer, Geometry, Program, Mesh, Vec2, Vec4, Texture } = await import('ogl');

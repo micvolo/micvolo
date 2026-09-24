@@ -1,11 +1,10 @@
 ---
 import { getEntry } from 'astro:content';
-import PaletteToggle from '@/components/PaletteToggle.astro';
-import ArrowIcon from '@/components/ArrowIcon.astro';
-import StrokeIcon from '@/components/StrokeIcon.astro';
-import { getProjects } from '@/lib/projects';
+import PaletteToggle from '@/components/shell/PaletteToggle.astro';
+import ArrowIcon from '@/components/icons/ArrowIcon.astro';
+import StrokeIcon from '@/components/icons/StrokeIcon.astro';
+import { getProjects, projectDateLabel } from '@/lib/projects';
 import { appIcon } from '@/lib/projects/app-icons';
-import { projectDateLabel } from '@/lib/projects/project-date';
 
 const settings = await getEntry('settings', 'settings');
 if (!settings) throw new Error('Site settings are missing');
@@ -65,14 +64,14 @@ const isHome = Astro.url.pathname === '/';
         </button>
       </li>
       <li>
-        <a class="contact-row" href="https://wa.me/393317043898" target="_blank" rel="noreferrer">
+        <a class="contact-row" href="https://wa.me/393317043898" target="_blank" rel="noopener noreferrer">
           <span class="contact-row__primary">WhatsApp</span>
           <span class="contact-row__secondary">+39 331 704 3898</span>
           <ArrowIcon direction="external" />
         </a>
       </li>
       <li>
-        <a class="contact-row" href="https://cal.com/micvolo" target="_blank" rel="noreferrer">
+        <a class="contact-row" href="https://cal.com/micvolo" target="_blank" rel="noopener noreferrer">
           <span class="contact-row__primary">Book a call</span>
           <span class="contact-row__secondary">Cal.com</span>
           <ArrowIcon direction="external" />
@@ -298,7 +297,7 @@ const isHome = Astro.url.pathname === '/';
     .rail-home:not([hidden]) {
       order: 0;
       position: sticky;
-      top: max(var(--s2), env(safe-area-inset-top));
+      top: var(--safe-top);
       z-index: 30;
       display: grid;
       padding: var(--s1) var(--s3);

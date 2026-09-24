@@ -2,8 +2,8 @@ const OTP_TTL_SECONDS = 10 * 60;
 export const SESSION_TTL_SECONDS = 365 * 24 * 60 * 60;
 const MAX_ATTEMPTS = 5;
 
-export const SESSION_COOKIE_PRODUCTION = '__Host-micvolo_session';
-export const SESSION_COOKIE_DEVELOPMENT = 'micvolo_session';
+const SESSION_COOKIE_PRODUCTION = '__Host-micvolo_session';
+const SESSION_COOKIE_DEVELOPMENT = 'micvolo_session';
 export const CHALLENGE_COOKIE = 'micvolo_challenge';
 
 interface UserRow {
@@ -50,7 +50,7 @@ export function randomId(): string {
   return crypto.randomUUID();
 }
 
-export function randomToken(byteLength = 32): string {
+function randomToken(byteLength = 32): string {
   const bytes = crypto.getRandomValues(new Uint8Array(byteLength));
   return base64Url(bytes);
 }
@@ -62,7 +62,7 @@ export function randomSixDigitCode(): string {
   return String(values[0] % 1_000_000).padStart(6, '0');
 }
 
-export async function sha256(value: string): Promise<string> {
+async function sha256(value: string): Promise<string> {
   const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
   return base64Url(new Uint8Array(bytes));
 }

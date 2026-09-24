@@ -150,7 +150,8 @@ Non usarlo per:
 
 | Pezzo | File |
 | --- | --- |
-| Indice Lab | `src/pages/graphic-experiments/index.astro`, `.lab-list` / `.lab-row` |
+| Indice (Lab, giochi) | `src/components/public/ArchiveIndex.astro`, `.lab-list` / `.lab-row` |
+| Pagina indice Lab | `src/pages/graphic-experiments/index.astro` |
 | Dettaglio Lab | `src/pages/graphic-experiments/[slug].astro`, `src/components/lab/LabCard.astro` |
 | Dati elenco | `src/lib/lab/projects.ts` |
 | Pattern complementare | `src/components/games/teamword/Teamword.astro` (`.teamword__board`, `.word`, `.skip-count`) |
@@ -191,7 +192,7 @@ Ogni esperienza (Lab, Letter Flow, giochi) vive dentro la pagina del sito, non a
 | Regola | File/Token |
 | --- | --- |
 | Palette e tokens | `src/styles/site.css` `:root` |
-| Shader e transizioni palette | `public/theme.js`, `src/components/AmbientShader.astro` |
+| Shader e transizioni palette | `public/theme.js`, `src/components/shell/AmbientShader.astro` |
 | Layout shell e rail | `src/components/public/SiteRail.astro`, `src/styles/site.css` |
 | Transizioni pagina | `src/layouts/PublicLayout.astro` |
 | Modello contenuti | `src/content.config.ts` |

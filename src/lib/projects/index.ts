@@ -35,3 +35,7 @@ export const getProject = async (slug: string): Promise<Project | undefined> => 
   const entry = (await getCollection('projects')).find((entry) => entry.id === slug);
   return entry ? withSlug(entry) : undefined;
 };
+
+/** Project date as a bare year, or 'Current' while the project is still ongoing (same calendar year or newer) */
+export const projectDateLabel = (date: Date, now: Date = new Date()): string =>
+  date.getFullYear() >= now.getFullYear() ? 'Current' : String(date.getFullYear());

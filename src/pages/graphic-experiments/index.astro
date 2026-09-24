@@ -1,45 +1,23 @@
 ---
 import PublicLayout from '@/layouts/PublicLayout.astro';
 import SiteRail from '@/components/public/SiteRail.astro';
+import ArchiveIndex from '@/components/public/ArchiveIndex.astro';
 import { projects } from '@/lib/lab/projects';
+
+const items = projects.map((project) => ({
+  href: `/graphic-experiments/${project.id}`,
+  title: project.title,
+  description: project.description,
+}));
 ---
 
 <PublicLayout title="Graphic experiments" description="Interaction, typography and WebGL studies.">
   <SiteRail />
   <main id="main" class="stream">
-    <section class="lab-index" aria-label="Graphic experiments">
-      <header class="lab-index__header">
-        <h1>Graphic experiments</h1>
-        <p>Small studies in code, motion and interaction. Open one and play with it.</p>
-      </header>
-      <ol class="lab-list">
-        {projects.map((project, index) => (
-          <li>
-            <a class="lab-row" href={`/graphic-experiments/${project.id}`}>
-              <span class="lab-row__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-              <span class="lab-row__body">
-                <strong>{project.title}</strong>
-                <small>{project.description}</small>
-              </span>
-            </a>
-          </li>
-        ))}
-      </ol>
-    </section>
+    <ArchiveIndex
+      title="Graphic experiments"
+      intro="Small studies in code, motion and interaction. Open one and play with it."
+      {items}
+    />
   </main>
 </PublicLayout>
-
-<style>
-  .lab-index { padding: clamp(var(--s4), 4vw, var(--s7)); }
-  .lab-index__header { display: grid; gap: var(--s2); max-width: 44rem; padding-bottom: var(--s4); }
-  .lab-index__header h1 { margin: 0; font-size: var(--f-lead); font-weight: 600; letter-spacing: -.01em; }
-  .lab-index__header p { max-width: 52ch; color: var(--ink-2); font-size: var(--f-body); line-height: 1.5; }
-  .lab-list { list-style: none; margin: 0; padding: 0; max-width: 44rem; }
-  .lab-list li + li { border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); }
-  .lab-row { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: var(--s3); padding-block: var(--s3); }
-  .lab-row__number { color: var(--ink-3); font-variant-numeric: tabular-nums; }
-  .lab-row__body { display: grid; gap: 2px; }
-  .lab-row__body strong { font-weight: 500; }
-  .lab-row__body small { color: var(--ink-2); line-height: 1.45; }
-  @media (hover: hover) { .lab-row:hover strong { color: var(--accent); } }
-</style>

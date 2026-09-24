@@ -1,6 +1,6 @@
 import type { MountFn } from './index';
 import { fitStage, watchSize, pointerRelative } from './shared';
-import fragment from '@/components/lab/shaders/a31.frag.glsl?raw';
+import fragment from '@/components/lab/shaders/a31-frag.glsl?raw';
 
 const a31: MountFn = async (stage, opts) => {
   const { Renderer, Geometry, Program, Mesh, Vec2, Vec4 } = await import('ogl');

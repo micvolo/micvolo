@@ -1,10 +1,9 @@
 ---
-import ArrowIcon from '@/components/ArrowIcon.astro';
+import ArrowIcon from '@/components/icons/ArrowIcon.astro';
 import CaseFrame from '@/components/project-page/CaseFrame.astro';
 import CaseNote from '@/components/project-page/CaseNote.astro';
 import { appIcon } from '@/lib/projects/app-icons';
-import { projectDateLabel } from '@/lib/projects/project-date';
-import { isRowSlot, isSplitSlot, type Project, type ScreenWidth } from '@/lib/projects';
+import { isRowSlot, isSplitSlot, projectDateLabel, type Project, type ScreenWidth } from '@/lib/projects';
 
 interface Props {
   project: Project;
@@ -46,7 +45,7 @@ const dateLabel = projectDateLabel(project.date);
     <>
       <CaseNote note={project.notes[index]} />
       {index === 0 && project.url && (
-        <a class="case-visit" href={project.url} target="_blank" rel="noreferrer">
+        <a class="case-visit nav-pill nav-pill--primary" href={project.url} target="_blank" rel="noopener noreferrer">
           Visit site<ArrowIcon direction="external" />
         </a>
       )}
@@ -81,7 +80,7 @@ const dateLabel = projectDateLabel(project.date);
     display: grid;
     gap: var(--s2);
     max-width: 44rem;
-    padding: clamp(var(--s4), 4vw, var(--s7));
+    padding: var(--gutter);
     padding-bottom: var(--s4);
   }
   .case-heading {
@@ -118,25 +117,10 @@ const dateLabel = projectDateLabel(project.date);
     display: grid;
     gap: var(--s6);
     justify-items: start;
-    padding: 0 clamp(var(--s4), 4vw, var(--s7)) var(--s8);
+    padding: 0 var(--gutter) var(--s8);
   }
-  a.case-visit {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--s2);
-    width: fit-content;
-    min-height: var(--ctl);
-    padding: 0 var(--s4);
-    border: 0;
-    border-radius: var(--pill);
-    background: var(--accent);
-    color: var(--accent-ink);
-    font-size: var(--f-body);
-    font-weight: 600;
-    transition: background-color var(--t-color) var(--ease), filter var(--t-color) var(--ease);
-  }
-  /* primary call to action: fill change only, the arrow stays put */
-  a.case-visit:hover { background: var(--accent); color: var(--accent-ink); filter: brightness(1.07); }
+  /* Primary pill: the shared .nav-pill--primary, with roomier icon gap. */
+  a.case-visit { gap: var(--s2); }
   .case-visit :global(.arrow-icon) { width: .85em; height: .85em; }
   @media (hover: hover) {
     a.case-visit:hover :global(.arrow-icon) { transform: none; }

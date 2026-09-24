@@ -5,21 +5,22 @@ function initTeamword() {
   if (!root || root.dataset.teamwordBound) return;
   root.dataset.teamwordBound = 'true';
 
-  function $(selector: string) {
-    const el = root.querySelector(selector);
+  /** Typed query scoped to the game root; every required element lives in Teamword.astro. */
+  function $<T extends Element = HTMLElement>(selector: string): T {
+    const el = root.querySelector<T>(selector);
     if (!el) throw new Error(`Missing Teamword element ${selector}`);
-    return el as HTMLElement;
+    return el;
   }
 
-  const play = $('.play') as HTMLButtonElement;
-  const right = $('.right') as HTMLButtonElement;
-  const wrong = $('.wrong') as HTMLButtonElement;
-  const skip = $('.skip') as HTMLButtonElement;
-  const reset = $('.reset') as HTMLButtonElement;
+  const play = $<HTMLButtonElement>('.play');
+  const right = $<HTMLButtonElement>('.right');
+  const wrong = $<HTMLButtonElement>('.wrong');
+  const skip = $<HTMLButtonElement>('.skip');
+  const reset = $<HTMLButtonElement>('.reset');
   const timer = $('.timer');
   const point = $('.point');
   const word = $('.word');
-  const list = $('.list') as HTMLSelectElement;
+  const list = $<HTMLSelectElement>('.list');
   // The status element lives in the game header (above the description), outside the .teamword root.
   const status = document.querySelector<HTMLElement>('.teamword__status');
   if (!status) throw new Error('Missing Teamword element .teamword__status');

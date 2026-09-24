@@ -3,7 +3,7 @@ import { fitStage, watchSize, pointerRelative } from './shared';
 import * as THREE from 'three';
 import vertex from '@/components/lab/shaders/a30-vert.glsl?raw';
 import fragment from '@/components/lab/shaders/a30-frag.glsl?raw';
-import { Flowmap } from '@/components/lab/scripts/flowmap.js';
+import { Flowmap } from '@/components/lab/experiments/flowmap.js';
 
 const a30: MountFn = (stage, opts) => {
   const canvas = document.createElement('canvas');
