@@ -1,11 +1,10 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "micvolo",
-  "main": "./dist/server/entry.mjs",
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-03-17",
   "compatibility_flags": ["nodejs_compat"],
-  "assets": { "directory": "./dist/client", "binding": "ASSETS" },
-  "no_bundle": true,
+  "assets": { "directory": "./dist" },
   "observability": { "enabled": true },
   "vars": {
     "ENVIRONMENT": "production",
