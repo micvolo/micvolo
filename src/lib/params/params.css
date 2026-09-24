@@ -46,16 +46,31 @@
 
 .params__toggle[aria-expanded='true']::after { transform: rotate(45deg); }
 
-/* Pane dock: bottom-right of the stage it was handed at creation. */
+/* Pane dock: parked fixed at the right screen edge, vertically anchored just
+   under the toggle row (JS writes --params-top on open) so it never covers the
+   stage center. Width/height only — Tweakpane keeps its native look. */
 .params__pane {
-  position: absolute;
+  position: fixed;
   right: var(--s3);
-  bottom: var(--s3);
+  top: var(--params-top, var(--s3));
   z-index: 10;
-  max-height: calc(100% - 2 * var(--s3));
+  max-width: calc(100vw - 2 * var(--s3));
+  max-height: calc(100dvh - var(--params-top, var(--s3)) - var(--s3));
   overflow: auto;
 }
 .params__pane[hidden] { display: none; }
+
+/* Mobile: full-width bottom sheet, parked cleanly off the stage. */
+@media (max-width: 720px) {
+  .params__pane {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: none;
+    max-height: 60dvh;
+  }
+}
 
 /* Keyboard focus stays visible inside the pane (site.css resets input outlines),
    and pointer/canvas interaction never flashes the accent outline. */

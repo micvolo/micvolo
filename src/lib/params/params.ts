@@ -30,7 +30,7 @@ export type FieldsApi = {
 export type ParamsOptions = {
   /** Header slot the "Parameters" toggle button renders into (LabCard / LetterFlowCard). */
   root: HTMLElement;
-  /** Stage the native Tweakpane pane docks into (bottom-right) while open. */
+  /** Stage the native Tweakpane pane host is attached to (it parks fixed at the right screen edge). */
   stage: HTMLElement;
   /** Toggle button text. Default 'Parameters'. */
   label?: string;
@@ -66,7 +66,8 @@ const prettify = (key: string) =>
  * Shared parameter pane backed by native Tweakpane (no theme overrides). Each
  * field binds directly to a property of the experiment's param object and Tweakpane
  * writes it in place. The pane starts closed behind a small brand "Parameters"
- * toggle in the header slot and docks at the bottom-right of the stage while open.
+ * toggle in the header slot and parks fixed at the right screen edge, vertically
+ * anchored under the toggle row (full-width bottom sheet on narrow screens).
  */
 export function createParams({ root, stage, label = 'Parameters', onChange, setup }: ParamsOptions): ParamsApi {
   const syncs: Array<() => void> = [];
@@ -90,6 +91,12 @@ export function createParams({ root, stage, label = 'Parameters', onChange, setu
   const pane = new Pane({ container: paneBox });
 
   const setOpen = (open: boolean) => {
+    if (open) {
+      // Anchor the fixed pane just under the toggle row (right screen edge).
+      const rect = button.getBoundingClientRect();
+      const top = Math.min(Math.max(8, Math.round(rect.bottom + 8)), window.innerHeight - 120);
+      paneBox.style.setProperty('--params-top', `${top}px`);
+    }
     paneBox.hidden = !open;
     button.setAttribute('aria-expanded', String(open));
   };
