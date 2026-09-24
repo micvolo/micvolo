@@ -258,17 +258,18 @@ const isHome = Astro.url.pathname === '/';
   .rail-info__title { max-width: 24ch; font-weight: 600; line-height: 1.35; }
   .rail-info__copy { color: var(--ink-2); line-height: 1.45; }
   .rail-info__stats { display: grid; gap: var(--s2); padding: var(--s2) 0; font-variant-numeric: tabular-nums; }
-  .rail-info__stats div { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); font-size: var(--f-small); text-align: left; }
+  .rail-info__stats div { display: grid; grid-template-columns: 50% 50%; font-size: var(--f-small); text-align: left; }
+  .rail-info__stats dd { margin: 0; padding-left: var(--s2); }
   .rail-info__contact-intro { color: var(--ink-2); line-height: 1.45; }
   .rail-info__contact { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
   .contact-row {
     width: 100%; min-width: 0; min-height: 32px;
-    display: grid; grid-template-columns: 1fr 1fr 12px; align-items: center; gap: var(--s2);
+    display: grid; grid-template-columns: 50% 1fr 12px; align-items: center; gap: 0;
     padding: 0; color: var(--ink); background: transparent; border: 0; border-radius: 0;
     font-size: var(--f-small); font-weight: 400; line-height: 1.25; text-align: left;
   }
   .contact-row__primary { white-space: nowrap; }
-  .contact-row__secondary { color: var(--ink-3); overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+  .contact-row__secondary { color: var(--ink-3); overflow: hidden; padding-left: var(--s2); text-align: left; text-overflow: ellipsis; white-space: nowrap; }
   .contact-row :global(.arrow-icon) { width: .8em; height: .8em; color: var(--ink-3); }
   @media (hover: hover) {
     .contact-row:hover { color: var(--accent); }
